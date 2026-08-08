@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<section style="
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: #f7f9fc;
+    padding: 80px 20px;
+">
+    <div style="
+        width: 100%;
+        max-width: 1180px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 70px;
+        align-items: center;
+    ">
+
+        <!-- LEFT SIDE -->
+        <div>
+            <p style="
+                color:#ED1C24;
+                font-weight:700;
+                font-size:14px;
+                letter-spacing:1px;
+                text-transform:uppercase;
+                margin-bottom:20px;
+            ">
+                Create Account
+            </p>
+
+            <h1 style="
+                font-size: clamp(2.3rem, 5vw, 4rem);
+                line-height: 1.15;
+                color:#1E3A8A;
+                margin-bottom:24px;
+                font-weight:700;
+            ">
+                Join <span style="color:#ED1C24;">SABBTCo</span>
+            </h1>
+
+            <p style="
+                color:#6b7280;
+                font-size:18px;
+                line-height:1.8;
+                max-width:540px;
+            ">
+                Create your account to track shipments, manage orders,
+                request sourcing quotes, and monitor your global trade
+                activities in one secure place.
+            </p>
+
+            <div style="
+                margin-top:35px;
+                padding-left:18px;
+                border-left:3px solid #dbe3ee;
+            ">
+                <p style="
+                    color:#6b7280;
+                    font-size:16px;
+                    font-style:italic;
+                    line-height:1.7;
+                    margin:0;
+                ">
+                    Building Global Partnership
+                </p>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE FORM -->
+        <div style="
+            background:white;
+            padding:48px 42px;
+            border-radius:16px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.05);
+        ">
+            <h2 style="
+                margin:0 0 30px 0;
+                color:#1E3A8A;
+                font-size:30px;
+                font-weight:700;
+            ">
+                Create Account
+            </h2>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <!-- Username -->
+                <div style="margin-bottom:20px;">
+                    <label style="
+                        display:block;
+                        margin-bottom:8px;
+                        color:#374151;
+                        font-size:14px;
+                        font-weight:600;
+                    ">
+                        Username
+                    </label>
+                    <input type="text" name="username" required style="
+                        width:100%;
+                        padding:15px 16px;
+                        border:1px solid #d9dfe8;
+                        border-radius:10px;
+                        font-size:15px;
+                        background:#fafbfc;
+                        outline:none;
+                        box-sizing:border-box;
+                    ">
+                </div>
+
+                <!-- Email -->
+                <div style="margin-bottom:20px;">
+                    <label style="
+                        display:block;
+                        margin-bottom:8px;
+                        color:#374151;
+                        font-size:14px;
+                        font-weight:600;
+                    ">
+                        Email Address
+                    </label>
+                    <input type="email" name="email" required style="
+                        width:100%;
+                        padding:15px 16px;
+                        border:1px solid #d9dfe8;
+                        border-radius:10px;
+                        font-size:15px;
+                        background:#fafbfc;
+                        outline:none;
+                        box-sizing:border-box;
+                    ">
+                </div>
+
+                <!-- Password -->
+                <div style="margin-bottom:20px;">
+                    <label style="
+                        display:block;
+                        margin-bottom:8px;
+                        color:#374151;
+                        font-size:14px;
+                        font-weight:600;
+                    ">
+                        Password
+                    </label>
+                    <input type="password" name="password1" required style="
+                        width:100%;
+                        padding:15px 16px;
+                        border:1px solid #d9dfe8;
+                        border-radius:10px;
+                        font-size:15px;
+                        background:#fafbfc;
+                        outline:none;
+                        box-sizing:border-box;
+                    ">
+                </div>
+
+                <!-- Confirm Password -->
+                <div style="margin-bottom:28px;">
+                    <label style="
+                        display:block;
+                        margin-bottom:8px;
+                        color:#374151;
+                        font-size:14px;
+                        font-weight:600;
+                    ">
+                        Confirm Password
+                    </label>
+                    <input type="password" name="password2" required style="
+                        width:100%;
+                        padding:15px 16px;
+                        border:1px solid #d9dfe8;
+                        border-radius:10px;
+                        font-size:15px;
+                        background:#fafbfc;
+                        outline:none;
+                        box-sizing:border-box;
+                    ">
+                </div>
+
+                <button type="submit" style="
+                    width:100%;
+                    padding:16px;
+                    background:#ED1C24;
+                    color:white;
+                    border:none;
+                    border-radius:10px;
+                    font-size:16px;
+                    font-weight:600;
+                    cursor:pointer;
+                    transition:0.2s ease;
+                ">
+                    Register
+                </button>
+
+                <p style="
+                    margin-top:22px;
+                    text-align:center;
+                    color:#6b7280;
+                    font-size:15px;
+                ">
+                    Already have an account?
+                    <a href="{% url 'login' %}" style="
+                        color:#1E3A8A;
+                        text-decoration:none;
+                        font-weight:600;
+                    ">
+                        Login
+                    </a>
+                </p>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block workspace_title %}
+    <h1>Customers</h1>
+    <p>Manage all core customer registry accounts</p>
+{% endblock workspace_title %}
+
+{% block content %}
+<section class="dashboard-section">
+
+    <div class="dashboard-card" style="margin-top: 0;">
+
+        <div class="card-header" style="border-bottom: 1px solid var(--border-light); padding-bottom: 14px; margin-bottom: 16px;">
+            <h3 style="margin: 0;">Customer Registry</h3>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email Address</th>
+                        <th style="text-align: center;">Orders Manifested</th>
+                        <th style="text-align: right;">Date Registered</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                    <tr>
+                        <td style="font-weight: 600; color: var(--text-main);">
+                            {{ customer.get_full_name|default:customer.username }}
+                        </td>
+                        <td style="font-family: ui-monospace, SFMono-Regular, Consolas, monospace; color: #475569; font-size: 13px;">
+                            {{ customer.email }}
+                        </td>
+                        <td style="text-align: center;">
+                            <!-- Dense, highly scannable tracking token styling -->
+                            <span style="display: inline-block; background-color: #f1f5f9; color: var(--text-main); font-weight: 700; font-family: ui-monospace, monospace; padding: 2px 8px; border-radius: 4px; font-size: 12px; border: 1px solid #cbd5e1;">
+                                {{ customer.orders.count }}
+                            </span>
+                        </td>
+                        <td style="text-align: right; color: var(--text-muted); font-size: 13px; font-family: ui-monospace, SFMono-Regular, monospace;">
+                            {{ customer.date_joined|date:"M d, Y" }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 40px 0; font-family: ui-monospace, monospace; font-size: 13px;">
+                            No active customer records available in the database system.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</section>
+{% endblock content %}

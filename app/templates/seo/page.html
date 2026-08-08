@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ page.title }}</title>
+    <meta name="description" content="{{ page.description }}">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="{{ page.title }}">
+    <meta property="og:description" content="{{ page.description }}">
+</head>
+
+<body>
+
+<h1>{{ page.h1 }}</h1>
+
+<div class="seo-content">
+    {{ page.content|safe }}
+</div>
+
+</body>
+</html>

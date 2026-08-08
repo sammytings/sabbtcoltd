@@ -1,0 +1,1728 @@
+{% extends 'dashboard/dashboard_base.html' %}
+{% load static %}
+
+{% block workspace_title %}
+<div>
+    <h1>{% if editing %}Edit News Post{% else %}Create News Post{% endif %}</h1>
+    <p>
+        {% if editing %}
+            Update your shipping, sourcing or consolidation news.
+        {% else %}
+            Publish a new update for your customers.
+        {% endif %}
+    </p>
+</div>
+{% endblock workspace_title %}
+
+
+{% block content %}
+
+<style>
+
+.news-editor-wrapper{
+    max-width:1200px;
+    margin:0 auto;
+}
+
+.news-editor-grid{
+    display:grid;
+    grid-template-columns:minmax(0,2fr) minmax(300px,1fr);
+    gap:22px;
+}
+
+.news-card{
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    padding:24px;
+    box-shadow:0 3px 12px rgba(15,23,42,.04);
+}
+
+.news-card + .news-card{
+    margin-top:20px;
+}
+
+.news-card-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:0 0 20px;
+    color:#0f172a;
+    font-size:17px;
+    font-weight:700;
+}
+
+.news-card-title i{
+    color:#dc2626;
+}
+
+.news-label{
+    display:block;
+    margin-bottom:7px;
+    color:#334155;
+    font-size:13px;
+    font-weight:700;
+}
+
+.news-input,
+.news-textarea,
+.news-select{
+    width:100%;
+    box-sizing:border-box;
+    border:1px solid #dbe3ec;
+    border-radius:9px;
+    background:#fff;
+    color:#0f172a;
+    padding:12px 13px;
+    font-family:inherit;
+    font-size:14px;
+    outline:none;
+    transition:.2s;
+}
+
+.news-input:focus,
+.news-textarea:focus,
+.news-select:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,.08);
+}
+
+.news-textarea{
+    min-height:260px;
+    resize:vertical;
+    line-height:1.7;
+}
+
+.form-group{
+    margin-bottom:20px;
+}
+
+.post-type-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.post-type-option{
+    position:relative;
+}
+
+.post-type-option input{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+}
+
+.post-type-label{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:15px;
+    border:1px solid #dbe3ec;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.post-type-label i{
+    width:38px;
+    height:38px;
+    border-radius:9px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#f1f5f9;
+    color:#475569;
+}
+
+.post-type-label strong{
+    display:block;
+    color:#0f172a;
+    font-size:14px;
+}
+
+.post-type-label small{
+    display:block;
+    color:#64748b;
+    margin-top:3px;
+}
+
+.post-type-option input:checked + .post-type-label{
+    border-color:#dc2626;
+    background:#fff7f7;
+}
+
+.post-type-option input:checked + .post-type-label i{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.image-upload{
+    border:2px dashed #cbd5e1;
+    border-radius:12px;
+    min-height:250px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    cursor:pointer;
+    overflow:hidden;
+    position:relative;
+    background:#f8fafc;
+    transition:.2s;
+}
+
+.image-upload:hover{
+    border-color:#2563eb;
+    background:#f8fbff;
+}
+
+.image-upload.has-image{
+    border-style:solid;
+}
+
+.image-upload-content{
+    padding:30px;
+}
+
+.image-upload-content i{
+    font-size:38px;
+    color:#94a3b8;
+    margin-bottom:12px;
+}
+
+.image-upload-content strong{
+    display:block;
+    color:#334155;
+    margin-bottom:5px;
+}
+
+.image-upload-content span{
+    color:#64748b;
+    font-size:12px;
+}
+
+#imagePreview{
+    width:100%;
+    height:100%;
+    min-height:250px;
+    max-height:430px;
+    object-fit:contain;
+    display:none;
+    background:#f8fafc;
+}
+
+.seo-score-card{
+    border:1px solid #e2e8f0;
+    border-radius:12px;
+    padding:18px;
+    background:#fff;
+}
+
+.seo-score-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:12px;
+}
+
+.seo-score-number{
+    font-size:30px;
+    font-weight:800;
+    color:#dc2626;
+}
+
+.seo-score-label{
+    color:#64748b;
+    font-size:12px;
+}
+
+.seo-progress{
+    height:9px;
+    background:#e2e8f0;
+    border-radius:20px;
+    overflow:hidden;
+    margin-bottom:18px;
+}
+
+.seo-progress-bar{
+    height:100%;
+    width:0%;
+    background:#dc2626;
+    border-radius:20px;
+    transition:.3s;
+}
+
+.seo-check{
+    display:flex;
+    align-items:flex-start;
+    gap:9px;
+    padding:8px 0;
+    font-size:13px;
+    border-bottom:1px solid #f1f5f9;
+}
+
+.seo-check:last-child{
+    border-bottom:none;
+}
+
+.seo-check i{
+    margin-top:2px;
+}
+
+.seo-check.good{
+    color:#166534;
+}
+
+.seo-check.warning{
+    color:#92400e;
+}
+
+.seo-check.bad{
+    color:#991b1b;
+}
+
+.ai-box{
+    border:1px solid #dbeafe;
+    background:linear-gradient(135deg,#f8fbff,#eff6ff);
+    border-radius:12px;
+    padding:18px;
+}
+
+.ai-box-title{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    color:#1e40af;
+    font-weight:800;
+    margin-bottom:7px;
+}
+
+.ai-box-description{
+    color:#64748b;
+    font-size:12px;
+    line-height:1.6;
+    margin-bottom:16px;
+}
+
+.ai-buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.ai-btn{
+    border:1px solid #bfdbfe;
+    background:#fff;
+    color:#1d4ed8;
+    padding:11px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:700;
+    font-size:13px;
+}
+
+.ai-btn:hover{
+    background:#eff6ff;
+}
+
+.ai-prompt{
+    margin-top:14px;
+    display:none;
+}
+
+.ai-prompt.show{
+    display:block;
+}
+
+.switch-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    padding:12px 0;
+    border-bottom:1px solid #f1f5f9;
+}
+
+.switch-row:last-child{
+    border-bottom:none;
+}
+
+.switch-text strong{
+    display:block;
+    color:#334155;
+    font-size:13px;
+}
+
+.switch-text small{
+    color:#64748b;
+    font-size:11px;
+}
+
+.switch{
+    position:relative;
+    width:42px;
+    height:23px;
+    flex-shrink:0;
+}
+
+.switch input{
+    opacity:0;
+    width:0;
+    height:0;
+}
+
+.slider{
+    position:absolute;
+    inset:0;
+    background:#cbd5e1;
+    border-radius:30px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.slider:before{
+    content:"";
+    position:absolute;
+    width:17px;
+    height:17px;
+    left:3px;
+    top:3px;
+    background:#fff;
+    border-radius:50%;
+    transition:.2s;
+}
+
+.switch input:checked + .slider{
+    background:#dc2626;
+}
+
+.switch input:checked + .slider:before{
+    transform:translateX(19px);
+}
+
+.action-bar{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:22px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:11px 18px;
+    border-radius:8px;
+    border:none;
+    font-weight:700;
+    font-size:13px;
+    cursor:pointer;
+    text-decoration:none;
+}
+
+.btn-primary{
+    background:#dc2626;
+    color:#fff;
+}
+
+.btn-primary:hover{
+    background:#b91c1c;
+}
+
+.btn-secondary{
+    background:#f1f5f9;
+    color:#334155;
+}
+
+.btn-secondary:hover{
+    background:#e2e8f0;
+}
+
+.current-image{
+    margin-bottom:12px;
+    color:#64748b;
+    font-size:12px;
+}
+
+.current-image img{
+    display:block;
+    width:100%;
+    max-height:220px;
+    object-fit:contain;
+    border-radius:10px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    margin-top:8px;
+}
+
+.keyword-hint{
+    color:#64748b;
+    font-size:11px;
+    margin-top:6px;
+}
+
+.char-counter{
+    text-align:right;
+    color:#64748b;
+    font-size:11px;
+    margin-top:5px;
+}
+
+@media(max-width:900px){
+
+    .news-editor-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:600px){
+
+    .news-card{
+        padding:17px;
+    }
+
+    .post-type-grid,
+    .ai-buttons{
+        grid-template-columns:1fr;
+    }
+
+    .action-bar{
+        flex-direction:column;
+    }
+
+    .action-bar .btn{
+        width:100%;
+    }
+
+}
+
+</style>
+
+
+<div class="news-editor-wrapper">
+
+<form method="POST"
+      enctype="multipart/form-data"
+      id="newsForm">
+
+    {% csrf_token %}
+    <input
+    type="hidden"
+    name="seo_score"
+    id="seoScoreInput"
+    value="{{ news_post.seo_score|default:0 }}"
+>
+
+    <div class="news-editor-grid">
+
+        <!-- ================================================= -->
+        <!-- LEFT SIDE -->
+        <!-- ================================================= -->
+
+        <div>
+
+            <!-- POST TYPE -->
+
+            <div class="news-card">
+
+                <h3 class="news-card-title">
+                    <i class="fa-solid fa-layer-group"></i>
+                    Post Type
+                </h3>
+
+                <div class="post-type-grid">
+
+                    <div class="post-type-option">
+
+                        <input
+                            type="radio"
+                            name="post_type"
+                            id="postTypePhoto"
+                            value="photo"
+                            {% if news_post.post_type == "photo" or not news_post %}checked{% endif %}
+                        >
+
+                        <label
+                            for="postTypePhoto"
+                            class="post-type-label"
+                        >
+
+                            <i class="fa-solid fa-image"></i>
+
+                            <div>
+                                <strong>Photo Only</strong>
+                                <small>Publish an image without an article.</small>
+                            </div>
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="post-type-option">
+
+                        <input
+                            type="radio"
+                            name="post_type"
+                            id="postTypeArticle"
+                            value="article"
+                            {% if news_post.post_type == "article" %}checked{% endif %}
+                        >
+
+                        <label
+                            for="postTypeArticle"
+                            class="post-type-label"
+                        >
+
+                            <i class="fa-solid fa-newspaper"></i>
+
+                            <div>
+                                <strong>Photo + Description</strong>
+                                <small>Publish an image with SEO content.</small>
+                            </div>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BASIC INFORMATION -->
+
+            <div class="news-card">
+
+                <h3 class="news-card-title">
+                    <i class="fa-solid fa-pen"></i>
+                    News Content
+                </h3>
+
+
+                <div class="form-group">
+
+                    <label class="news-label">
+                        News Title
+                    </label>
+
+                    <input
+                        type="text"
+                        name="title"
+                        id="newsTitle"
+                        class="news-input"
+                        maxlength="255"
+                        value="{{ news_post.title|default:'' }}"
+                        placeholder="Example: New Consolidated Shipment Has Arrived"
+                    >
+
+                </div>
+
+
+                <!-- IMAGE -->
+
+                <div class="form-group">
+
+                    <label class="news-label">
+                        News Photo
+                    </label>
+
+                    {% if news_post.image %}
+
+                    <div class="current-image">
+
+                        Current image:
+
+                        <img
+                            src="{{ news_post.image.url }}"
+                            alt="{{ news_post.image_alt|default:news_post.title }}"
+                        >
+
+                    </div>
+
+                    {% endif %}
+
+
+                    <label
+                        for="newsImage"
+                        class="image-upload"
+                        id="imageUploadBox"
+                    >
+
+                        <div
+                            class="image-upload-content"
+                            id="uploadContent"
+                        >
+
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+
+                            <strong>
+                                Click to upload a photo
+                            </strong>
+
+                            <span>
+                                JPG, JPEG, PNG or WEBP
+                            </span>
+
+                        </div>
+
+
+                        <img
+                            id="imagePreview"
+                            alt="Selected image preview"
+                        >
+
+                    </label>
+
+                    <input
+                        type="file"
+                        name="image"
+                        id="newsImage"
+                        accept="image/jpeg,image/png,image/webp"
+                        style="display:none;"
+                    >
+
+                </div>
+
+
+                <!-- ALT TEXT -->
+
+                <div class="form-group">
+
+                    <label class="news-label">
+                        Image ALT Text
+                    </label>
+
+                    <input
+                        type="text"
+                        name="image_alt"
+                        id="imageAlt"
+                        class="news-input"
+                        maxlength="255"
+                        value="{{ news_post.image_alt|default:'' }}"
+                        placeholder="Example: SABBTCo consolidated cargo shipment from China"
+                    >
+
+                    <div class="keyword-hint">
+                        Describe what is actually visible in the photo.
+                    </div>
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div
+                    class="form-group"
+                    id="descriptionSection"
+                >
+
+                    <label class="news-label">
+                        Description
+                    </label>
+
+                    <textarea
+                        name="description"
+                        id="newsDescription"
+                        class="news-textarea"
+                        placeholder="Write a useful update about the shipment, sourcing activity, consolidation or logistics service..."
+                    >{{ news_post.description|default:'' }}</textarea>
+
+                    <div class="char-counter">
+                        <span id="descriptionCount">0</span> characters
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- AI -->
+
+            <div class="news-card">
+
+                <div class="ai-box">
+
+                    <div class="ai-box-title">
+
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+                        AI SEO Content Assistant
+
+                    </div>
+
+                    <div class="ai-box-description">
+
+                        Generate an SEO-friendly news description from
+                        a written prompt or from the uploaded photo.
+
+                    </div>
+
+
+                    <div class="ai-buttons">
+
+                        <button
+                            type="button"
+                            class="ai-btn"
+                            id="promptAiButton"
+                        >
+                            <i class="fa-solid fa-comment-dots"></i>
+                            Generate from Prompt
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="ai-btn"
+                            id="photoAiButton"
+                        >
+                            <i class="fa-solid fa-camera"></i>
+                            Generate from Photo
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="ai-prompt"
+                        id="aiPromptBox"
+                    >
+
+                        <label class="news-label">
+                            AI Prompt
+                        </label>
+
+                        <textarea
+                            id="aiPrompt"
+                            class="news-textarea"
+                            style="min-height:130px;"
+                            placeholder="Example: Write a professional SEO-friendly update about our latest sea freight consolidation shipment from China to Kenya. Mention our sourcing, shipping and consolidation services."
+                        ></textarea>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            id="generatePromptBtn"
+                            style="margin-top:10px;"
+                        >
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            Generate Description
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="aiStatus"
+                        style="
+                        display:none;
+                        margin-top:12px;
+                        padding:10px 12px;
+                        border-radius:8px;
+                        background:#eff6ff;
+                        color:#1d4ed8;
+                        font-size:12px;
+                        "
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- RIGHT SIDE -->
+        <!-- ================================================= -->
+
+        <div>
+
+            <!-- SEO SCORE -->
+
+            <div class="news-card">
+
+                <h3 class="news-card-title">
+                    <i class="fa-solid fa-chart-line"></i>
+                    SEO Analysis
+                </h3>
+
+
+                <div class="seo-score-card">
+
+                    <div class="seo-score-header">
+
+                        <div>
+                            <div class="seo-score-label">
+                                Content SEO Score
+                            </div>
+
+                            <div
+                                id="seoMessage"
+                                style="
+                                color:#334155;
+                                font-size:13px;
+                                font-weight:600;
+                                margin-top:4px;
+                                "
+                            >
+                                Start writing to analyze your content.
+                            </div>
+                        </div>
+
+
+                        <div
+                            class="seo-score-number"
+                            id="seoScore"
+                        >
+                            0%
+                        </div>
+
+                    </div>
+
+
+                    <div class="seo-progress">
+
+                        <div
+                            class="seo-progress-bar"
+                            id="seoProgress"
+                        ></div>
+
+                    </div>
+
+
+                    <div id="seoChecks">
+
+                        <div class="seo-check warning" data-check="title">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <span>Add a descriptive title.</span>
+                        </div>
+
+                        <div class="seo-check warning" data-check="keyword">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <span>Add a focus keyword.</span>
+                        </div>
+
+                        <div class="seo-check warning" data-check="description">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <span>Add a useful description.</span>
+                        </div>
+
+                        <div class="seo-check warning" data-check="length">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <span>Description should contain enough useful information.</span>
+                        </div>
+
+                        <div class="seo-check warning" data-check="keywordUse">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <span>Use your focus keyword naturally.</span>
+                        </div>
+
+                        <div class="seo-check warning" data-check="alt">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <span>Add image ALT text.</span>
+                        </div>
+
+                        <div class="seo-check warning" data-check="meta">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <span>Add a meta description.</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SEO INFORMATION -->
+
+            <div class="news-card">
+
+                <h3 class="news-card-title">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Search Optimization
+                </h3>
+
+
+                <div class="form-group">
+
+                    <label class="news-label">
+                        Focus Keyword
+                    </label>
+
+                    <input
+                        type="text"
+                        name="focus_keyword"
+                        id="focusKeyword"
+                        class="news-input"
+                        maxlength="150"
+                        value="{{ news_post.focus_keyword|default:'' }}"
+                        placeholder="e.g. China to Kenya shipping"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label class="news-label">
+                        Related Keywords
+                    </label>
+
+                    <input
+                        type="text"
+                        name="seo_keywords"
+                        id="seoKeywords"
+                        class="news-input"
+                        maxlength="500"
+                        value="{{ news_post.seo_keywords|default:'' }}"
+                        placeholder="cargo consolidation, China sourcing, sea freight"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label class="news-label">
+                        Meta Title
+                    </label>
+
+                    <input
+                        type="text"
+                        name="meta_title"
+                        id="metaTitle"
+                        class="news-input"
+                        maxlength="160"
+                        value="{{ news_post.meta_title|default:'' }}"
+                        placeholder="SEO title for search engines"
+                    >
+
+                    <div class="char-counter">
+                        <span id="metaTitleCount">0</span>/160
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label class="news-label">
+                        Meta Description
+                    </label>
+
+                    <textarea
+                        name="meta_description"
+                        id="metaDescription"
+                        class="news-textarea"
+                        style="min-height:110px;"
+                        maxlength="160"
+                        placeholder="Short description that can appear in search results..."
+                    >{{ news_post.meta_description|default:'' }}</textarea>
+
+                    <div class="char-counter">
+                        <span id="metaDescriptionCount">0</span>/160
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PUBLISHING -->
+
+            <div class="news-card">
+
+                <h3 class="news-card-title">
+                    <i class="fa-solid fa-sliders"></i>
+                    Publishing
+                </h3>
+
+
+                <div class="switch-row">
+
+                    <div class="switch-text">
+
+                        <strong>
+                            Publish Post
+                        </strong>
+
+                        <small>
+                            Make this update visible to customers.
+                        </small>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            name="is_published"
+                            {% if not editing or news_post.is_published %}checked{% endif %}
+                        >
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+
+                <div class="switch-row">
+
+                    <div class="switch-text">
+
+                        <strong>
+                            Featured News
+                        </strong>
+
+                        <small>
+                            Highlight this update in the News Feed.
+                        </small>
+
+                    </div>
+
+                    <label class="switch">
+
+                        <input
+                            type="checkbox"
+                            name="is_featured"
+                            {% if news_post.is_featured %}checked{% endif %}
+                        >
+
+                        <span class="slider"></span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTIONS -->
+
+    <div class="action-bar">
+
+        <a
+            href="{% url 'news_admin_list' %}"
+            class="btn btn-secondary"
+        >
+            <i class="fa-solid fa-arrow-left"></i>
+            Cancel
+        </a>
+
+
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
+
+            <i class="fa-solid fa-check"></i>
+
+            {% if editing %}
+                Update News
+            {% else %}
+                Publish News
+            {% endif %}
+
+        </button>
+
+    </div>
+
+</form>
+
+</div>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const title = document.getElementById("newsTitle");
+    const description = document.getElementById("newsDescription");
+    const focusKeyword = document.getElementById("focusKeyword");
+    const imageAlt = document.getElementById("imageAlt");
+    const metaTitle = document.getElementById("metaTitle");
+    const metaDescription = document.getElementById("metaDescription");
+
+    const scoreElement = document.getElementById("seoScore");
+    const scoreInput =
+    document.getElementById("seoScoreInput");
+    const progressElement = document.getElementById("seoProgress");
+    const messageElement = document.getElementById("seoMessage");
+
+    const descriptionSection =
+        document.getElementById("descriptionSection");
+
+    const photoType =
+        document.getElementById("postTypePhoto");
+
+    const articleType =
+        document.getElementById("postTypeArticle");
+
+
+    /* =========================================================
+       POST TYPE
+    ========================================================= */
+
+    function updatePostType(){
+
+        if(photoType.checked){
+
+            descriptionSection.style.display = "none";
+
+        }else{
+
+            descriptionSection.style.display = "block";
+
+        }
+
+        analyzeSEO();
+    }
+
+    photoType.addEventListener("change", updatePostType);
+    articleType.addEventListener("change", updatePostType);
+
+    updatePostType();
+
+
+    /* =========================================================
+       IMAGE PREVIEW
+    ========================================================= */
+
+    const imageInput =
+        document.getElementById("newsImage");
+
+    const imagePreview =
+        document.getElementById("imagePreview");
+
+    const uploadContent =
+        document.getElementById("uploadContent");
+
+    const uploadBox =
+        document.getElementById("imageUploadBox");
+
+
+    imageInput.addEventListener("change", function(){
+
+        const file = this.files[0];
+
+        if(!file){
+            return;
+        }
+
+        if(!file.type.startsWith("image/")){
+
+            alert("Please select a valid image.");
+
+            this.value = "";
+
+            return;
+        }
+
+
+        const reader = new FileReader();
+
+        reader.onload = function(e){
+
+            imagePreview.src = e.target.result;
+
+            imagePreview.style.display = "block";
+
+            uploadContent.style.display = "none";
+
+            uploadBox.classList.add("has-image");
+
+        };
+
+        reader.readAsDataURL(file);
+
+        analyzeSEO();
+
+    });
+
+
+    /* =========================================================
+       SEO CHECKS
+    ========================================================= */
+
+    function setCheck(name, good, message){
+
+        const element =
+            document.querySelector(
+                `.seo-check[data-check="${name}"]`
+            );
+
+        if(!element){
+            return;
+        }
+
+        const icon =
+            element.querySelector("i");
+
+        const text =
+            element.querySelector("span");
+
+
+        element.classList.remove(
+            "good",
+            "warning",
+            "bad"
+        );
+
+
+        if(good){
+
+            element.classList.add("good");
+
+            icon.className =
+                "fa-solid fa-circle-check";
+
+        }else{
+
+            element.classList.add("warning");
+
+            icon.className =
+                "fa-solid fa-circle-exclamation";
+
+        }
+
+
+        text.textContent = message;
+
+    }
+
+
+    function analyzeSEO(){
+
+        let score = 0;
+
+
+        const titleValue =
+            title.value.trim();
+
+        const descriptionValue =
+            description.value.trim();
+
+        const keywordValue =
+            focusKeyword.value.trim().toLowerCase();
+
+        const altValue =
+            imageAlt.value.trim();
+
+        const metaValue =
+            metaDescription.value.trim();
+
+        const isPhotoOnly =
+            photoType.checked;
+
+
+        /* TITLE — 15 */
+
+        if(titleValue.length >= 10){
+
+            score += 15;
+
+            setCheck(
+                "title",
+                true,
+                "Good descriptive title."
+            );
+
+        }else{
+
+            setCheck(
+                "title",
+                false,
+                "Add a descriptive title of at least 10 characters."
+            );
+
+        }
+
+
+        /* KEYWORD — 15 */
+
+        if(keywordValue.length >= 3){
+
+            score += 15;
+
+            setCheck(
+                "keyword",
+                true,
+                "Focus keyword has been added."
+            );
+
+        }else{
+
+            setCheck(
+                "keyword",
+                false,
+                "Add a focus keyword."
+            );
+
+        }
+
+
+        /* DESCRIPTION — 20 */
+
+        if(isPhotoOnly){
+
+            score += 20;
+
+            setCheck(
+                "description",
+                true,
+                "Photo-only post does not require a description."
+            );
+
+        }else if(descriptionValue.length >= 80){
+
+            score += 20;
+
+            setCheck(
+                "description",
+                true,
+                "Useful description added."
+            );
+
+        }else{
+
+            setCheck(
+                "description",
+                false,
+                "Add a useful description of at least 80 characters."
+            );
+
+        }
+
+
+        /* DESCRIPTION LENGTH — 15 */
+
+        if(isPhotoOnly){
+
+            score += 15;
+
+            setCheck(
+                "length",
+                true,
+                "Length check skipped for photo-only post."
+            );
+
+        }else if(descriptionValue.length >= 250){
+
+            score += 15;
+
+            setCheck(
+                "length",
+                true,
+                "Good content length."
+            );
+
+        }else if(descriptionValue.length >= 120){
+
+            score += 8;
+
+            setCheck(
+                "length",
+                false,
+                "Add more useful detail to strengthen the content."
+            );
+
+        }else{
+
+            setCheck(
+                "length",
+                false,
+                "Description is too short."
+            );
+
+        }
+
+
+        /* KEYWORD USAGE — 15 */
+
+        if(isPhotoOnly){
+
+            score += 15;
+
+            setCheck(
+                "keywordUse",
+                true,
+                "Keyword usage check is optional for photo-only posts."
+            );
+
+        }else if(
+            keywordValue &&
+            descriptionValue.toLowerCase().includes(keywordValue)
+        ){
+
+            score += 15;
+
+            setCheck(
+                "keywordUse",
+                true,
+                "Focus keyword appears naturally in the description."
+            );
+
+        }else{
+
+            setCheck(
+                "keywordUse",
+                false,
+                "Use the focus keyword naturally in the description."
+            );
+
+        }
+
+
+        /* ALT — 10 */
+
+        if(altValue.length >= 8){
+
+            score += 10;
+
+            setCheck(
+                "alt",
+                true,
+                "Image ALT text added."
+            );
+
+        }else{
+
+            setCheck(
+                "alt",
+                false,
+                "Add descriptive image ALT text."
+            );
+
+        }
+
+
+        /* META DESCRIPTION — 10 */
+
+        if(metaValue.length >= 70){
+
+            score += 10;
+
+            setCheck(
+                "meta",
+                true,
+                "Good meta description."
+            );
+
+        }else{
+
+            setCheck(
+                "meta",
+                false,
+                "Add a useful meta description of at least 70 characters."
+            );
+
+        }
+
+
+        /* UPDATE UI */
+
+        score = Math.max(
+            0,
+            Math.min(100, score)
+        );
+
+
+        scoreElement.textContent =
+            score + "%";
+            scoreInput.value = score;
+
+        progressElement.style.width =
+            score + "%";
+
+
+        if(score >= 80){
+
+            scoreElement.style.color =
+                "#16a34a";
+
+            progressElement.style.background =
+                "#16a34a";
+
+            messageElement.textContent =
+                "Excellent SEO foundation.";
+
+        }else if(score >= 60){
+
+            scoreElement.style.color =
+                "#d97706";
+
+            progressElement.style.background =
+                "#d97706";
+
+            messageElement.textContent =
+                "Good start. A few improvements are recommended.";
+
+        }else{
+
+            scoreElement.style.color =
+                "#dc2626";
+
+            progressElement.style.background =
+                "#dc2626";
+
+            messageElement.textContent =
+                "More SEO improvements are needed.";
+
+        }
+
+    }
+
+
+    /* =========================================================
+       LIVE ANALYSIS
+    ========================================================= */
+
+    [
+        title,
+        description,
+        focusKeyword,
+        imageAlt,
+        metaTitle,
+        metaDescription
+    ].forEach(function(element){
+
+        element.addEventListener(
+            "input",
+            analyzeSEO
+        );
+
+    });
+
+
+    /* =========================================================
+       COUNTERS
+    ========================================================= */
+
+    function updateCounters(){
+
+        document.getElementById(
+            "descriptionCount"
+        ).textContent =
+            description.value.length;
+
+
+        document.getElementById(
+            "metaTitleCount"
+        ).textContent =
+            metaTitle.value.length;
+
+
+        document.getElementById(
+            "metaDescriptionCount"
+        ).textContent =
+            metaDescription.value.length;
+
+    }
+
+
+    [
+        description,
+        metaTitle,
+        metaDescription
+    ].forEach(function(element){
+
+        element.addEventListener(
+            "input",
+            updateCounters
+        );
+
+    });
+
+
+    updateCounters();
+    analyzeSEO();
+
+
+    /* =========================================================
+       AI UI
+    ========================================================= */
+
+    const promptButton =
+        document.getElementById("promptAiButton");
+
+    const photoButton =
+        document.getElementById("photoAiButton");
+
+    const promptBox =
+        document.getElementById("aiPromptBox");
+
+
+    promptButton.addEventListener("click", function(){
+
+        promptBox.classList.toggle("show");
+
+    });
+
+
+    photoButton.addEventListener("click", function(){
+
+        const imageFile =
+            imageInput.files[0];
+
+        if(!imageFile){
+
+            alert(
+                "Please upload a photo first."
+            );
+
+            return;
+
+        }
+
+        alert(
+            "Photo AI generation will be connected next."
+        );
+
+    });
+
+
+    document.getElementById(
+        "generatePromptBtn"
+    ).addEventListener("click", function(){
+
+        const prompt =
+            document.getElementById(
+                "aiPrompt"
+            ).value.trim();
+
+
+        if(!prompt){
+
+            alert(
+                "Please enter an AI prompt first."
+            );
+
+            return;
+
+        }
+
+
+        alert(
+            "AI generation will be connected next."
+        );
+
+    });
+
+});
+
+</script>
+
+{% endblock content %}

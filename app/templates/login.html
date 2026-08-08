@@ -1,0 +1,375 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+{% load socialaccount %}
+
+{% block title %}
+{% trans "Login — SABBTCo Client Portal" %}
+{% endblock %}
+
+{% block content %}
+<section class="section login-section">
+  <div class="container login-grid">
+
+    <div class="login-hero">
+      <span class="chip">
+        {% trans "Client Portal" %}
+      </span>
+
+      <h1 class="hero-title">
+        {% trans "Welcome back." %}<br>
+        <span class="accent">
+          {% trans "Let's ship." %}
+        </span>
+      </h1>
+
+      <p class="login-desc">
+        {% trans "Sign in to track your shipments, view quotes, manage invoices, and chat with your dedicated SABBTCo. sourcing agent." %}
+      </p>
+
+      <ul class="login-benefits">
+        <li>{% trans "Real-time shipment tracking" %}</li>
+        <li>{% trans "Sourcing requests history" %}</li>
+        <li>{% trans "Secure document storage" %}</li>
+      </ul>
+    </div>
+
+    <div class="form-card">
+      <h2 class="form-title">
+        {% trans "Sign In" %}
+      </h2>
+
+      <p class="form-subtitle">
+        {% trans "Enter your credentials to continue." %}
+      </p>
+
+      {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+            <div class="alert {{ message.tags }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="POST" action="">
+        {% csrf_token %}
+
+        <div class="field">
+          <label for="id_username">{% trans "Username" %}</label>
+          <input type="text" id="id_username" name="username" placeholder="{% trans 'Enter username' %}" required>
+        </div>
+
+        <div class="field">
+          <label for="id_password">{% trans "Password" %}</label>
+          <input type="password" id="id_password" name="password" placeholder="{% trans 'Enter password' %}" required>
+        </div>
+
+        <div class="form-row">
+          <label class="remember">
+            <input type="checkbox" name="remember">
+            {% trans "Remember me" %}
+          </label>
+          <a href="#" class="forgot-link">
+            {% trans "Forgot password?" %}
+          </a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          {% trans "Sign In" %}
+        </button>
+
+        <div class="divider">
+          <span>{% trans "or" %}</span>
+        </div>
+
+        <p class="form-footer">
+          {% trans "Don’t have an account?" %}
+          <a href="{% url 'register' %}" class="register-link">
+            {% trans "Register" %}
+          </a>
+        </p>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  /* ================= SABBTCO BRAND ARCHITECTURE ================= */
+  
+  /* Isolated Layout Structure (Fixes Navigation Collision) */
+  .login-section {
+    display: block; /* Removed layout-breaking flex centering on root wrapper */
+    padding: 80px 0; /* Clear vertical block separation below navigation */
+    background: var(--bg-light, #f8fafc);
+    min-height: 80vh; /* Smooth baseline distribution without layout shifts */
+    box-sizing: border-box;
+  }
+
+  .login-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 768px) {
+    .login-grid {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 60px;
+      align-items: center; /* Keeps interior columns strictly balanced on desktop */
+    }
+  }
+
+  /* Left-Side Typography & Elements */
+  .hero-title {
+    margin: 1.5rem 0 1rem 0;
+    font-size: 2.75rem;
+    line-height: 1.15;
+    font-weight: 700;
+    color: var(--navy);
+  }
+
+  .accent {
+    color: var(--red);
+  }
+
+  .login-desc {
+    color: var(--muted-fg, #64748b);
+    max-width: 440px;
+    line-height: 1.6;
+    font-size: 1.05rem;
+    margin-bottom: 2rem;
+  }
+
+  .chip {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 4px;
+    background: rgba(227, 30, 36, 0.08);
+    border: 1px solid rgba(227, 30, 36, 0.18);
+    color: var(--red);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Bulletproof Minimalist Benefits List */
+  .login-benefits {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .login-benefits li {
+    position: relative;
+    padding-left: 24px;
+    margin-bottom: 14px;
+    color: var(--main-fg, #334155);
+    font-weight: 500;
+  }
+
+  .login-benefits li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+
+  /* Clean Uniform Form Card Container */
+  .form-card {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color, #e2e8f0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+  }
+
+  .form-title {
+    font-size: 1.75rem;
+    color: var(--navy);
+    font-weight: 700;
+    margin: 0 0 6px 0;
+  }
+
+  .form-subtitle {
+    color: var(--muted-fg, #64748b);
+    font-size: 0.95rem;
+    margin: 0 0 28px 0;
+  }
+
+  /* Form Fields & Controls */
+  .field {
+    margin-bottom: 20px;
+  }
+
+  .field label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--main-fg, #334155);
+  }
+
+  .field input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border-color, #cbd5e1);
+    border-radius: 6px;
+    background: #ffffff;
+    font-size: 1rem;
+    color: var(--main-fg, #334155);
+    transition: border-color 0.15s ease;
+  }
+
+  .field input:focus {
+    outline: none;
+    border-color: var(--navy);
+  }
+
+  .form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    font-size: 0.9rem;
+  }
+
+  .remember {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: var(--main-fg, #334155);
+  }
+
+  .remember input {
+    accent-color: var(--navy);
+    width: 16px;
+    height: 16px;
+  }
+
+  /* Buttons & OAuth Layout */
+  .btn {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    padding: 14px;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    border: 1px solid transparent;
+  }
+
+  .btn-primary {
+    background: var(--navy);
+    color: #ffffff;
+    border-color: var(--navy);
+  }
+
+  .btn-block {
+    width: 100%;
+  }
+
+  /* Standardized Clean Google Button styling */
+  .btn-google {
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color, #cbd5e1);
+    border-radius: 6px;
+    background: #ffffff;
+    color: var(--main-fg, #334155);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.95rem;
+  }
+
+  .btn-google img {
+    width: 18px;
+    height: 18px;
+    display: block;
+  }
+
+  /* Content Structural Dividers */
+  .divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 24px 0;
+    color: var(--muted-fg, #94a3b8);
+    font-size: 0.9rem;
+  }
+
+  .divider::before,
+  .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border-color, #e2e8f0);
+  }
+
+  .divider:not(:empty)::before { margin-right: .75em; }
+  .divider:not(:empty)::after { margin-left: .75em; }
+
+  /* Utilities and Navigation Hyperlinks */
+  .register-link, 
+  .forgot-link {
+    color: var(--red);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .form-footer {
+    text-align: center;
+    margin-top: 28px;
+    font-size: 0.9rem;
+    color: var(--muted-fg, #64748b);
+  }
+
+  /* Django Feedback System */
+  .messages {
+    margin-bottom: 20px;
+  }
+
+  .alert {
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    font-weight: 500;
+    border: 1px solid transparent;
+  }
+
+  .alert.error, .alert.danger {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border-color: #fee2e2;
+  }
+
+  .alert.success {
+    background-color: #f0fdf4;
+    color: #166534;
+    border-color: #bbf7d0;
+  }
+</style>
+{% endblock %}

@@ -1,0 +1,406 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Shipment Tracking — Container {{ shipment.container_number }} — SABBTCo{% endblock %}
+
+{% block description %}Track your SABBTCo container shipment in real time. View status updates, journey stages, tracking timeline and container photos.{% endblock %}
+
+{% block og_title %}Track Container {{ shipment.container_number }} — SABBTCo Shipment Tracking{% endblock %}
+{% block og_description %}Real-time tracking for your SABBTCo cargo. View loading, transit, customs and delivery stages for your container.{% endblock %}
+
+{% block content %}
+
+<div class="shiptrack-wrap">
+
+  <!-- TOP HEADER BAR -->
+  <div class="shiptrack-header">
+    <div>
+      <p class="shiptrack-eyebrow">{% trans "Container" %}</p>
+      <h1 class="shiptrack-title">{{ shipment.container_number }}</h1>
+    </div>
+    <span class="status-badge {{ shipment.status }}">
+      {{ shipment.get_status_display }}
+    </span>
+  </div>
+
+  <!-- INFO ROW -->
+  <div class="shiptrack-meta">
+
+    <div class="meta-item">
+      <span class="meta-label">{% trans "Destination" %}</span>
+      <span class="meta-value">{{ shipment.destination }}</span>
+    </div>
+
+    <div class="meta-item">
+      <span class="meta-label">{% trans "Delivery Mode" %}</span>
+      <span class="meta-value">
+        {% if order.shipping_method == 'AIR' %}
+          {% trans "Air Freight" %}
+        {% else %}
+          {% trans "Sea Freight" %}
+        {% endif %}
+      </span>
+    </div>
+
+  </div>
+
+  <!-- JOURNEY STAGES -->
+  <div class="shiptrack-section">
+    <h2 class="section-heading">{% trans "Shipment Journey" %}</h2>
+
+    <div class="journey-list">
+
+      <div class="journey-step {% if shipment.status in 'loading in_transit customs ready delivered' %}active{% endif %}">
+        <div class="step-number">1</div>
+        <div class="step-body">
+          <h3>{% trans "Loading" %}</h3>
+          <p>{% trans "Goods are being prepared and packed at the warehouse." %}</p>
+        </div>
+      </div>
+
+      <div class="journey-step {% if shipment.status in 'in_transit customs ready delivered' %}active{% endif %}">
+        <div class="step-number">2</div>
+        <div class="step-body">
+          <h3>{% trans "In Transit" %}</h3>
+          <p>{% trans "Shipment is moving through the shipping route." %}</p>
+        </div>
+      </div>
+
+      <div class="journey-step {% if shipment.status in 'customs ready delivered' %}active{% endif %}">
+        <div class="step-number">3</div>
+        <div class="step-body">
+          <h3>{% trans "Customs Clearance" %}</h3>
+          <p>{% trans "Cargo is under inspection and clearance at the port." %}</p>
+        </div>
+      </div>
+
+      <div class="journey-step {% if shipment.status in 'ready delivered' %}active{% endif %}">
+        <div class="step-number">4</div>
+        <div class="step-body">
+          <h3>{% trans "Ready for Delivery" %}</h3>
+          <p>{% trans "Cargo has cleared and is awaiting last-mile delivery." %}</p>
+        </div>
+      </div>
+
+      <div class="journey-step {% if shipment.status == 'delivered' %}active{% endif %}">
+        <div class="step-number">5</div>
+        <div class="step-body">
+          <h3>{% trans "Delivered" %}</h3>
+          <p>{% trans "Shipment has been successfully delivered." %}</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TRACKING UPDATES -->
+  <div class="shiptrack-section">
+    <h2 class="section-heading">{% trans "Tracking Updates" %}</h2>
+
+    {% for item in timeline %}
+    <div class="timeline-row">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <strong>{{ item.status }}</strong>
+        <p>{{ item.message }}</p>
+        <small>{{ item.created_at }}</small>
+      </div>
+    </div>
+    {% empty %}
+    <p class="empty-note">{% trans "No updates available yet." %}</p>
+    {% endfor %}
+
+  </div>
+
+  <!-- CONTAINER PHOTOS -->
+  <div class="shiptrack-section">
+    <h2 class="section-heading">{% trans "Container Photos" %}</h2>
+
+    <div class="photo-grid">
+      {% for photo in photos %}
+      <div class="photo-item">
+        <img src="{{ photo.image.url }}" alt="{{ photo.caption }}" loading="lazy">
+        {% if photo.caption %}
+        <p class="photo-caption">{{ photo.caption }}</p>
+        {% endif %}
+      </div>
+      {% empty %}
+      <p class="empty-note">{% trans "No photos available." %}</p>
+      {% endfor %}
+    </div>
+
+  </div>
+
+</div>
+
+<style>
+/* ======================================================================
+   SHIPMENT TRACKING DETAIL — SABBTCo Design System
+   No glassy cards, no hover lifts, no gradient blobs.
+   Everything reads as a structured document.
+   ====================================================================== */
+
+:root {
+  --navy:  #2B2A85;
+  --red:   #E31E24;
+  --sky:   #00AEEF;
+  --text:  #1e293b;
+  --muted: #64748b;
+  --line:  #e9edf2;
+  --bg:    #f8fafc;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Poppins', sans-serif;
+}
+
+.shiptrack-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+}
+
+/* ----- TOP HEADER ----- */
+.shiptrack-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--navy);
+  margin-bottom: 1.8rem;
+}
+
+.shiptrack-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  margin: 0 0 4px;
+}
+
+.shiptrack-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--navy);
+  margin: 0;
+  line-height: 1.1;
+}
+
+/* ----- STATUS BADGES ----- */
+.status-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  margin-top: 6px;
+}
+
+.loading    { background: #fff7ed; color: #c2410c; }
+.in_transit { background: #eff6ff; color: #1d4ed8; }
+.customs    { background: #f5f3ff; color: #6d28d9; }
+.ready      { background: rgba(0,174,239,0.1); color: #0284c7; }
+.delivered  { background: #ecfdf5; color: #047857; }
+
+/* ----- META ROW ----- */
+.shiptrack-meta {
+  display: flex;
+  gap: 3rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.meta-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.meta-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+/* ----- SECTIONS ----- */
+.shiptrack-section {
+  margin-bottom: 3rem;
+}
+
+.section-heading {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  margin: 0 0 1.2rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--line);
+}
+
+/* ----- JOURNEY STEPS ----- */
+.journey-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.journey-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+  opacity: 0.35;
+}
+
+.journey-step:last-child {
+  border-bottom: none;
+}
+
+.journey-step.active {
+  opacity: 1;
+}
+
+.step-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.journey-step.active .step-number {
+  background: var(--navy);
+  color: #fff;
+}
+
+.step-body h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 3px;
+}
+
+.step-body p {
+  font-size: 0.83rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ----- TIMELINE ----- */
+.timeline-row {
+  display: flex;
+  gap: 1.2rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+
+.timeline-row:last-child {
+  border-bottom: none;
+}
+
+.timeline-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--red);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.timeline-content strong {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 3px;
+}
+
+.timeline-content p {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0 0 4px;
+  line-height: 1.5;
+}
+
+.timeline-content small {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* ----- PHOTOS ----- */
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.photo-item img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  border-radius: 6px;
+}
+
+.photo-caption {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 6px 0 0;
+  font-weight: 500;
+}
+
+/* ----- EMPTY STATE ----- */
+.empty-note {
+  font-size: 0.88rem;
+  color: var(--muted);
+  padding: 0.5rem 0;
+}
+
+/* ----- RESPONSIVE ----- */
+@media (max-width: 600px) {
+  .shiptrack-header {
+    flex-direction: column;
+  }
+
+  .shiptrack-title {
+    font-size: 1.5rem;
+  }
+
+  .shiptrack-meta {
+    gap: 1.5rem;
+  }
+
+  .photo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+{% endblock %}

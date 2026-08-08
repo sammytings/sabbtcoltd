@@ -1,0 +1,40 @@
+{% extends "dashboard.html" %}
+
+{% block content %}
+<div class="dashboard-card">
+
+    <h2>Update Order Pricing</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Product Name</label>
+        <input type="text" value="{{ order.product_name }}" disabled>
+
+        <label>Quantity</label>
+        <input type="number" name="quantity" value="{{ order.quantity }}">
+
+        <label>Unit Price (USD)</label>
+        <input type="number" step="0.01" name="unit_price" value="{{ order.unit_price }}">
+
+        <label>Extra Charges (Tax / Transport)</label>
+        <input type="number" step="0.01" name="extra_charges" value="{{ order.extra_charges }}">
+
+        <hr>
+
+        <h3>Preview (Auto Calculated after save)</h3>
+
+        <p><b>Buying Total:</b> ${{ order.buying_total }}</p>
+        <p><b>Supplier Fee (3%):</b> ${{ order.supplier_fee }}</p>
+        <p><b>Service Fee (5%):</b> ${{ order.service_fee }}</p>
+        <p><b>Fixed Fee:</b> ${{ order.fixed_fee }}</p>
+        <p><b>Total Amount:</b> ${{ order.total_amount }}</p>
+
+        <button type="submit" style="background:#dc2626;color:white;padding:10px 15px;border:none;">
+            Save Pricing
+        </button>
+
+    </form>
+
+</div>
+{% endblock %}

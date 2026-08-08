@@ -1,0 +1,433 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Supplier Registration{% endblock %}
+
+{% block content %}
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#f1f5f9;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+.supplier-page{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:30px 15px;
+}
+
+.supplier-container{
+    width:100%;
+    max-width:1150px;
+    background:white;
+    border-radius:24px;
+    overflow:hidden;
+    display:grid;
+    grid-template-columns:1fr 1.1fr;
+    box-shadow:0 15px 40px rgba(0,0,0,0.08);
+}
+
+/* LEFT SIDE */
+
+.supplier-left{
+    background:linear-gradient(135deg,#0f172a,#1e293b);
+    color:white;
+    padding:60px 45px;
+    position:relative;
+    overflow:hidden;
+}
+
+.supplier-left::before{
+    content:'';
+    position:absolute;
+    width:250px;
+    height:250px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.08);
+    top:-90px;
+    right:-90px;
+}
+
+.supplier-left::after{
+    content:'';
+    position:absolute;
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.05);
+    bottom:-70px;
+    left:-70px;
+}
+
+.supplier-left-content{
+    position:relative;
+    z-index:2;
+}
+
+.badge{
+    display:inline-block;
+    padding:8px 16px;
+    border-radius:30px;
+    background:rgba(255,255,255,0.12);
+    margin-bottom:25px;
+    font-size:14px;
+}
+
+.supplier-left h1{
+    font-size:42px;
+    line-height:1.2;
+    margin-bottom:20px;
+}
+
+.supplier-left p{
+    color:#cbd5e1;
+    line-height:1.8;
+    margin-bottom:35px;
+}
+
+.feature-list{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.feature{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.feature-icon{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.12);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-shrink:0;
+}
+
+/* RIGHT SIDE */
+
+.supplier-right{
+    padding:50px 40px;
+}
+
+.form-title{
+    font-size:34px;
+    color:#0f172a;
+    margin-bottom:10px;
+}
+
+.form-subtitle{
+    color:#64748b;
+    margin-bottom:35px;
+}
+
+.supplier-form{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:22px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.full-width{
+    grid-column:span 2;
+}
+
+.form-group label{
+    margin-bottom:8px;
+    font-weight:600;
+    color:#334155;
+    font-size:15px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    width:100%;
+    padding:15px 16px;
+    border-radius:14px;
+    border:1px solid #dbe3ee;
+    background:#f8fafc;
+    outline:none;
+    font-size:15px;
+    transition:0.3s;
+}
+
+.form-group textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus{
+    border-color:#2563eb;
+    background:white;
+    box-shadow:0 0 0 4px rgba(37,99,235,0.12);
+}
+
+.submit-btn{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(to right,#2563eb,#1d4ed8);
+    color:white;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.submit-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 25px rgba(37,99,235,0.25);
+}
+
+.login-link{
+    text-align:center;
+    margin-top:22px;
+    color:#64748b;
+}
+
+.login-link a{
+    color:#2563eb;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.errorlist{
+    list-style:none;
+    color:#dc2626;
+    margin-top:6px;
+    font-size:13px;
+}
+
+/* MOBILE */
+
+@media(max-width:950px){
+
+    .supplier-container{
+        grid-template-columns:1fr;
+    }
+
+    .supplier-left{
+        padding:45px 30px;
+    }
+
+    .supplier-right{
+        padding:35px 25px;
+    }
+}
+
+@media(max-width:650px){
+
+    .supplier-form{
+        grid-template-columns:1fr;
+    }
+
+    .full-width{
+        grid-column:span 1;
+    }
+
+    .supplier-left h1{
+        font-size:32px;
+    }
+
+    .form-title{
+        font-size:28px;
+    }
+
+    .supplier-right{
+        padding:30px 18px;
+    }
+}
+.form-input{
+    width:100%;
+    padding:15px 16px;
+    border-radius:14px;
+    border:1px solid #dbe3ee;
+    background:#f8fafc;
+    outline:none;
+    font-size:15px;
+    transition:0.3s ease;
+    color:#0f172a;
+}
+
+.form-input:focus{
+    border-color:#2563eb;
+    background:white;
+    box-shadow:0 0 0 4px rgba(37,99,235,0.12);
+}
+
+textarea.form-input{
+    resize:vertical;
+    min-height:120px;
+}
+
+</style>
+
+<div class="supplier-page">
+
+    <div class="supplier-container">
+
+        <!-- LEFT -->
+        <div class="supplier-left">
+
+            <div class="supplier-left-content">
+
+                <div class="badge">
+                    Trusted Global Supplier Network
+                </div>
+
+                <h1>
+                    Become a Verified Supplier
+                </h1>
+
+                <p>
+                    Join SABBTCo and connect with importers, wholesalers,
+                    retailers and businesses looking for trusted suppliers.
+                </p>
+
+                <div class="feature-list">
+
+                    <div class="feature">
+                        <div class="feature-icon">✓</div>
+                        <div>Professional supplier dashboard</div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">✓</div>
+                        <div>Manage quotations & products</div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">✓</div>
+                        <div>Track orders in real time</div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">✓</div>
+                        <div>Fully mobile responsive</div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="supplier-right">
+
+            <h2 class="form-title">
+                Create Supplier Account
+            </h2>
+
+            <p class="form-subtitle">
+                Fill in the details below to register your supplier business.
+            </p>
+
+            <form method="POST" enctype="multipart/form-data" class="supplier-form">
+
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label>Company Name</label>
+                    {{ form.company_name }}
+                    {{ form.company_name.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    {{ form.phone }}
+                    {{ form.phone.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Country</label>
+                    {{ form.country }}
+                    {{ form.country.errors }}
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Business Address</label>
+                    {{ form.address }}
+                    {{ form.address.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Business Category</label>
+                    {{ form.category }}
+                    {{ form.category.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Years of Experience</label>
+                    {{ form.experience }}
+                    {{ form.experience.errors }}
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Business Description</label>
+                    {{ form.description }}
+                    {{ form.description.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    {{ form.password1 }}
+                    {{ form.password1.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    {{ form.password2 }}
+                    {{ form.password2.errors }}
+                </div>
+
+                <div class="form-group full-width">
+                    <button type="submit" class="submit-btn">
+                        Register Supplier Account
+                    </button>
+                </div>
+
+            </form>
+
+            <div class="login-link">
+                Already have an account?
+                <a href="{% url 'login' %}">
+                    Sign In
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="dashboard-card faq-container">
+
+  <h2>Shipping & Import FAQ</h2>
+
+  <p class="faq-intro">
+    Find answers about shipping from China to Kenya, delivery times, costs, tracking, and import services.
+  </p>
+
+  <!-- FAQ ITEM -->
+  <div class="faq-item">
+    <button class="faq-question">
+      How does shipping from China to Kenya work?
+      <span class="arrow">▼</span>
+    </button>
+    <div class="faq-answer">
+      We source products from suppliers in China, consolidate shipments, and ship via air or sea to Kenya. We also handle customs clearance and final delivery.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      How long does shipping take from China to Kenya?
+      <span class="arrow">▼</span>
+    </button>
+    <div class="faq-answer">
+      Air freight takes 5–10 days, while sea freight takes 20–45 days depending on cargo type and shipping route.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      How much does shipping from China to Kenya cost?
+      <span class="arrow">▼</span>
+    </button>
+    <div class="faq-answer">
+      Costs depend on weight, volume, and shipping method. Air freight is more expensive but faster, while sea freight is cheaper for bulk goods.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Can you help me buy products from China suppliers?
+      <span class="arrow">▼</span>
+    </button>
+    <div class="faq-answer">
+      Yes. We offer sourcing services where we contact suppliers, negotiate prices, and verify product quality before shipping.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Do you handle customs clearance in Kenya?
+      <span class="arrow">▼</span>
+    </button>
+    <div class="faq-answer">
+      Yes. We handle customs documentation, duties, and clearance to ensure smooth delivery into Kenya.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      How do I track my shipment?
+      <span class="arrow">▼</span>
+    </button>
+    <div class="faq-answer">
+      You can track your order using the tracking number in the “Track Order” section on our website.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      What items can I import from China?
+      <span class="arrow">▼</span>
+    </button>
+    <div class="faq-answer">
+      You can import electronics, machinery, clothing, furniture, auto parts, and general merchandise (subject to Kenyan regulations).
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Is door-to-door shipping available?
+      <span class="arrow">▼</span>
+    </button>
+    <div class="faq-answer">
+      Yes. We offer door-to-door delivery services from China suppliers directly to your location in Kenya.
+    </div>
+  </div>
+
+</div>
+
+<!-- ================= FAQ STYLE ================= -->
+<style>
+.faq-container {
+    max-width: 800px;
+    margin: auto;
+}
+
+.faq-intro {
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+.faq-item {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.faq-question {
+    width: 100%;
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 15px;
+    font-weight: 600;
+    background: #f8fafc;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faq-question:hover {
+    background: #eef2f7;
+}
+
+.arrow {
+    transition: transform 0.3s ease;
+}
+
+.faq-item.active .arrow {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    display: none;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #334155;
+    line-height: 1.6;
+    background: #fff;
+}
+
+.faq-item.active .faq-answer {
+    display: block;
+}
+</style>
+
+<!-- ================= FAQ SCRIPT ================= -->
+<script>
+document.querySelectorAll(".faq-question").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const item = btn.parentElement;
+        item.classList.toggle("active");
+    });
+});
+</script>
+
+{% endblock %}

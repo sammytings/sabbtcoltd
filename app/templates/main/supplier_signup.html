@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Become an Official Supplier | SABBTCo Sourcing</title>
+    <!-- Tailwind CSS CDN for modern utility styling -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        /* Optional custom focus ring transitions */
+        .form-input-focus:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans antialiased text-slate-800 min-h-screen flex flex-col justify-between">
+
+    <!-- Header / Navigation Placeholder -->
+    <header class="bg-white border-b border-slate-200 py-4 px-6 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <a href="/" class="text-xl font-bold tracking-tight text-slate-900">
+                SABBTCo<span class="text-blue-600">.</span>
+            </a>
+            <a href="/" class="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+                &larr; Back to Dashboard
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content Layout -->
+    <main class="flex-grow max-w-4xl mx-auto w-full px-4 py-12 md:py-16 grid md:grid-cols-5 gap-8 items-start">
+        
+        <!-- Left Side: Informational Context/Value Proposition -->
+        <div class="md:col-span-2 space-y-6 md:sticky md:top-24 mt-4">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
+                Global Procurement Pipeline 2026
+            </div>
+            <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                Partner with SABBTCo.
+            </h1>
+            <p class="text-slate-600 text-sm leading-relaxed">
+                Join our integrated logistics and distribution network. We connect verified global manufacturing partners with businesses scaling across local and international markets.
+            </p>
+            
+            <!-- Quick features list -->
+            <ul class="space-y-3.5 pt-2">
+                <li class="flex items-start gap-3 text-xs text-slate-600">
+                    <span class="text-emerald-600 font-bold text-sm">✓</span>
+                    <div>
+                        <strong class="text-slate-900 block font-semibold">Verified Supplier Shield</strong>
+                        Gain direct exposure to vetted corporate buying orders.
+                    </div>
+                </li>
+                <li class="flex items-start gap-3 text-xs text-slate-600">
+                    <span class="text-emerald-600 font-bold text-sm">✓</span>
+                    <div>
+                        <strong class="text-slate-900 block font-semibold">Streamlined Freight Log</strong>
+                        Direct integration into our sea/air container manifests.
+                    </div>
+                </li>
+                <li class="flex items-start gap-3 text-xs text-slate-600">
+                    <span class="text-emerald-600 font-bold text-sm">✓</span>
+                    <div>
+                        <strong class="text-slate-900 block font-semibold">Escrow & Secure Payouts</strong>
+                        Guaranteed structural payment processing and local clearance.
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Right Side: The Registration Intake Form -->
+        <div class="md:col-span-3 bg-white border border-slate-200 shadow-xl shadow-slate-100/50 rounded-2xl p-6 md:p-8">
+            <h2 class="text-xl font-bold text-slate-900 mb-1">Supplier Intake Form</h2>
+            <p class="text-xs text-slate-500 mb-6">All fields are required. Submissions undergo structural vetting before account activation.</p>
+
+            <!-- Django messaging block for validation alerts -->
+            {% if messages %}
+                <div class="mb-6 space-y-2">
+                    {% for message in messages %}
+                        <div class="p-3 text-xs rounded-lg {% if message.tags == 'success' %}bg-emerald-50 border border-emerald-200 text-emerald-800{% else %}bg-rose-50 border border-rose-200 text-rose-800{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Main Form -->
+            <form method="POST" enctype="multipart/form-data" class="space-y-4" novalidate>
+                {% csrf_token %}
+
+                <!-- Using explicit semantic inputs tailored to work cleanly with the forms.py widgets context -->
+                <div>
+                    <label for="id_company_name" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Registered Company Name</label>
+                    <input type="text" name="company_name" id="id_company_name" required
+                        class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-lg transition-all duration-150 form-input-focus placeholder-slate-400"
+                        placeholder="e.g., Shanghai Electronics Ltd">
+                    {% if form.company_name.errors %}
+                        <p class="text-xs text-rose-600 mt-1">{{ form.company_name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="id_contact_person" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Primary Contact Person</label>
+                        <input type="text" name="contact_person" id="id_contact_person" required
+                            class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-lg transition-all duration-150 form-input-focus placeholder-slate-400"
+                            placeholder="Full Name">
+                        {% if form.contact_person.errors %}
+                            <p class="text-xs text-rose-600 mt-1">{{ form.contact_person.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="id_supply_category" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Supply Category</label>
+                        <input type="text" name="supply_category" id="id_supply_category" required
+                            class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-lg transition-all duration-150 form-input-focus placeholder-slate-400"
+                            placeholder="e.g., Consumer Electronics, Apparel">
+                        {% if form.supply_category.errors %}
+                            <p class="text-xs text-rose-600 mt-1">{{ form.supply_category.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="id_email" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Business Email</label>
+                        <input type="email" name="email" id="id_email" required
+                            class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-lg transition-all duration-150 form-input-focus placeholder-slate-400"
+                            placeholder="partners@company.com">
+                        {% if form.email.errors %}
+                            <p class="text-xs text-rose-600 mt-1">{{ form.email.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="id_phone" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Phone Number</label>
+                        <input type="text" name="phone" id="id_phone" required
+                            class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-lg transition-all duration-150 form-input-focus placeholder-slate-400"
+                            placeholder="e.g., +254 700 000000">
+                        {% if form.phone.errors %}
+                            <p class="text-xs text-rose-600 mt-1">{{ form.phone.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="id_country" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Country of Origin</label>
+                        <input type="text" name="country" id="id_country" required
+                            class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-lg transition-all duration-150 form-input-focus placeholder-slate-400"
+                            placeholder="e.g., China, Turkey, UAE">
+                        {% if form.country.errors %}
+                            <p class="text-xs text-rose-600 mt-1">{{ form.country.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Clean native styling fallback block for standard loops if fields scale later -->
+                    <div class="hidden">
+                        <!-- Backup hook if your Django backend dynamically appends unexpected hidden criteria -->
+                    </div>
+                </div>
+
+                <div>
+                    <label for="id_address" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Warehouse / HQ Physical Address</label>
+                    <textarea name="address" id="id_address" rows="3" required
+                        class="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-lg transition-all duration-150 form-input-focus placeholder-slate-400 resize-none"
+                        placeholder="Specify building block, city, province, or shipping hub coordination details..."></textarea>
+                    {% if form.address.errors %}
+                        <p class="text-xs text-rose-600 mt-1">{{ form.address.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Terms notice -->
+                <p class="text-[11px] text-slate-400 leading-normal pt-1">
+                    By submitting this application, you authorize SABBTCo's compliance desk to perform routine checks on operational identity, logistics safety benchmarks, and product manufacturing standards.
+                </p>
+
+                <!-- Action Button -->
+                <button type="submit" 
+                    class="w-full bg-slate-900 hover:bg-blue-600 text-white font-bold text-sm py-3 px-4 rounded-lg cursor-pointer transform active:scale-[0.99] transition-all duration-150 shadow-md shadow-slate-950/10 mt-2">
+                    Submit Verification Profile
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer Disclaimer Layout -->
+    <footer class="bg-white border-t border-slate-200 py-6 px-4 mt-12 text-center text-xs text-slate-400">
+        <div class="max-w-4xl mx-auto">
+            &copy; 2026 SABBTCo Technologies & Sourcing Network. All rights secured. Vetting protocols comply with international maritime and global freight standard frameworks.
+        </div>
+    </footer>
+
+</body>
+</html>

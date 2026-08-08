@@ -1,0 +1,2355 @@
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <!-- ===== PRIMARY SEO META ===== -->
+  <title>{% block title %}SABBTCo — Shipping & Sourcing from China to Kenya{% endblock %}</title>
+  <meta name="description" content="{% block description %}SABBTCo (Shenzhen Autumn Breeze Business Trade Co.) offers trusted product sourcing, consolidation and shipping from China to Kenya and worldwide. Get a free quote today.{% endblock %}">
+  <meta name="keywords" content="shipping from China to Kenya, import from China, China sourcing agent, freight forwarding Kenya, SABBTCo, cargo from China, Nairobi import services, China to Africa shipping">
+  <meta name="author" content="SABBTCo">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#0f172a">
+
+  <!-- ===== CANONICAL ===== -->
+  <link rel="canonical" href="https://sabbtco.com{{ request.path }}">
+
+  <!-- ===== OPEN GRAPH ===== -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sabbtco.com{{ request.path }}">
+  <meta property="og:title" content="{% block og_title %}SABBTCo — Shipping & Import Services from China{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Reliable product sourcing, freight consolidation and shipping from China to Kenya and beyond. Request a free quote now.{% endblock %}">
+  <meta property="og:image" content="https://sabbtco.com/static/img/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:site_name" content="SABBTCo">
+  <meta property="og:locale" content="en_KE">
+
+  <!-- ===== TWITTER / X CARD ===== -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SABBTCo — Shipping from China to Kenya">
+  <meta name="twitter:description" content="Trusted sourcing, consolidation and shipping from China to Kenya and worldwide. Get your free quote.">
+  <meta name="twitter:image" content="https://sabbtco.com/static/img/og-image.png">
+
+  <!-- ===== STRUCTURED DATA ===== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LogisticsCompany",
+    "name": "SABBTCo",
+    "alternateName": "Shenzhen Autumn Breeze Business Trade Co. Ltd.",
+    "url": "https://sabbtco.com",
+    "logo": "https://sabbtco.com/static/img/logo.png",
+    "image": "https://sabbtco.com/static/img/og-image.png",
+    "description": "Trusted product sourcing, freight consolidation and shipping from China to Kenya and worldwide.",
+    "telephone": "+254790644050",
+    "email": "support@sabbtco.com",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "3rd Floor, D20, ASEAN Building, Minzhi Avenue 690, Minzhi Street, Longhua District",
+      "addressLocality": "Shenzhen",
+      "addressRegion": "Guangdong Province",
+      "addressCountry": "CN"
+    },
+    "areaServed": ["KE", "CN", "UG", "TZ", "RW", "ET"],
+    "sameAs": [
+      "https://www.facebook.com/search/top?q=dmk%20sabbtcoltd",
+      "https://www.tiktok.com/search?q=dmk%20china%20importer"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+254790644050",
+      "contactType": "customer service",
+      "areaServed": "KE",
+      "availableLanguage": ["English", "Swahili"]
+    }
+  }
+  </script>
+
+  <!-- ===== FAVICONS ===== -->
+  <link rel="icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon-16x16.png' %}">
+  <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+
+  <!-- ===== GOOGLE ONE TAP
+       FIX 1: Define the global callback BEFORE loading the GSI script,
+               so it's guaranteed to exist when Google calls it.
+       FIX 2: Load GSI script WITHOUT defer/async so it is ready
+               synchronously (matches Google's own recommendation).
+  ===== -->
+  {% if not user.is_authenticated %}
+  <script>
+    /* ── Helper: read CSRF cookie ──────────────────────────────────── */
+    function getCsrfToken() {
+      var val = null;
+      if (document.cookie) {
+        document.cookie.split(";").forEach(function (c) {
+          var t = c.trim();
+          if (t.startsWith("csrftoken=")) {
+            val = decodeURIComponent(t.slice("csrftoken=".length));
+          }
+        });
+      }
+      return val;
+    }
+
+    /* ── FIX 3: Attach callback to window so Google can reach it ───── */
+    window.handleGoogleOneTap = function (credentialResponse) {
+      if (!credentialResponse || !credentialResponse.credential) {
+        console.warn("[OneTap] No credential received.");
+        return;
+      }
+      if (typeof showSiteLoader === "function") {
+        showSiteLoader("Signing you in with Google...");
+      }
+      fetch("{% url 'google_one_tap_callback' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCsrfToken()
+        },
+        body: JSON.stringify({ credential: credentialResponse.credential })
+      })
+      .then(function (res) {
+        if (!res.ok) throw new Error("Server error " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        if (data.success) {
+          window.location.href = data.redirect_url || "/orders/";
+        } else {
+          if (typeof hideSiteLoader === "function") hideSiteLoader();
+          alert(data.message || "Google sign-in failed. Please try again.");
+        }
+      })
+      .catch(function (err) {
+        console.error("[OneTap] Error:", err);
+        if (typeof hideSiteLoader === "function") hideSiteLoader();
+        alert("Google sign-in failed. Please try again.");
+      });
+    };
+  </script>
+
+  <!-- FIX 4: Load GSI synchronously (no defer/async) AFTER callback is defined -->
+  <script src="https://accounts.google.com/gsi/client"></script>
+  {% endif %}
+
+  <!-- ===== EXTERNAL RESOURCES ===== -->
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- ===== GLOBAL STYLESHEET ===== -->
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+  <!-- GLOBAL PAGE LOADER -->
+  <div id="siteLoader" class="loader-overlay">
+    <div class="loader-box">
+      <div class="loader-circle"></div>
+      <p id="loaderStatus">Loading...</p>
+    </div>
+  </div>
+
+  <!-- MOBILE OVERLAY -->
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <!-- =====================================================================
+       MOBILE DRAWER
+       ===================================================================== -->
+  <div class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-top">
+      <img src="{% static 'img/logo.png' %}" class="drawer-logo" alt="SABBTCo Logo">
+      <button id="closeDrawer" class="drawer-close" aria-label="Close Menu">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    {% if user.is_authenticated %}
+      <div class="drawer-profile" id="mobileProfileToggle">
+        <div class="drawer-profile-info">
+          {% if user.profile.avatar_url %}
+            <img src="{{ user.profile.avatar_url }}" class="avatar" alt="{{ user.username }}">
+          {% else %}
+            <img src="{% static 'default-avatar.png' %}" class="avatar" alt="{{ user.username }}">
+          {% endif %}
+          <div>
+            <h4>{{ user.username }}</h4>
+            <small>Tap for settings</small>
+          </div>
+        </div>
+        <div class="drawer-profile-chevron">
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+      </div>
+
+      <div class="drawer-profile-accordion" id="mobileProfileAccordion">
+        <a href="{% url 'profile' %}"><i class="fa-solid fa-user"></i> Profile</a>
+        <a href="{% url 'password_change' %}"><i class="fa-solid fa-key"></i> Change Password</a>
+        <form method="post" action="{% url 'logout' %}" style="margin:0;">
+          {% csrf_token %}
+          <button type="submit"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </form>
+      </div>
+    {% endif %}
+
+    <nav class="drawer-links">
+      <a href="{% url 'index' %}"><i class="fa-solid fa-house"></i> Home</a>
+      <a href="{% url 'services' %}"><i class="fa-solid fa-truck-fast"></i> Services</a>
+      <a href="{% url 'about' %}"><i class="fa-solid fa-circle-info"></i> About</a>
+      <a href="{% url 'orders' %}"><i class="fa-solid fa-box"></i> Orders</a>
+      <a href="{% url 'supplier_payments' %}"><i class="fa-solid fa-money-bill"></i> Pay Supplier</a>
+      <a href="{% url 'faq' %}"><i class="fa-solid fa-circle-question"></i> FAQ</a>
+      <a href="#contact"><i class="fa-solid fa-phone"></i> Contact</a>
+
+      <a href="{% url 'notifications' %}" class="mobile-notification-link">
+        <span class="mobile-bell-wrapper">
+          <i class="fa-solid fa-bell"></i>
+          {% if unread_notifications_count > 0 %}
+            <span class="mobile-notif-count">{{ unread_notifications_count }}</span>
+          {% endif %}
+        </span>
+        Notifications
+      </a>
+
+      {% if user.is_authenticated %}
+        <a href="{% url 'quote' %}"
+           class="drawer-quote-btn quote-link"
+           data-auth="true"
+           data-login-url="{% url 'login' %}">
+          <i class="fa-solid fa-file-invoice"></i> Request a Quote
+        </a>
+      {% else %}
+        <a href="{% url 'login' %}" class="drawer-login-btn">
+          <i class="fa-solid fa-right-to-bracket"></i> Login
+        </a>
+        <a href="{% url 'quote' %}"
+           class="drawer-quote-btn quote-link"
+           data-auth="false"
+           data-login-url="{% url 'login' %}">
+          <i class="fa-solid fa-file-invoice"></i> Request a Quote
+        </a>
+      {% endif %}
+    </nav>
+  </div>
+
+  <!-- MAIN CONTENT WRAPPER -->
+  <div id="mainContent">
+
+    <header class="site-header">
+      <div class="container nav">
+
+        <a href="{% url 'index' %}" class="logo">
+          <img src="{% static 'img/logo.png' %}" alt="SABBTCo — Shipping from China to Kenya" class="logo-img">
+        </a>
+
+        <button class="nav-toggle" aria-label="{% trans 'Open menu' %}">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+
+        <nav class="nav-links">
+          <a href="{% url 'index' %}">{% trans "Home" %}</a>
+          <a href="{% url 'services' %}">{% trans "Services" %}</a>
+          <a href="{% url 'about' %}">{% trans "About" %}</a>
+          <a href="{% url 'quote' %}"
+             class="quote-link"
+             data-auth="{{ user.is_authenticated|lower }}"
+             data-login-url="{% url 'login' %}">Request Quote</a>
+          <a href="{% url 'orders' %}">{% trans "Orders" %}</a>
+          <a href="{% url 'supplier_payments' %}">Pay Supplier</a>
+          <a href="{% url 'news_list' %}">
+    News
+</a>
+          <a href="{% url 'faq' %}">FAQ</a>
+          <a href="#contact">Contact</a>
+
+          <div class="notif-wrapper">
+            <a href="{% url 'notifications' %}" class="notif-bell" aria-label="Notifications">
+              <i class="fa-solid fa-bell"></i>
+              {% if unread_notifications_count > 0 %}
+                <span class="notif-count">{{ unread_notifications_count }}</span>
+              {% endif %}
+            </a>
+          </div>
+
+          {% if user.is_authenticated %}
+            <div class="user-menu">
+              {% if user.profile.avatar_url %}
+                <img src="{{ user.profile.avatar_url }}" class="avatar" alt="{{ user.username }}">
+              {% else %}
+                <img src="{% static 'default-avatar.png' %}" class="avatar" alt="{{ user.username }}">
+              {% endif %}
+              <div class="dropdown" id="profileDropdown">
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'password_change' %}">Change Password</a>
+                <form method="post" action="{% url 'logout' %}">
+                  {% csrf_token %}
+                  <button type="submit">Logout</button>
+                </form>
+              </div>
+            </div>
+          {% else %}
+            <a href="{% url 'login' %}" class="nav-login-link">{% trans "Login" %}</a>
+          {% endif %}
+        </nav>
+
+      </div>
+    </header>
+
+    <!-- PAGE CONTENT -->
+    {% block content %}{% endblock %}
+
+    <!-- FOOTER -->
+    <footer class="site-footer" id="contact">
+      <div class="container footer-grid">
+
+        <div class="footer-brand">
+          <img src="{% static 'img/logo.png' %}" alt="SABBTCo Logo" class="footer-logo">
+          <h2>SABBTCo.</h2>
+          <p>Global sourcing and shipping solutions from China to Africa and beyond.</p>
+        </div>
+
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <a href="/">Home</a>
+          <a href="{% url 'about' %}">About</a>
+          <a href="{% url 'services' %}">Services</a>
+          <a href="{% url 'quote' %}"
+             class="quote-link"
+             data-auth="{{ user.is_authenticated|lower }}"
+             data-login-url="{% url 'login' %}">Request Quote</a>
+          <a href="#" id="footerManageCookiesLink">Cookie Preferences</a>
+        </div>
+
+        <div class="footer-contact">
+          <h3>Contact</h3>
+
+          <!-- ===== HEAD OFFICE — SHENZHEN, CHINA ===== -->
+          <p class="footer-address-label">
+            <i class="fa-solid fa-building"></i>
+            <span class="footer-address-title">Head Office</span>
+          </p>
+          <p class="footer-address-block">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>
+              3rd Floor, D20, ASEAN Building,<br>
+              Minzhi Avenue 690, Minzhi Street,<br>
+              Longhua District, Shenzhen City,<br>
+              Guangdong Province, China
+            </span>
+          </p>
+
+          <!-- ===== WAREHOUSE — NAIROBI, KENYA ===== -->
+          <p class="footer-address-label footer-address-label--warehouse">
+            <i class="fa-solid fa-warehouse"></i>
+            <span class="footer-address-title">Warehouse</span>
+          </p>
+          <p class="footer-address-block">
+            <i class="fa-solid fa-location-dot"></i>
+            <span>Nairobi, Kenya</span>
+          </p>
+
+          <!-- ===== CONTACT LINKS ===== -->
+          <a href="tel:+254790644050" class="footer-contact-link">
+            <i class="fa-solid fa-phone"></i> +254 790 644 050
+          </a>
+          <a href="tel:+8613530165446" class="footer-contact-link">
+            <i class="fa-solid fa-phone"></i> +86 135 3016 5446
+          </a>
+          <a href="mailto:shenzhenautumnbreeze@gmail.com" class="footer-contact-link">
+            <i class="fa-solid fa-envelope"></i> shenzhenautumnbreeze@gmail.com
+          </a>
+        </div>
+
+        <div class="footer-social">
+          <h3>Follow Us</h3>
+          <div class="social-icons">
+            <a href="https://www.facebook.com/search/top?q=dmk%20sabbtcoltd" target="_blank" rel="noopener" class="social-icon"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/search?q=dmk%20china%20importer&t=1781526161667" target="_blank" rel="noopener" class="social-icon"><i class="fa-brands fa-tiktok"></i></a>
+            <a href="#" class="social-icon"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="https://wa.me/8613538058640" target="_blank" rel="noopener" class="social-icon"><i class="fa-brands fa-whatsapp"></i></a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; <span id="year"></span> SABBTCo. All Rights Reserved.</p>
+        <p class="footer-credit">DESIGNED AND DEVELOPED BY TINGSTECH TECHNOLOGIES</p>
+        <p>Tel: 0727698319</p>
+      </div>
+    </footer>
+
+  </div><!-- END #mainContent -->
+
+  <!-- =====================================================================
+       GOOGLE ONE TAP ANCHOR
+       FIX 5: Placed OUTSIDE #mainContent (blur filter won't hide it),
+               BEFORE the init script, with correct attributes.
+               data-callback must match the window.handleGoogleOneTap name.
+  ===================================================================== -->
+  {% if not user.is_authenticated %}
+  <div id="g_id_onload"
+       data-client_id="{{ GOOGLE_CLIENT_ID }}"
+       data-callback="handleGoogleOneTap"
+       data-auto_prompt="true"
+       data-auto_select="false"
+       data-cancel_on_tap_outside="true"
+       data-itp_support="true"
+       data-ux_mode="popup">
+  </div>
+  {% endif %}
+
+  <!-- CHAT ASSISTANT -->
+  <div id="chatbot-container">
+    <button id="chatbot-toggle" aria-label="Open support chat">
+      <div class="assistant-avatar">
+        <i class="fa-solid fa-user-tie"></i>
+        <span class="online-dot"></span>
+      </div>
+      <div class="assistant-label">
+        <strong>SABBTCo Assistant</strong>
+        <small>Online</small>
+      </div>
+    </button>
+
+    <div id="chatbot-window">
+      <div class="chatbot-header">
+        <div class="chat-header-info">
+          <h4>SABBTCo Support Desk</h4>
+          <span class="status"><i class="fa-solid fa-circle"></i> Online</span>
+        </div>
+        <button id="chatbot-close" aria-label="Close chat">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div id="chatbot-messages">
+        <div class="bot-message">
+          <div class="bot-avatar"><i class="fas fa-headset"></i></div>
+          <div class="message-content">
+            <strong>Hello</strong>
+            <p>I am your logistics assistant. I can help with shipping, tracking, sourcing, and quotes.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="chatbot-input">
+        <input type="text" id="chatbot-question" placeholder="Type your message..." autocomplete="off">
+        <button id="chatbot-send" aria-label="Send message">
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING SOCIAL HUB -->
+  <div class="social-hub">
+    <button id="socialBtn" aria-label="Contact us via social media">
+      <i class="fas fa-comments"></i>
+    </button>
+
+    <div id="socialMenu" class="social-menu">
+      <button class="social-item" id="whatsappToggle">
+        <i class="fab fa-whatsapp"></i> WhatsApp
+      </button>
+
+      <div class="whatsapp-submenu">
+        <a href="https://wa.me/8613538058640?text=Hello%20DMK%2C%20I%20am%20interested%20in%20your%20import%20and%20shipping%20services." target="_blank" rel="noopener">
+          <i class="fab fa-whatsapp"></i> DMK
+        </a>
+        <a href="https://wa.me/8613530165446?text=Hello%20Joyce%2C%20I%20am%20interested%20in%20your%20services." target="_blank" rel="noopener">
+          <i class="fab fa-whatsapp"></i> Joy
+        </a>
+      </div>
+
+      <a href="https://www.facebook.com/search/top?q=dmk%20sabbtcoltd" target="_blank" rel="noopener" class="social-item">
+        <i class="fab fa-facebook-f"></i> Facebook
+      </a>
+      <a href="#" class="social-item"><i class="fab fa-instagram"></i> Instagram</a>
+      <a href="https://www.tiktok.com/search?q=dmk%20china%20importer&t=1781526161667" target="_blank" rel="noopener" class="social-item">
+        <i class="fab fa-tiktok"></i> TikTok
+      </a>
+      <a href="#" class="social-item"><i class="fab fa-linkedin-in"></i> LinkedIn</a>
+      <a href="#" class="social-item"><i class="fab fa-youtube"></i> YouTube</a>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       COOKIE CONSENT BANNER
+       ===================================================================== -->
+  <div id="cookieConsent" class="cookie-consent" role="dialog" aria-modal="false" aria-label="Cookie consent" aria-live="polite">
+    <div class="cookie-consent-inner">
+      <div class="cookie-consent-icon" aria-hidden="true">
+        <i class="fa-solid fa-cookie-bite"></i>
+      </div>
+      <div class="cookie-consent-text">
+        <h3>We value your privacy</h3>
+        <p>
+          SABBTCo uses cookies to keep you signed in, remember your preferences and
+          understand how our shipping &amp; sourcing platform is used. You can accept all
+          cookies or manage your preferences below.
+        </p>
+      </div>
+      <div class="cookie-consent-actions">
+        <button type="button" id="cookieManageBtn" class="cookie-btn cookie-btn-ghost">
+          Manage Preferences
+        </button>
+        <button type="button" id="cookieRejectBtn" class="cookie-btn cookie-btn-secondary">
+          Reject Non-Essential
+        </button>
+        <button type="button" id="cookieAcceptBtn" class="cookie-btn cookie-btn-primary">
+          Accept All
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COOKIE PREFERENCES MODAL -->
+  <div id="cookieModalOverlay" class="cookie-modal-overlay"></div>
+  <div id="cookieModal" class="cookie-modal" role="dialog" aria-modal="true" aria-labelledby="cookieModalTitle">
+    <div class="cookie-modal-header">
+      <h3 id="cookieModalTitle"><i class="fa-solid fa-sliders"></i> Cookie Preferences</h3>
+      <button type="button" id="cookieModalClose" class="cookie-modal-close" aria-label="Close preferences">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="cookie-modal-body">
+      <p class="cookie-modal-intro">
+        Choose which categories of cookies you allow. Essential cookies keep the
+        site secure and functional, so they cannot be switched off.
+      </p>
+
+      <div class="cookie-category">
+        <div class="cookie-category-row">
+          <div class="cookie-category-label">
+            <h4>Essential</h4>
+            <p>Required for login, security and core site functions. Always active.</p>
+          </div>
+          <label class="cookie-switch cookie-switch-disabled">
+            <input type="checkbox" checked disabled aria-label="Essential cookies, always on">
+            <span class="cookie-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="cookie-category">
+        <div class="cookie-category-row">
+          <div class="cookie-category-label">
+            <h4>Functional</h4>
+            <p>Remembers things like language and recent searches to improve your experience.</p>
+          </div>
+          <label class="cookie-switch">
+            <input type="checkbox" id="cookieFunctional" aria-label="Toggle functional cookies">
+            <span class="cookie-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="cookie-category">
+        <div class="cookie-category-row">
+          <div class="cookie-category-label">
+            <h4>Analytics</h4>
+            <p>Helps us understand how visitors use SABBTCo so we can improve the service.</p>
+          </div>
+          <label class="cookie-switch">
+            <input type="checkbox" id="cookieAnalytics" aria-label="Toggle analytics cookies">
+            <span class="cookie-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="cookie-category">
+        <div class="cookie-category-row">
+          <div class="cookie-category-label">
+            <h4>Marketing</h4>
+            <p>Used to show you more relevant offers from SABBTCo on other sites.</p>
+          </div>
+          <label class="cookie-switch">
+            <input type="checkbox" id="cookieMarketing" aria-label="Toggle marketing cookies">
+            <span class="cookie-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="cookie-modal-footer">
+      <button type="button" id="cookieModalRejectAll" class="cookie-btn cookie-btn-secondary">
+        Reject Non-Essential
+      </button>
+      <button type="button" id="cookieModalSave" class="cookie-btn cookie-btn-primary">
+        Save Preferences
+      </button>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       MAIN SCRIPTS
+       ===================================================================== -->
+  <script>
+  /* ── Loader helpers — defined first so One Tap callback can call them ── */
+  function showSiteLoader(message) {
+    var loader = document.getElementById("siteLoader");
+    var status = document.getElementById("loaderStatus");
+    if (status && message) status.textContent = message;
+    if (loader) loader.classList.add("active");
+  }
+
+  function hideSiteLoader() {
+    var loader = document.getElementById("siteLoader");
+    if (loader) loader.classList.remove("active");
+  }
+
+  window.showSiteLoader = showSiteLoader;
+  window.hideSiteLoader = hideSiteLoader;
+
+  document.addEventListener("DOMContentLoaded", function () {
+
+    hideSiteLoader();
+
+    var yearEl = document.getElementById("year");
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+    /* --- DRAWER --- */
+    var drawer  = document.getElementById("mobileDrawer");
+    var overlay = document.getElementById("navOverlay");
+    var openBtn = document.querySelector(".nav-toggle");
+    var closeBtn = document.getElementById("closeDrawer");
+
+    function openDrawer() {
+      if (drawer)  drawer.classList.add("active");
+      if (overlay) overlay.classList.add("active");
+      var mc = document.getElementById("mainContent");
+      if (mc) mc.classList.add("blurred");
+    }
+
+    function closeDrawer() {
+      if (drawer)  drawer.classList.remove("active");
+      if (overlay) overlay.classList.remove("active");
+      var mc = document.getElementById("mainContent");
+      if (mc) mc.classList.remove("blurred");
+    }
+
+    if (openBtn)  openBtn.addEventListener("click", openDrawer);
+    if (closeBtn) closeBtn.addEventListener("click", closeDrawer);
+    if (overlay)  overlay.addEventListener("click", closeDrawer);
+
+    var profileToggleBtn = document.getElementById("mobileProfileToggle");
+    if (profileToggleBtn) {
+      profileToggleBtn.addEventListener("click", function () {
+        this.classList.toggle("active");
+        var acc = document.getElementById("mobileProfileAccordion");
+        if (acc) acc.classList.toggle("open");
+      });
+    }
+
+    var userMenu = document.querySelector(".user-menu");
+    var profileDropdown = document.getElementById("profileDropdown");
+
+    if (userMenu && profileDropdown) {
+      userMenu.addEventListener("click", function (e) {
+        e.stopPropagation();
+        profileDropdown.classList.toggle("active");
+      });
+    }
+
+    document.addEventListener("click", function () {
+      if (profileDropdown) profileDropdown.classList.remove("active");
+    });
+
+    /* --- QUOTE LINKS --- */
+    document.querySelectorAll(".quote-link").forEach(function (link) {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        var targetUrl = this.getAttribute("href");
+        var isAuth    = this.dataset.auth === "true";
+        var loginUrl  = this.dataset.loginUrl;
+
+        closeDrawer();
+
+        if (isAuth) {
+          showSiteLoader("Opening quote form...");
+          setTimeout(function () { window.location.href = targetUrl; }, 600);
+        } else {
+          showSiteLoader("Please log in to request a quote.");
+          setTimeout(function () {
+            window.location.href = loginUrl + "?next=" + encodeURIComponent(targetUrl);
+          }, 1800);
+        }
+      });
+    });
+
+    /* Quote form submit */
+    document.querySelectorAll("form[data-quote-form]").forEach(function (form) {
+      form.addEventListener("submit", function () {
+        var btn = this.querySelector(".quote-submit-btn");
+        if (btn) { btn.classList.add("loading"); btn.disabled = true; }
+        showSiteLoader("Sending your quote request...");
+      });
+    });
+
+    /* --- CHATBOT --- */
+    var chatbotToggle = document.getElementById("chatbot-toggle");
+    var chatbotWindow = document.getElementById("chatbot-window");
+    var chatbotClose  = document.getElementById("chatbot-close");
+    var sendBtn       = document.getElementById("chatbot-send");
+    var inputField    = document.getElementById("chatbot-question");
+    var messagesEl    = document.getElementById("chatbot-messages");
+
+    if (chatbotToggle) {
+      chatbotToggle.addEventListener("click", function () {
+        var isOpen = chatbotWindow && chatbotWindow.style.display === "flex";
+        if (chatbotWindow) chatbotWindow.style.display = isOpen ? "none" : "flex";
+        if (!isOpen && inputField) inputField.focus();
+      });
+    }
+
+    if (chatbotClose) {
+      chatbotClose.addEventListener("click", function () {
+        if (chatbotWindow) chatbotWindow.style.display = "none";
+      });
+    }
+
+    document.addEventListener("click", function (e) {
+      if (
+        chatbotWindow && chatbotWindow.style.display === "flex" &&
+        !chatbotWindow.contains(e.target) &&
+        chatbotToggle && !chatbotToggle.contains(e.target)
+      ) {
+        chatbotWindow.style.display = "none";
+      }
+    });
+
+    function appendMessage(text, isUser) {
+      if (!messagesEl) return;
+      var msg = document.createElement("div");
+      msg.className = isUser ? "user-message" : "bot-message";
+      msg.innerHTML =
+        '<div class="' + (isUser ? "user-avatar" : "bot-avatar") + '">' +
+          '<i class="fas ' + (isUser ? "fa-user" : "fa-headset") + '"></i>' +
+        '</div>' +
+        '<div class="message-content"><p>' + text + '</p></div>';
+      messagesEl.appendChild(msg);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function showTyping() {
+      if (!messagesEl) return;
+      var el = document.createElement("div");
+      el.className = "bot-message";
+      el.id = "typingIndicator";
+      el.innerHTML =
+        '<div class="bot-avatar"><i class="fas fa-headset"></i></div>' +
+        '<div class="typing-bubble"><span></span><span></span><span></span></div>';
+      messagesEl.appendChild(el);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function hideTyping() {
+      var ti = document.getElementById("typingIndicator");
+      if (ti) ti.remove();
+    }
+
+    function sendMessage() {
+      if (!inputField) return;
+      var text = inputField.value.trim();
+      if (!text) return;
+      appendMessage(text, true);
+      inputField.value = "";
+      showTyping();
+
+      fetch("/chatbot/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({ message: text })
+      })
+      .then(function (res) {
+        hideTyping();
+        if (res.ok) {
+          return res.json().then(function (data) {
+            appendMessage(data.reply || "I will get back to you shortly.");
+          });
+        } else {
+          appendMessage("Sorry, I could not process that.");
+        }
+      })
+      .catch(function () {
+        hideTyping();
+        appendMessage("Connection error. Please try again.");
+      });
+    }
+
+    if (sendBtn)    sendBtn.addEventListener("click", sendMessage);
+    if (inputField) {
+      inputField.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+      });
+    }
+
+    /* --- SOCIAL HUB --- */
+    var socialBtn  = document.getElementById("socialBtn");
+    var socialMenu = document.getElementById("socialMenu");
+    var waToggle   = document.getElementById("whatsappToggle");
+    var waMenu     = document.querySelector(".whatsapp-submenu");
+
+    if (socialBtn) {
+      socialBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        if (socialMenu) socialMenu.classList.toggle("active");
+      });
+    }
+
+    if (waToggle) {
+      waToggle.addEventListener("click", function () {
+        if (waMenu) waMenu.classList.toggle("show");
+      });
+    }
+
+    document.addEventListener("click", function (e) {
+      if (socialMenu && !socialMenu.contains(e.target) && e.target !== socialBtn) {
+        socialMenu.classList.remove("active");
+      }
+    });
+
+    /* =====================================================================
+       COOKIE CONSENT LOGIC
+       ===================================================================== */
+    var COOKIE_NAME    = "sabbtco_cookie_consent";
+    var COOKIE_MAX_AGE = 60 * 60 * 24 * 180; /* 180 days */
+
+    var consentBanner   = document.getElementById("cookieConsent");
+    var modal           = document.getElementById("cookieModal");
+    var modalOverlay     = document.getElementById("cookieModalOverlay");
+    var acceptBtn        = document.getElementById("cookieAcceptBtn");
+    var rejectBtn         = document.getElementById("cookieRejectBtn");
+    var manageBtn         = document.getElementById("cookieManageBtn");
+    var footerManageLink  = document.getElementById("footerManageCookiesLink");
+    var modalClose        = document.getElementById("cookieModalClose");
+    var modalSaveBtn      = document.getElementById("cookieModalSave");
+    var modalRejectAllBtn = document.getElementById("cookieModalRejectAll");
+
+    var functionalToggle = document.getElementById("cookieFunctional");
+    var analyticsToggle  = document.getElementById("cookieAnalytics");
+    var marketingToggle  = document.getElementById("cookieMarketing");
+
+    function getCookie(name) {
+      var match = document.cookie.match(
+        new RegExp("(?:^|; )" + name.replace(/([.$?*|{}()[\]\\/+^])/g, "\\$1") + "=([^;]*)")
+      );
+      return match ? decodeURIComponent(match[1]) : null;
+    }
+
+    function setCookie(name, value, maxAgeSeconds) {
+      var secureFlag = (window.location.protocol === "https:") ? "; Secure" : "";
+      document.cookie =
+        name + "=" + encodeURIComponent(value) +
+        "; Max-Age=" + maxAgeSeconds +
+        "; Path=/; SameSite=Lax" + secureFlag;
+    }
+
+    function readConsent() {
+      var raw = getCookie(COOKIE_NAME);
+      if (!raw) return null;
+      try { return JSON.parse(raw); } catch (e) { return null; }
+    }
+
+    function saveConsent(prefs) {
+      var payload = {
+        essential: true,
+        functional: !!prefs.functional,
+        analytics: !!prefs.analytics,
+        marketing: !!prefs.marketing,
+        ts: Date.now()
+      };
+      setCookie(COOKIE_NAME, JSON.stringify(payload), COOKIE_MAX_AGE);
+      return payload;
+    }
+
+    function applyConsentToToggles(consent) {
+      if (!consent) return;
+      if (functionalToggle) functionalToggle.checked = !!consent.functional;
+      if (analyticsToggle)  analyticsToggle.checked  = !!consent.analytics;
+      if (marketingToggle)  marketingToggle.checked  = !!consent.marketing;
+    }
+
+    function hideBanner() {
+      if (consentBanner) consentBanner.classList.remove("visible");
+    }
+
+    function showBanner() {
+      if (consentBanner) consentBanner.classList.add("visible");
+    }
+
+    function openModal() {
+      var current = readConsent();
+      applyConsentToToggles(current || { functional: false, analytics: false, marketing: false });
+      if (modal) modal.classList.add("active");
+      if (modalOverlay) modalOverlay.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+      if (modal) modal.classList.remove("active");
+      if (modalOverlay) modalOverlay.classList.remove("active");
+      document.body.style.overflow = "";
+    }
+
+    function dispatchConsentEvent(consent) {
+      document.dispatchEvent(new CustomEvent("sabbtco:cookieConsentUpdated", { detail: consent }));
+    }
+
+    /* --- Initial state on page load --- */
+    var existingConsent = readConsent();
+    if (!existingConsent) {
+      showBanner();
+    } else {
+      applyConsentToToggles(existingConsent);
+    }
+
+    /* --- Banner buttons --- */
+    if (acceptBtn) {
+      acceptBtn.addEventListener("click", function () {
+        var consent = saveConsent({ functional: true, analytics: true, marketing: true });
+        applyConsentToToggles(consent);
+        hideBanner();
+        dispatchConsentEvent(consent);
+      });
+    }
+
+    if (rejectBtn) {
+      rejectBtn.addEventListener("click", function () {
+        var consent = saveConsent({ functional: false, analytics: false, marketing: false });
+        applyConsentToToggles(consent);
+        hideBanner();
+        dispatchConsentEvent(consent);
+      });
+    }
+
+    if (manageBtn) {
+      manageBtn.addEventListener("click", openModal);
+    }
+
+    if (footerManageLink) {
+      footerManageLink.addEventListener("click", function (e) {
+        e.preventDefault();
+        openModal();
+      });
+    }
+
+    /* --- Modal buttons --- */
+    if (modalClose)  modalClose.addEventListener("click", closeModal);
+    if (modalOverlay) modalOverlay.addEventListener("click", closeModal);
+
+    if (modalSaveBtn) {
+      modalSaveBtn.addEventListener("click", function () {
+        var consent = saveConsent({
+          functional: functionalToggle && functionalToggle.checked,
+          analytics:  analyticsToggle  && analyticsToggle.checked,
+          marketing:  marketingToggle  && marketingToggle.checked
+        });
+        hideBanner();
+        closeModal();
+        dispatchConsentEvent(consent);
+      });
+    }
+
+    if (modalRejectAllBtn) {
+      modalRejectAllBtn.addEventListener("click", function () {
+        var consent = saveConsent({ functional: false, analytics: false, marketing: false });
+        applyConsentToToggles(consent);
+        hideBanner();
+        closeModal();
+        dispatchConsentEvent(consent);
+      });
+    }
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && modal && modal.classList.contains("active")) {
+        closeModal();
+      }
+    });
+
+  });
+  </script>
+
+  <!-- =====================================================================
+       GOOGLE ONE TAP INIT
+  ===================================================================== -->
+  {% if not user.is_authenticated %}
+  <script>
+  (function () {
+    var CLIENT_ID = "{{ GOOGLE_CLIENT_ID }}";
+
+    function initOneTap() {
+      if (typeof google === "undefined" || !google.accounts || !google.accounts.id) {
+        setTimeout(initOneTap, 300);
+        return;
+      }
+      if (!CLIENT_ID) {
+        console.error("[OneTap] GOOGLE_CLIENT_ID is empty — check your Django context processor.");
+        return;
+      }
+
+      google.accounts.id.initialize({
+        client_id:             CLIENT_ID,
+        callback:              window.handleGoogleOneTap,
+        auto_select:           false,
+        cancel_on_tap_outside: true,
+        itp_support:           true
+      });
+
+      google.accounts.id.prompt(function (notification) {
+        if (notification.isNotDisplayed()) {
+          console.warn("[OneTap] Not displayed:", notification.getNotDisplayedReason());
+        } else if (notification.isSkippedMoment()) {
+          console.warn("[OneTap] Skipped:", notification.getSkippedReason());
+        } else if (notification.isDismissedMoment()) {
+          console.info("[OneTap] Dismissed:", notification.getDismissedReason());
+        }
+      });
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initOneTap);
+    } else {
+      initOneTap();
+    }
+  })();
+  </script>
+  {% endif %}
+
+  {% block extra_js %}
+  <style>
+
+:root {
+  --navy:       #215ae0;
+  --blue:       #00AEEF;
+  --red:        #E31E24;
+  --bg:         #f8fafc;
+  --text:       #1e293b;
+  --muted:      #64748b;
+  --white:      #ffffff;
+  --border:     #e2e8f0;
+  --shadow-sm:  0 2px 8px rgba(15,23,42,0.06);
+  --shadow-md:  0 10px 28px rgba(15,23,42,0.10);
+  --radius:     10px;
+  --radius-sm:  6px;
+  --transition: 0.22s ease;
+}
+
+html, body { height: 100%; }
+
+body {
+  overflow-x: hidden;
+  font-family: "Inter", "Poppins", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.container {
+  width: 92%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* =====================================================================
+   BUTTONS
+   ===================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+  height: 40px;
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
+  font-family: inherit;
+}
+
+.btn-primary,
+a.btn-primary {
+  background: var(--red) !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover,
+a.btn-primary:hover {
+  background: #c0181d !important;
+}
+
+.btn-danger { background: var(--red); color: #fff; }
+
+/* =====================================================================
+   STICKY HEADER
+   ===================================================================== */
+.site-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  width: 100%;
+  box-shadow: var(--shadow-sm);
+}
+
+.site-header .container.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.logo-img {
+  height: 72px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 4px;
+  transition: color var(--transition);
+  white-space: nowrap;
+}
+
+.nav-links a:hover { color: var(--blue); }
+
+.nav-login-link {
+  text-decoration: none;
+  color: var(--navy) !important;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 8px 4px;
+  border-bottom: 2px solid var(--red);
+  transition: color var(--transition), border-color var(--transition);
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.nav-login-link:hover {
+  color: var(--red) !important;
+  border-bottom-color: var(--navy);
+}
+
+.drawer-login-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--navy) !important;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 13px 14px;
+  border-radius: 10px;
+  border-left: 3px solid var(--red);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.drawer-login-btn:hover { background: #f1f5f9; color: var(--red) !important; }
+.drawer-login-btn i { width: 18px; text-align: center; color: var(--red); font-size: 15px; flex-shrink: 0; }
+
+.drawer-quote-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--white) !important;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 13px 14px;
+  border-radius: 10px;
+  background: var(--red);
+  margin-top: 6px;
+  transition: background 0.2s ease;
+}
+
+.drawer-quote-btn:hover { background: #c0181d; }
+.drawer-quote-btn i { width: 18px; text-align: center; color: var(--white); font-size: 15px; flex-shrink: 0; }
+
+.nav-toggle {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  display: none;
+  color: var(--text);
+  padding: 4px;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* =====================================================================
+   DESKTOP NOTIFICATION BELL
+   ===================================================================== */
+.notif-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.notif-bell {
+  font-size: 18px;
+  color: var(--text);
+  text-decoration: none;
+  padding: 4px;
+}
+
+.notif-count {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  background: var(--red);
+  color: white;
+  font-size: 10px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  z-index: 2;
+}
+
+/* =====================================================================
+   MOBILE NOTIFICATION BELL
+   ===================================================================== */
+.mobile-bell-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.mobile-bell-wrapper i { font-size: 15px; color: var(--muted); }
+
+.mobile-notif-count {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: var(--red);
+  color: #fff;
+  font-size: 9px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0 2px;
+  z-index: 100001;
+  pointer-events: none;
+}
+
+.drawer-links a:hover .mobile-bell-wrapper i { color: var(--blue); }
+
+.user-menu { position: relative; display: inline-flex; align-items: center; }
+
+.avatar {
+  display: block !important;
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  min-height: 42px !important;
+  max-width: 42px !important;
+  max-height: 42px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  border: 2px solid var(--blue);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 200px;
+  background: #0f172a;
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+  overflow: hidden;
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+  display: block;
+}
+
+.dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
+
+.dropdown a,
+.dropdown button {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  color: #cbd5e1;
+  text-decoration: none;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.dropdown a:hover,
+.dropdown button:hover { background: rgba(0,174,238,0.18); color: white; }
+
+/* =====================================================================
+   MOBILE OVERLAY
+   ===================================================================== */
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 99999;
+}
+
+.nav-overlay.active { opacity: 1; visibility: visible; }
+
+/* =====================================================================
+   MOBILE DRAWER
+   ===================================================================== */
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: min(280px, 82vw);
+  height: 100%;
+  background: #fff;
+  z-index: 100000;
+  transition: right 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: -8px 0 32px rgba(0,0,0,0.18);
+}
+
+.mobile-drawer.active { right: 0; }
+
+.drawer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.drawer-logo { height: 56px; }
+
+.drawer-close {
+  border: none;
+  background: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text);
+  line-height: 1;
+  padding: 4px;
+}
+
+.drawer-profile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition);
+  flex-shrink: 0;
+}
+
+.drawer-profile:hover { background: rgba(15,23,42,0.04); }
+.drawer-profile-info { display: flex; align-items: center; gap: 10px; }
+.drawer-profile-info h4 { font-size: 14px; font-weight: 600; color: var(--text); margin: 0; }
+.drawer-profile-info small { font-size: 11px; color: var(--muted); }
+.drawer-profile-chevron { color: var(--muted); font-size: 13px; transition: transform var(--transition); }
+.drawer-profile.active .drawer-profile-chevron { transform: rotate(180deg); }
+
+.drawer-profile-accordion {
+  max-height: 0;
+  overflow: hidden;
+  background: rgba(15,23,42,0.03);
+  transition: max-height 0.3s ease;
+  flex-shrink: 0;
+}
+
+.drawer-profile-accordion.open { max-height: 200px; }
+
+.drawer-profile-accordion a,
+.drawer-profile-accordion button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 26px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 14px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.drawer-profile-accordion a:hover,
+.drawer-profile-accordion button:hover { background: rgba(0,174,238,0.08); color: var(--blue); }
+
+.drawer-links {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 12px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.drawer-links::-webkit-scrollbar { width: 4px; }
+.drawer-links::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+.drawer-links a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 13px 14px;
+  border-radius: 10px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.drawer-links a:hover { background: #f1f5f9; color: var(--blue); }
+.drawer-links a i { width: 18px; text-align: center; color: var(--muted); font-size: 15px; flex-shrink: 0; }
+.drawer-links a:hover i { color: var(--blue); }
+
+#mainContent { transition: filter 0.3s ease; }
+#mainContent.blurred { filter: blur(5px); pointer-events: none; user-select: none; }
+
+/* =====================================================================
+   FOOTER
+   ===================================================================== */
+.site-footer {
+  background: #021441;
+  border-top: 3px solid var(--red);
+  color: #cbd5e1 !important;
+  padding: 60px 20px 20px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-logo { width: 85px; margin-bottom: 12px; }
+
+.site-footer h2,
+.site-footer h3 { color: #e2e8f0 !important; margin-bottom: 12px; }
+
+.site-footer p { font-size: 14px; margin-bottom: 6px; color: #cbd5e1; }
+
+.site-footer a {
+  color: #94a3b8 !important;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.footer-links a { display: block; margin-bottom: 8px; }
+.footer-links a:hover { color: var(--blue) !important; }
+
+/* ── Address label rows (Head Office / Warehouse headings) ── */
+.footer-address-label {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  margin-bottom: 4px !important;
+}
+
+.footer-address-label i {
+  width: 16px;
+  color: var(--blue);
+  flex-shrink: 0;
+}
+
+.footer-address-label--warehouse {
+  margin-top: 16px;
+}
+
+.footer-address-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue) !important;
+}
+
+/* ── Address text block ── */
+.footer-address-block {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px !important;
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.65;
+}
+
+.footer-address-block i {
+  width: 16px;
+  color: var(--blue);
+  flex-shrink: 0;
+  margin-top: 3px; /* optical alignment with first line of text */
+}
+
+.footer-address-block span {
+  color: #94a3b8;
+}
+
+/* ── Divider between the two office blocks ── */
+.footer-address-divider {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin: 14px 0;
+}
+
+.footer-contact p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #cbd5e1;
+}
+
+.footer-contact p i { width: 16px; color: var(--blue); flex-shrink: 0; }
+
+.footer-contact-link {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #94a3b8 !important;
+  text-decoration: none;
+  border-radius: 6px;
+  padding: 4px 6px 4px 0;
+  transition: color 0.18s ease, background 0.18s ease, padding-left 0.18s ease;
+  cursor: pointer;
+}
+
+.footer-contact-link i {
+  width: 16px;
+  color: var(--blue);
+  flex-shrink: 0;
+  transition: color 0.18s ease;
+}
+
+.footer-contact-link:hover {
+  color: #ffffff !important;
+  background: rgba(0,174,239,0.10);
+  padding-left: 8px;
+  border-radius: 6px;
+}
+
+.footer-contact-link:hover i { color: #00AEEF; }
+
+.social-icons { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.07);
+  color: #94a3b8 !important;
+  font-size: 15px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.social-icon:hover { background: var(--blue); color: #fff !important; }
+
+.footer-bottom {
+  margin-top: 40px;
+  text-align: center;
+  border-top: 1px solid #1e293b;
+  padding-top: 20px;
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.footer-credit {
+  opacity: 0.5;
+  font-size: 9px;
+  margin-top: 4px;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  letter-spacing: 0.04em;
+}
+
+/* =====================================================================
+   GLOBAL PAGE LOADER
+   ===================================================================== */
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15,23,42,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.loader-overlay.active { opacity: 1; visibility: visible; }
+.loader-box { text-align: center; padding: 0 24px; }
+
+.loader-circle {
+  width: 46px;
+  height: 46px;
+  margin: 0 auto 22px;
+  border-radius: 50%;
+  border: 4px solid rgba(255,255,255,0.15);
+  border-top-color: var(--blue);
+  animation: spinLoader 0.9s linear infinite;
+}
+
+.loader-box p {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: #f1f5f9;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+@keyframes spinLoader { to { transform: rotate(360deg); } }
+
+/* =====================================================================
+   FLOATING SOCIAL HUB
+   ===================================================================== */
+.social-hub {
+  position: fixed;
+  bottom: 22px;
+  left: 22px;
+  z-index: 100000;
+}
+
+#socialBtn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: var(--blue);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+}
+
+.social-menu {
+  display: none;
+  position: absolute;
+  bottom: 64px;
+  left: 0;
+  background: white;
+  border-radius: 14px;
+  box-shadow: var(--shadow-md);
+  padding: 10px;
+  min-width: 210px;
+  animation: slideUp 0.18s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.social-menu.active { display: block; }
+
+.social-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 11px 12px;
+  text-decoration: none;
+  color: var(--text);
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  background: none;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.15s ease;
+}
+
+.social-item:hover { background: #f1f5f9; }
+
+.whatsapp-submenu {
+  display: none;
+  padding-left: 16px;
+  border-left: 2px solid #e2e8f0;
+  margin: 4px 0 4px 12px;
+}
+
+.whatsapp-submenu.show { display: block; }
+
+.whatsapp-submenu a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text);
+  font-size: 13px;
+  transition: background 0.15s ease;
+}
+
+.whatsapp-submenu a:hover { background: #f1f5f9; }
+
+/* =====================================================================
+   CHATBOT
+   ===================================================================== */
+#chatbot-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 99998;
+}
+
+#chatbot-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #ffffff;
+  border: none;
+  border-radius: 60px;
+  cursor: pointer;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.16);
+}
+
+.assistant-avatar {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 50%;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  line-height: 1;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.assistant-avatar i { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; font-size: 20px; line-height: 1; }
+
+.online-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  background: #22c55e;
+  border: 2px solid white;
+  border-radius: 50%;
+}
+
+.assistant-label { display: flex; flex-direction: column; text-align: left; }
+.assistant-label strong { font-size: 13px; font-weight: 700; color: #111827; }
+.assistant-label small { font-size: 11px; color: #64748b; margin-top: 1px; }
+
+#chatbot-window {
+  position: absolute;
+  bottom: 80px;
+  right: 0;
+  width: 360px;
+  height: 520px;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+  border: 1px solid #e5e7eb;
+  display: none;
+  flex-direction: column;
+}
+
+.chatbot-header {
+  background: #0f172a;
+  color: white;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.chat-header-info h4 { margin: 0; font-size: 14px; font-weight: 700; }
+.status { margin-top: 3px; font-size: 11px; opacity: 0.8; }
+.status i { color: #22c55e; margin-right: 4px; font-size: 9px; }
+
+#chatbot-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+#chatbot-close:hover { background: rgba(255,255,255,0.2); }
+
+#chatbot-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background: #f8fafc;
+  scroll-behavior: smooth;
+}
+
+#chatbot-messages::-webkit-scrollbar { width: 5px; }
+#chatbot-messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+.bot-message, .user-message {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+  animation: msgIn 0.2s ease;
+}
+
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.user-message { justify-content: flex-end; }
+
+.bot-avatar, .user-avatar {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+  align-self: flex-end;
+}
+
+.bot-avatar  { background: #0f172a; color: white; }
+.user-avatar { background: #2563eb; color: white; }
+
+.message-content {
+  background: white;
+  border: 1px solid #e5e7eb;
+  padding: 10px 13px;
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  max-width: 78%;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.user-message .message-content {
+  background: #021131;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  border-bottom-right-radius: 4px;
+}
+
+.message-content p { margin: 0; font-size: 13.5px; line-height: 1.55; }
+.message-content strong { display: block; margin-bottom: 5px; font-size: 13px; }
+
+.typing-bubble {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 14px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  width: fit-content;
+}
+
+.typing-bubble span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #94a3b8;
+  display: inline-block;
+  animation: typingBounce 1.2s ease infinite;
+}
+
+.typing-bubble span:nth-child(2) { animation-delay: 0.2s; }
+.typing-bubble span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30%           { transform: translateY(-6px); }
+}
+
+.chatbot-input {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid #e5e7eb;
+  background: white;
+  flex-shrink: 0;
+}
+
+.chatbot-input input {
+  flex: 1;
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  outline: none;
+  font-size: 13.5px;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: #f8fafc;
+}
+
+.chatbot-input input:focus {
+  border-color: #2563eb;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+#chatbot-send {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 12px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quote-submit-btn { position: relative; }
+.quote-submit-btn.loading { pointer-events: none; opacity: 0.85; }
+.quote-submit-btn .btn-spinner {
+  display: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  animation: spinLoader 0.8s linear infinite;
+  margin-right: 8px;
+}
+.quote-submit-btn.loading .btn-spinner { display: inline-block; }
+
+/* =====================================================================
+   GOOGLE ONE TAP — anchor point
+   ===================================================================== */
+#g_id_onload {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  z-index: 99997;
+}
+
+/* =====================================================================
+   COOKIE CONSENT BANNER
+   ===================================================================== */
+.cookie-consent {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: -100%;
+  z-index: 200000;
+  background: #021441;
+  border-top: 3px solid var(--red);
+  box-shadow: 0 -12px 40px rgba(2,20,65,0.35);
+  padding: 22px 24px;
+  transition: bottom 0.4s ease;
+}
+
+.cookie-consent.visible { bottom: 0; }
+
+.cookie-consent-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.cookie-consent-icon {
+  width: 46px;
+  height: 46px;
+  min-width: 46px;
+  border-radius: 50%;
+  background: rgba(0,174,239,0.12);
+  color: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.cookie-consent-text { flex: 1 1 320px; min-width: 240px; }
+
+.cookie-consent-text h3 {
+  color: #f1f5f9;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.cookie-consent-text p {
+  color: #94a3b8;
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.cookie-policy-link {
+  color: var(--blue) !important;
+  text-decoration: underline;
+  font-weight: 600;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+
+.cookie-consent-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.cookie-btn {
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 11px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+}
+
+.cookie-btn-primary {
+  background: var(--red);
+  color: #fff;
+}
+
+.cookie-btn-primary:hover { background: #c0181d; }
+
+.cookie-btn-secondary {
+  background: transparent;
+  color: #cbd5e1;
+  border: 1px solid #334155;
+}
+
+.cookie-btn-secondary:hover { background: rgba(255,255,255,0.06); color: #fff; }
+
+.cookie-btn-ghost {
+  background: transparent;
+  color: var(--blue);
+  text-decoration: underline;
+  padding: 11px 6px;
+}
+
+.cookie-btn-ghost:hover { color: #5fd0ff; }
+
+/* =====================================================================
+   COOKIE PREFERENCES MODAL
+   ===================================================================== */
+.cookie-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2,20,65,0.55);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  z-index: 200001;
+}
+
+.cookie-modal-overlay.active { opacity: 1; visibility: visible; }
+
+.cookie-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -48%) scale(0.96);
+  width: min(480px, 92vw);
+  max-height: 86vh;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 30px 80px rgba(2,20,65,0.45);
+  z-index: 200002;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.cookie-modal.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.cookie-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  background: #021441;
+  flex-shrink: 0;
+}
+
+.cookie-modal-header h3 {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.cookie-modal-header h3 i { color: var(--blue); }
+
+.cookie-modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+.cookie-modal-close:hover { background: rgba(255,255,255,0.2); }
+
+.cookie-modal-body {
+  padding: 20px 22px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.cookie-modal-intro {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+
+.cookie-category {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+
+.cookie-category-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.cookie-category-label h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.cookie-category-label p {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.cookie-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.cookie-switch input { opacity: 0; width: 0; height: 0; }
+
+.cookie-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #cbd5e1;
+  border-radius: 24px;
+  transition: background-color 0.2s ease;
+}
+
+.cookie-slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.cookie-switch input:checked + .cookie-slider { background-color: var(--blue); }
+.cookie-switch input:checked + .cookie-slider::before { transform: translateX(20px); }
+.cookie-switch input:focus-visible + .cookie-slider { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.cookie-switch-disabled .cookie-slider {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+.cookie-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 22px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 480px) {
+  .cookie-consent-actions { width: 100%; }
+  .cookie-consent-actions .cookie-btn { flex: 1 1 auto; }
+  .cookie-modal-footer { flex-direction: column-reverse; }
+  .cookie-modal-footer .cookie-btn { width: 100%; }
+}
+
+/* =====================================================================
+   RESPONSIVE
+   ===================================================================== */
+@media (max-width: 992px) {
+  .nav-links  { display: none; }
+  .nav-toggle { display: inline-flex; }
+  .site-header .container.nav { padding: 12px 16px; }
+  .logo-img { height: 58px; }
+
+  .footer-grid { grid-template-columns: 1fr; text-align: center; }
+  .footer-contact p { justify-content: center; }
+  .footer-address-label { justify-content: center; }
+  .footer-address-block { justify-content: center; text-align: left; display: inline-flex !important; }
+  .footer-contact-link { justify-content: center; }
+  .social-icons { justify-content: center; }
+  .social-hub { bottom: 16px; left: 16px; }
+}
+
+@media (max-width: 768px) {
+  #chatbot-container { right: 14px; bottom: 14px; }
+  #chatbot-window { width: calc(100vw - 28px); height: 78vh; right: 0; bottom: 76px; border-radius: 16px; }
+  .assistant-label { display: none; }
+  #chatbot-toggle { padding: 0; border-radius: 50%; width: 60px; height: 60px; justify-content: center; }
+  .assistant-avatar { width: 60px; height: 60px; min-width: 60px; min-height: 60px; font-size: 24px; }
+  .assistant-avatar i { font-size: 24px; }
+}
+  </style>{% endblock %}
+
+</body>
+</html>

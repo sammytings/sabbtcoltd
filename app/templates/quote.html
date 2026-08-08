@@ -1,0 +1,466 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+{% trans "Request a Quote — SABBTCo" %}
+{% endblock %}
+
+{% block content %}
+
+<section class="page-hero quote-hero">
+  <div class="container">
+    <span class="chip">{% trans "Request a Quote" %}</span>
+    <h1>{% trans "Tell us what you need." %}</h1>
+    <p>{% trans "We respond with a sourcing & shipping plan within 1–3 working days." %}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container quote-grid">
+
+    <div class="quote-info">
+      <h2>{% trans "Fast response, clear pricing." %}</h2>
+
+      <p>
+        {% trans "Share your product details and our Shenzhen team will find verified suppliers, negotiate the best factory prices and prepare a complete shipping plan." %}
+      </p>
+
+      <div class="quote-tips">
+        <div class="tip-box">
+          <h4>✔ {% trans "Add product photos/links" %}</h4>
+          <p>{% trans "Alibaba / 1688 links or reference snapshots make sourcing faster." %}</p>
+        </div>
+
+        <div class="tip-box">
+          <h4>✔ {% trans "Be clear on quantity" %}</h4>
+          <p>{% trans "MOQ affects pricing and shipping method." %}</p>
+        </div>
+
+        <div class="tip-box">
+          <h4>✔ {% trans "Choose Sea or Air" %}</h4>
+          <p>{% trans "If unsure, we will recommend the best option." %}</p>
+        </div>
+      </div>
+
+      <p class="quote-note">
+        {% blocktrans %}
+        A non-refundable <b>$50 sourcing consultation fee</b> may apply at negotiation stage.
+        {% endblocktrans %}
+      </p>
+    </div>
+
+    <div class="form-card">
+      <form id="quoteForm" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <input type="hidden" name="service_type" value="source_ship">
+
+        <div class="field full" style="margin-bottom: 1rem;">
+          <label>Service</label>
+          <input type="text" value="Request Quote (Source & Ship)" readonly>
+        </div>
+
+        {% if messages %}
+          <div class="messages" style="margin-bottom: 1rem;">
+            {% for message in messages %}
+              <div class="alert {{ message.tags }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        <div id="validationAlert" class="alert error" style="display: none; margin-bottom: 1rem; color: #fff; background: var(--accent); padding: 0.85rem 1rem; border-radius: 10px; font-size: 0.9rem;"></div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label>{% trans "Full Name" %}</label>
+            <input type="text" name="name" value="{% if user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% endif %}" required>
+          </div>
+
+          <div class="field">
+            <label>{% trans "Email" %}</label>
+            <input type="email" name="email" value="{% if user.is_authenticated %}{{ user.email }}{% endif %}" {% if user.is_authenticated and user.email %}readonly style="background: #e2e8f0; cursor: not-allowed; color: #475569;"{% endif %} required>
+          </div>
+
+          <div class="field">
+            <label>{% trans "Destination Country" %}</label>
+            <select name="country" id="countrySelect" required>
+              <option value="" data-code="" data-digits="9">🌍 {% trans "Select Country" %}</option>
+              <option value="Kenya" data-code="+254" data-digits="9" selected>🇰🇪 Kenya</option>
+              <option value="Uganda" data-code="+256" data-digits="9">🇺🇬 Uganda</option>
+              <option value="Tanzania" data-code="+255" data-digits="9">🇹🇿 Tanzania</option>
+              <option value="Rwanda" data-code="+250" data-digits="9">🇷🇼 Rwanda</option>
+              <option value="Nigeria" data-code="+234" data-digits="10">🇳🇬 Nigeria</option>
+              <option value="South Africa" data-code="+27" data-digits="9">🇿🇦 South Africa</option>
+              <option value="China" data-code="+86" data-digits="11">🇨🇳 China</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>{% trans "Phone Number" %}</label>
+            <div class="phone-group" style="display: flex; gap: 0.5rem;">
+              <input type="text" id="countryCode" name="country_code" value="+254" readonly style="width: 75px; text-align: center;">
+              <input type="tel" id="phoneNumber" name="phone" placeholder="712345678" style="flex: 1;" required>
+            </div>
+            <small id="phoneHelp" class="upload-help" style="color: var(--muted); font-size: 0.75rem; margin-top: 0.2rem;">
+              {% trans "Enter remaining digits after country code (e.g. 9 digits for Kenya without leading 0)." %}
+            </small>
+          </div>
+
+          <div class="field full">
+            <label>{% trans "Shipping / Delivery Address" %}</label>
+            <textarea name="address" rows="2" required placeholder="Enter city, region, or warehouse description..."></textarea>
+          </div>
+        </div>
+
+        <div id="sourceShipSection" style="display:block; margin-top: 1rem;">
+          <div class="form-grid">
+            <div class="field full">
+              <label>{% trans "Product Name" %}</label>
+              <input type="text" name="product" required>
+            </div>
+
+            <div class="field">
+              <label>{% trans "Quantity" %}</label>
+              <input type="number" name="qty" min="1" value="1" required>
+            </div>
+
+            <div class="field">
+              <label>{% trans "Shipping Mode" %}</label>
+              <select name="shipping">
+                <option value="sea">{% trans "Sea Freight" %}</option>
+                <option value="air">{% trans "Air Freight" %}</option>
+              </select>
+            </div>
+
+            <div class="field full">
+              <label>{% trans "Product Image" %}</label>
+              <input type="file" name="product_image" id="productImage" accept="image/*">
+              <small class="upload-help">{% trans "Upload a sample product image." %}</small>
+              <div id="previewContainer" class="preview-grid" style="display: flex; gap: 0.5rem; margin-top: 0.5rem;"></div>
+            </div>
+
+            <div class="field full">
+              <label>{% trans "Links and Specifications" %}</label>
+              <textarea name="notes" rows="3" placeholder="Paste Alibaba/1688 links or sizing specifications here..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem; width: 100%;">
+          {% trans "Send Request" %}
+        </button>
+
+      </form>
+    </div>
+  </div>
+</section>
+<!-- ========================================================
+     SCRIPT LOADER & VALIDATION PIPELINE ENGINE
+     ======================================================== -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const quoteForm = document.getElementById("quoteForm");
+    const countrySelect = document.getElementById("countrySelect");
+    const countryCode = document.getElementById("countryCode");
+    const phoneNumber = document.getElementById("phoneNumber");
+    const validationAlert = document.getElementById("validationAlert");
+    const productImage = document.getElementById("productImage");
+    const previewContainer = document.getElementById("previewContainer");
+
+    // ==========================================
+    // 1. DYNAMIC COUNTRY CODE & DIGIT LOGIC
+    // ==========================================
+    if (countrySelect && countryCode) {
+        countrySelect.addEventListener("change", function () {
+            const selectedOption = countrySelect.options[countrySelect.selectedIndex];
+            const code = selectedOption.getAttribute("data-code");
+            const targetDigits = selectedOption.getAttribute("data-digits");
+
+            countryCode.value = code || "";
+            if (targetDigits) {
+                phoneNumber.placeholder = `Enter exactly ${targetDigits} digits`;
+            }
+        });
+    }
+
+    // ==========================================
+    // 2. LIVE FILE ATTACHMENT PREVIEW ENGINE
+    // ==========================================
+    if (productImage) {
+        productImage.addEventListener("change", function () {
+            previewContainer.innerHTML = "";
+            Array.from(this.files).forEach(file => {
+                if (!file.type.startsWith("image/")) return;
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const imgBox = document.createElement("div");
+                    imgBox.style.width = "80px";
+                    imgBox.style.height = "80px";
+                    imgBox.style.borderRadius = "8px";
+                    imgBox.style.overflow = "hidden";
+                    imgBox.style.border = "1px solid #cbd5e1";
+                    imgBox.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+                    previewContainer.appendChild(imgBox);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+    }
+
+    // ==========================================
+    // 3. SECURE FORM SUBMIT & PHONE VALIDATOR
+    // ==========================================
+    if (quoteForm) {
+        quoteForm.addEventListener("submit", function (event) {
+            // Clear prior validation notices
+            validationAlert.style.display = "none";
+            validationAlert.textContent = "";
+
+            // Sanitize and extract input numbers
+            let rawNumber = phoneNumber.value.replace(/\s+/g, '').replace(/^0+/, ''); 
+            const selectedOption = countrySelect.options[countrySelect.selectedIndex];
+            const requiredDigits = parseInt(selectedOption.getAttribute("data-digits"), 10);
+
+            // Validation Rule execution
+            if (rawNumber.length !== requiredDigits) {
+                event.preventDefault(); // Stop processing submission pipeline
+                validationAlert.textContent = `❌ Invalid Phone Number for ${selectedOption.text}. Please provide exactly ${requiredDigits} digits (excluding leading zeros). You entered ${rawNumber.length} digits.`;
+                validationAlert.style.display = "block";
+                validationAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return false;
+            }
+
+            // Clean input value on success to prevent database entry anomalies
+            phoneNumber.value = rawNumber;
+
+            // ==========================================
+            // 4. FIX: IMMEDIATE SITE-WIDE LOADER DISPLAY
+            // ==========================================
+            const loader = document.getElementById("siteLoader");
+            const status = document.getElementById("loaderStatus");
+            const submitBtn = quoteForm.querySelector('button[type="submit"]');
+
+            if (loader) {
+                // Instantly force display block before browser context switches
+                loader.style.display = "flex"; 
+                loader.classList.add("active");
+                
+                if (status) {
+                    status.textContent = "Your quote is being processed, please wait...";
+                }
+                
+                // Disable button and change layout text to protect against double submissions
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = "Processing Request...";
+                    submitBtn.style.opacity = "0.7";
+                    submitBtn.style.cursor = "not-allowed";
+                }
+            }
+        });
+    }
+});
+</script>
+
+<style>
+/* =========================================================
+   SABBTCo ELEGANT UI (MINIMAL / HUMAN DEVELOPED FEEL)
+   ========================================================= */
+:root {
+    --primary: #2B2A85;
+    --accent: #E31E24;
+    --sky: #00AEEF;
+    --bg: #f8fafc;
+    --text: #0f172a;
+    --muted: #64748b;
+    --soft: #f3f6fb;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.container {
+    width: 92%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.page-hero {
+    padding: 5rem 0 4rem;
+    color: #fff;
+    background: linear-gradient(135deg, rgba(43,42,133,0.92), rgba(15,23,42,0.90));
+}
+
+.page-hero h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0.5rem 0;
+}
+
+.page-hero p {
+    color: #cbd5e1;
+    max-width: 650px;
+}
+
+.chip {
+    background: rgba(0,174,239,0.15);
+    color: #fff;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 6px;
+}
+
+.quote-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 2rem;
+}
+
+.form-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 2rem;
+    box-shadow: 0 8px 24px rgba(15,23,42,0.04);
+}
+
+.quote-grid .form-card {
+    border: none;
+    box-shadow: none;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.field.full {
+    grid-column: span 2;
+}
+
+.field label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.field input,
+.field select,
+.field textarea {
+    padding: 0.85rem 1rem;
+    border: none;
+    border-radius: 10px;
+    background: var(--soft);
+    font-size: 0.95rem;
+    outline: none;
+    transition: 0.2s ease;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+    background: #fff;
+    box-shadow: 0 0 0 2px rgba(0,174,239,0.15);
+}
+
+.quote-info h2 {
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.quote-info p {
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.quote-tips {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.tip-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    box-shadow: 0 6px 18px rgba(15,23,42,0.04);
+    transition: 0.2s ease;
+}
+
+.tip-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 26px rgba(15,23,42,0.06);
+}
+
+.tip-box h4 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.4rem;
+}
+
+.tip-box p {
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+/* =========================================================
+   BUTTON CONFIG (HUMAN HAND CRAFTED DESIGN - NO BRIGHT FLASHES)
+   ========================================================= */
+.btn {
+    display: inline-block;
+    padding: 13px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    font-size: 0.95rem;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Clean, intentional color weight flat style layout */
+.btn-primary,
+.btn-block {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(227, 30, 36, 0.2);
+}
+
+/* 🚨 FIXED: Removed the bright/harsh color change. 
+   Uses an elegant, premium human-designed micro-scaling and depth shadow modification instead. */
+.btn-primary:hover,
+.btn-block:hover {
+    background: var(--accent); /* Keeps exactly the same red base color */
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(227, 30, 36, 0.35);
+}
+
+.btn-primary:active,
+.btn-block:active {
+    transform: translateY(1px);
+}
+
+@media (max-width: 1000px) {
+    .quote-grid { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .field.full { grid-column: span 1; }
+}
+</style>
+{% endblock %}

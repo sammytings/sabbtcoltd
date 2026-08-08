@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Font Awesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root{
+    --navy:#0f172a;
+    --blue:#2563eb;
+    --red:#dc2626;
+    --green:#10b981;
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --muted:#64748b;
+    --border:#e2e8f0;
+}
+
+.notifications-page{
+    padding:40px 0 60px;
+    min-height:80vh;
+    background:#f8fafc;
+}
+
+.notifications-header{
+    margin-bottom:28px;
+}
+
+.notifications-header h2{
+    font-size:32px;
+    font-weight:700;
+    color:#111827;
+    margin-bottom:6px;
+}
+
+.notifications-header p{
+    color:#6b7280;
+    font-size:14px;
+}
+
+/* LIST */
+.notifications-list{
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    overflow:hidden;
+}
+
+/* CARD */
+.notification-card{
+    display:flex;
+    gap:14px;
+    padding:18px 20px;
+    align-items:flex-start;
+    border-bottom:1px solid #f1f5f9;
+    background:#fff;
+    transition:background .15s ease;
+}
+
+.notification-card:hover{
+    background:#f9fafb;
+}
+
+.notification-card:last-child{
+    border-bottom:none;
+}
+
+/* ICON */
+.notification-icon{
+    width:40px;
+    height:40px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+    flex-shrink:0;
+    border-radius:10px;
+    background:#f1f5f9;
+    color:#334155;
+}
+
+/* CONTENT */
+.notification-content{
+    flex:1;
+}
+
+.notification-top{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    align-items:flex-start;
+}
+
+.notification-content h4{
+    font-size:15px;
+    font-weight:600;
+    color:#111827;
+    margin:0 0 4px;
+}
+
+.notification-content p{
+    font-size:14px;
+    line-height:1.5;
+    color:#6b7280;
+    margin:0 0 6px;
+}
+
+.notification-time{
+    font-size:12px;
+    color:#94a3b8;
+    white-space:nowrap;
+}
+.empty-notifications{
+    text-align:center;
+    padding:40px 20px 60px;
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+}
+.notification-wrapper{
+    position:relative;
+    display:inline-flex;
+}
+
+.notification-count{
+    position:absolute;
+    top:-6px;
+    right:-6px;
+    min-width:18px;
+    height:18px;
+    padding:0 5px;
+    border-radius:999px;
+    background:#ef4444;
+    color:white;
+    font-size:11px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:999;
+}
+@media(max-width:768px){
+    .notification-count{
+        top:-4px;
+        right:-4px;
+        min-width:16px;
+        height:16px;
+        font-size:10px;
+    }
+}
+.empty-icon{
+    font-size:42px;
+    margin-bottom:12px;
+    color:#94a3b8;
+}
+
+.empty-notifications h3{
+    color:#111827;
+    margin-bottom:6px;
+}
+
+.empty-notifications p{
+    color:#6b7280;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+    .notification-card{
+        padding:14px;
+        gap:10px;
+    }
+
+    .notifications-header h2{
+        font-size:24px;
+    }
+
+    .notification-content h4{
+        font-size:14px;
+    }
+
+    .notification-content p{
+        font-size:13px;
+    }
+
+    .notification-top{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}
+</style>
+
+<section class="notifications-page">
+    <div class="container">
+
+        <div class="notifications-header">
+            <h2>Notifications</h2>
+            <p>Stay updated with orders, payments, shipments, and important system activity.</p>
+        </div>
+
+        {% if notifications %}
+            <div class="notifications-list">
+
+                {% for notification in notifications %}
+                <div class="notification-card">
+
+                    <!-- ICON LOGIC (NO EMOJIS) -->
+                    <div class="notification-icon">
+                        {% if "shipment" in notification.title|lower %}
+                            <i class="fa-solid fa-ship"></i>
+                        {% elif "payment" in notification.title|lower %}
+                            <i class="fa-solid fa-credit-card"></i>
+                        {% elif "order" in notification.title|lower %}
+                            <i class="fa-solid fa-box"></i>
+                        {% else %}
+                            <i class="fa-solid fa-bell"></i>
+                        {% endif %}
+                    </div>
+
+                    <div class="notification-content">
+                        <div class="notification-top">
+                            <h4>{{ notification.title }}</h4>
+                            <span class="notification-time">
+                                {{ notification.created_at }}
+                            </span>
+                        </div>
+
+                        <p>{{ notification.message }}</p>
+                    </div>
+
+                </div>
+                {% endfor %}
+
+            </div>
+    
+           {% else %}
+<div class="empty-notifications">
+
+    <lottie-player
+        src="/static/animations/nothing.json"
+        background="transparent"
+        speed="1"
+        style="width:260px;height:260px;margin:auto;"
+        loop
+        autoplay>
+    </lottie-player>
+
+    <h3>No notifications yet</h3>
+    <p>When something important happens, you'll see it here.</p>
+</div>
+{% endif %}
+   
+
+    </div>
+</section>
+
+{% endblock %}

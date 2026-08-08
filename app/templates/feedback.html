@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  /* ==========================================================================
+   SABBTCo. Customer Feedback Platform
+   Project: User Experience Quality Logs & Form Utilities
+   ========================================================================== */
+
+/* Main layout wrapper matching your portal sizing rules */
+.feedback-container {
+  max-width: 650px;
+  margin: 60px auto;
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 6px; /* Strict brand-flat corner style */
+  border: 1px solid #e1e6eb;
+  box-shadow: 0 10px 30px rgba(34, 37, 42, 0.05); /* Natural depth layout shadow */
+}
+
+/* Primary heading text aligned with corporate navy */
+.feedback-title {
+  font-family: 'Poppins', sans-serif;
+  color: #2B2A85; /* Deep Corporate Navy Blue */
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+
+/* Informational text descriptors */
+.feedback-subtitle {
+  color: #555e6b;
+  margin-bottom: 30px;
+  font-size: 0.95rem;
+}
+
+/* Form structure baseline margins */
+.form-group {
+  margin-bottom: 20px;
+}
+
+/* Standard typographic forms markup styling */
+.form-group label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #22252A; /* Dark Slate Charcoal text */
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* Clean hand-written element controls for numerical, text, and email entries */
+.feedback-container input[type="text"],
+.feedback-container input[type="email"],
+.feedback-container input[type="number"],
+.feedback-container textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  outline: none;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: #22252A;
+  background-color: #f8fafc;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Smooth input focus state via brand cyan outline color */
+.feedback-container input:focus, 
+.feedback-container textarea:focus {
+  border-color: #00AEEF; /* Vibrant Sourcing Cyan */
+  background-color: #ffffff;
+}
+
+/* Small contextual annotations and parameters rules */
+.rating-note {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin-top: 6px;
+}
+
+/* Submit Action Button completely aligned with layout crimson assets */
+.btn-submit {
+  width: 100%;
+  background-color: #E31E24; /* Crimson Red */
+  color: #ffffff;
+  padding: 14px;
+  border: 1px solid #E31E24;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  text-align: center;
+}
+
+.btn-submit:hover {
+  background-color: #c21318; /* Manual safe darkened color on interaction */
+  border-color: #c21318;
+}
+
+.btn-submit:active {
+  background-color: #a30f13;
+}
+
+/* Success Validation Banner layout blocks */
+.message-success {
+  background-color: #ecfdf5; /* Soft Emerald clear fill tint */
+  color: #065f46;            /* Deep Forest green text */
+  padding: 14px 16px;
+  border-radius: 4px;
+  border-left: 4px solid #10b981; /* Strong status border tab line */
+  margin-bottom: 24px;
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+/* Handheld Mobile Display Optimization */
+@media (max-width: 768px) {
+  .feedback-container {
+    margin: 30px 16px;
+    padding: 24px;
+  }
+
+  .feedback-title {
+    font-size: 1.4rem;
+  }
+}
+
+</style>
+
+<div class="feedback-container">
+
+  <div class="feedback-title">We Value Your Feedback</div>
+  <div class="feedback-subtitle">
+    Help us improve your importation experience
+  </div>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="message-success">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="POST">
+    {% csrf_token %}
+
+    {% if not user.is_authenticated %}
+
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" name="name" placeholder="Enter your name" required>
+      </div>
+
+      <div class="form-group">
+        <label>Your Email</label>
+        <input type="email" name="email" placeholder="Enter your email" required>
+      </div>
+
+    {% endif %}
+
+    <div class="form-group">
+      <label>Rating (1 - 5)</label>
+      <input type="number" name="rating" min="1" max="5" value="5">
+      <div class="rating-note">1 = Poor, 5 = Excellent</div>
+    </div>
+
+    <div class="form-group">
+      <label>Your Feedback</label>
+      <textarea name="message" rows="5" placeholder="Tell us about your experience..." required></textarea>
+    </div>
+
+    <button type="submit" class="btn-submit">
+      Submit Feedback
+    </button>
+
+  </form>
+
+</div>
+
+{% endblock %}

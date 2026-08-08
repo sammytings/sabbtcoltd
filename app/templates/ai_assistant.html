@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="ai-container">
+
+    <h1>SABBTCo AI Assistant</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <textarea
+            name="question"
+            placeholder="Ask a question..."
+            required
+        >{{ question }}</textarea>
+
+        <button type="submit">
+            Ask
+        </button>
+
+    </form>
+
+    {% if answer %}
+    <div class="ai-answer">
+        {{ answer }}
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

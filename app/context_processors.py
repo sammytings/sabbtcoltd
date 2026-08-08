@@ -1,0 +1,32 @@
+from .models import ClientNotification
+
+from .models import ClientNotification
+
+def notification_count(request):
+    if request.user.is_authenticated:
+        count = ClientNotification.objects.filter(
+            user=request.user,
+            is_read=False
+        ).count()
+
+        return {
+            "unread_notifications_count": count
+        }
+
+    return {
+        "unread_notifications_count": 0
+    }
+
+
+from .models import Banner
+
+def active_banners(request):
+    return {
+        "banners": Banner.objects.all()
+    }
+from django.conf import settings
+
+def google_client_id(request):
+    return {
+        "CLIENT_ID": settings.GOOGLE_CLIENT_ID
+    }

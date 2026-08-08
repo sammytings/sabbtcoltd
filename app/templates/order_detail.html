@@ -1,0 +1,691 @@
+
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}
+{{ order.product_name }} — SABBTCo
+{% endblock %}
+
+{% block content %}
+
+<section class="order-detail-hero">
+    <div class="container">
+        <div class="order-hero-content">
+            <div>
+                <span class="chip">
+                    {% trans "Order Tracking" %}
+                </span>
+                <h1>
+                    {% trans "Order" %} #{{ order.order_id }}
+                </h1>
+                <p>
+                    {% trans "Track your shipment progress, payment updates and sourcing activity in real time." %}
+                </p>
+            </div>
+
+            <div class="hero-status">
+                <span class="status-badge {{ order.status|lower }}">
+                    {{ order.get_status_display|default:order.status }}
+                </span>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="section order-detail-section">
+    <div class="container">
+      <div class="order-layout">
+
+    <!-- LEFT COLUMN -->
+    <div class="order-main">
+
+        <!-- ORDER SUMMARY -->
+        <div class="card">
+            <h2> Order Information</h2>
+
+            <div class="grid-2">
+                <div>
+                    <label>Product</label>
+                    <h4>{{ order.product_name }}</h4>
+                </div>
+
+                <div>
+                    <label>Quantity</label>
+                    <h4>{{ order.quantity }}</h4>
+                </div>
+
+                <div>
+                    <label>Tracking Number</label>
+                    <h4>{{ order.shipment.tracking_number|default:"Pending" }}</h4>
+                </div>
+
+                <div>
+                    <label>Status</label>
+                    <span class="badge {{ order.status|lower }}">
+                        {{ order.get_status_display }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SHIPPING SPECS -->
+        <div class="card soft">
+            <h2>🚢 Shipping Details</h2>
+
+            <div class="grid-3">
+                <div>
+                    <label>CBM</label>
+                    <h4>{{ order.cbm_total|floatformat:2 }}</h4>
+                </div>
+
+                <div>
+                    <label>Weight</label>
+                    <h4>{{ order.weight_kg }} KG</h4>
+                </div>
+
+                <div>
+                    <label>Mode</label>
+                    <h4>
+                        {% if order.shipping_method == 'AIR' %}
+                            ✈ Air
+                        {% else %}
+                            🚢 Sea
+                        {% endif %}
+                    </h4>
+                </div>
+            </div>
+
+            <p class="muted">
+                {{ order.length_cm }} × {{ order.width_cm }} × {{ order.height_cm }} cm
+            </p>
+        </div>
+
+        <!-- TIMELINE -->
+        <div class="card">
+            <h2> Shipment Timeline</h2>
+
+            <div class="timeline">
+                {% for event in order.shipment.timeline.all %}
+                <div class="timeline-item">
+                    <div class="dot"></div>
+                    <div>
+                        <h4>{{ event.status }}</h4>
+                        <p>{{ event.message }}</p>
+                        <small>{{ event.created_at }}</small>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No updates yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="order-side">
+<div class="card sticky">
+
+    <h3> Pricing Breakdown</h3>
+
+    <div class="price-row">
+        <span>Unit Price</span>
+        <strong>USD {{ order.unit_price }}</strong>
+    </div>
+
+    <div class="price-row">
+        <span>Quantity</span>
+        <strong>{{ order.quantity }}</strong>
+    </div>
+
+    <hr>
+
+    <div class="price-row highlight">
+        <span>Buying Total</span>
+        <strong>
+            USD {{ order.unit_price }} × {{ order.quantity }}
+            = {{ buying_total|floatformat:2 }}
+        </strong>
+    </div>
+
+    <div class="price-row">
+        <span>Supplier Fee (3%)</span>
+        <strong>{{ supplier_fee|floatformat:2 }}</strong>
+    </div>
+
+    <div class="price-row">
+        <span>Service Fee (5%)</span>
+        <strong>{{ service_fee|floatformat:2 }}</strong>
+    </div>
+
+    <div class="price-row">
+        <span>Shipping / Fixed Fee</span>
+        <strong>{{ shipping_fee|floatformat:2 }}</strong>
+    </div>
+
+    <hr>
+
+    <div class="price-row total">
+        <span>Grand Total (USD)</span>
+        <strong>{{ grand_total|floatformat:2 }}</strong>
+    </div>
+
+    <div class="price-row total">
+        <span>Total (KES)</span>
+        <strong>{{ total_kes|floatformat:2 }}</strong>
+    </div>
+
+    <small class="muted">
+        1 USD = {{ exchange_rate }} KES
+    </small>
+
+    <a href="{% url 'generate_invoice' order.order_id %}" class="btn">
+        Generate Invoice PDF
+    </a>
+
+</div>
+
+    </aside>
+
+</div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        <div class="detail-card">
+            <div class="detail-card-header">
+                <div>
+                    <h2>{% trans "Shipping Documents" %}</h2>
+                </div>
+            </div>
+
+            <div class="documents-list">
+                {% for doc in order.documents.all %}
+                <a href="{{ doc.file.url }}" target="_blank" class="document-item">
+                    <div>
+                        <h4>{{ doc.title }}</h4>
+                        <span>{{ doc.uploaded_at|date:"M d, Y" }}</span>
+                    </div>
+                    <strong>{% trans "Download" %}</strong>
+                </a>
+                {% empty %}
+                <p class="muted">{% trans "No documents uploaded yet." %}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="package-gallery" style="padding-bottom: 5rem;">
+    <div class="container">
+        <div class="section-head" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <span class="chip">
+                     {% trans "Package Photos" %}
+                </span>
+                <h2>{% trans "Warehouse & Shipment Images" %}</h2>
+            </div>
+            {% if order.shipment and shipment_photos %}
+                <span class="status-badge shipping" style="margin: 0; font-size: 0.85rem; padding: 6px 14px; background-color: #e0f2fe; color: #0369a1; display: flex; align-items: center; gap: 6px;">
+                     {% trans "Container Stream Active" %}
+                </span>
+            {% endif %}
+        </div>
+
+        <div class="gallery-grid" style="margin-bottom: 3.5rem;">
+            {% if order.found_items.all %}
+                {% for item in order.found_items.all %}
+                <div class="gallery-card">
+                    <img src="{{ item.admin_image.url }}" alt="{{ item.item_name }}">
+                    <div class="gallery-content">
+                        <h4 style="margin: 0 0 4px 0; color: #0f172a; font-size: 1rem;">{{ item.item_name }}</h4>
+                        <p style="margin: 0 0 8px 0; font-size: 0.85rem; color: #64748b;">{% trans "Sourced Verification Snapshot" %}</p>
+                        <small>{{ order.updated_at|date:"M d, Y" }}</small>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+
+            {% for photo in photos %}
+            <div class="gallery-card">
+                <img src="{{ photo.image.url }}" alt="{{ photo.caption }}">
+                <div class="gallery-content">
+                    {% if photo.caption %}
+                    <p style="margin: 0 0 8px 0; color: #334155;">{{ photo.caption }}</p>
+                    {% endif %}
+                    <small>{{ photo.uploaded_at|date:"M d, Y" }}</small>
+                </div>
+            </div>
+            {% empty %}
+                {% if not order.found_items.all %}
+                <div class="empty-gallery" style="grid-column: span 3; text-align: center; padding: 3rem; background: #f8fafc; border-radius: 18px; border: 1px dashed #cbd5e1;">
+                    <p class="muted" style="margin: 0;">{% trans "No individual package snapshots uploaded yet." %}</p>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div style="background:red;color:white;padding:10px;">
+    Shipment:
+    {{ order.shipment }}
+
+    <br>
+
+    Photos Count:
+    {{ shipment_photos|length }}
+</div>
+
+        {% if shipment_photos %}
+        <div class="detail-card execution-shipment-block" style="margin-top: 2rem; border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; background: #ffffff;">
+            <div class="detail-card-header" style="margin-bottom: 1.5rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
+                <h3 style="margin: 0; color: #0f172a; font-size: 1.25rem; display: flex; align-items: center; gap: 8px;">
+                    🚢 {% trans "Container Batch Tracking Logistics" %} 
+                    <span style="font-family: monospace; font-size: 0.95rem; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 4px;">
+                        {{ order.shipment.container_number }}
+                    </span>
+                </h3>
+                <p style="margin: 4px 0 0 0; font-size: 0.88rem; color: #64748b;">
+                    {% trans "Visual real-time snapshots of the overall consolidation container loading and port transit stages." %}
+                </p>
+            </div>
+            
+            <div class="gallery-grid">
+                {% for photo in shipment_photos %}
+                <div class="gallery-card" style="border: 1px solid #f1f5f9; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                    <a href="{{ photo.image.url }}" target="_blank" style="display: block; width: 100%; height: 200px; overflow: hidden;">
+                        <img src="{{ photo.image.url }}" alt="{{ photo.caption|default:'Container Update' }}" style="width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.2s;">
+                    </a>
+                    <div class="gallery-content" style="padding: 12px; background: #fff;">
+                        {% if photo.caption %}
+                            <p style="margin: 0 0 6px 0; font-size: 0.9rem; color: #334155; font-weight: 500; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;" title="{{ photo.caption }}">
+                                {{ photo.caption }}
+                            </p>
+                        {% else %}
+                            <p style="margin: 0 0 6px 0; font-size: 0.85rem; color: #94a3b8; font-style: italic;">{% trans "Bulk Cargo Load Update" %}</p>
+                        {% endif %}
+                        <small style="color: #94a3b8; font-size: 0.75rem;">{{ photo.uploaded_at|date:"M d, Y" }}</small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% if order.shipment and order.shipment.container_photos.all %}
+<div class="container" style="margin-bottom: 2rem;">
+    <span class="badge badge-success"> {% trans "Container Images Available" %}</span>
+</div>
+{% endif %}
+
+<style>
+:root{
+    --brand-navy:#0f1b3d;
+    --brand-blue:#1F3AA8;
+    --brand-red:#E31E24;
+    --brand-sky:#11B5F4;
+    --border:#e2e8f0;
+    --muted:#64748b;
+    --bg:#f8fafc;
+    --card:#ffffff;
+    --shadow:0 12px 30px rgba(15,27,61,.08);
+}
+
+/* GLOBAL */
+.section{
+    padding:80px 0;
+}
+
+body{
+    background:var(--bg);
+}
+
+.container{
+    max-width:1400px;
+    margin:auto;
+    padding-left:24px;
+    padding-right:24px;
+}
+
+.muted{
+    color:var(--muted);
+}
+
+h1,h2,h3,h4{
+    margin:0;
+}
+
+/* HERO */
+.order-detail-hero{
+    background:
+    linear-gradient(rgba(15,27,61,.88), rgba(15,27,61,.88)),
+    url("/static/images/hero.jpg");
+    background-size:cover;
+    background-position:center;
+    padding:100px 0;
+    color:white;
+}
+
+.order-hero-content{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:30px;
+    flex-wrap:wrap;
+}
+
+.order-detail-hero h1{
+    font-size:3rem;
+    margin-top:16px;
+}
+
+.order-detail-hero p{
+    margin-top:18px;
+    max-width:700px;
+    color:rgba(255,255,255,.82);
+    line-height:1.7;
+}
+
+.chip{
+    display:inline-block;
+    padding:10px 18px;
+    border-radius:999px;
+    font-size:.85rem;
+    font-weight:700;
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.2);
+}
+
+/* STATUS BADGE */
+.status-badge{
+    padding:14px 22px;
+    border-radius:999px;
+    font-weight:700;
+    font-size:.9rem;
+    text-transform:capitalize;
+}
+
+.pending{background:#fff7db;color:#a16207;}
+.processing{background:#dbeafe;color:#1d4ed8;}
+.paid{background:#dcfce7;color:#166534;}
+.shipping{background:#e0f2fe;color:#0369a1;}
+.arrived{background:#ede9fe;color:#6d28d9;}
+.delivered{background:#dcfce7;color:#166534;}
+.cancelled{background:#fee2e2;color:#991b1b;}
+
+/* MAIN LAYOUT */
+.order-detail-section{
+    margin-top:45px;
+}
+
+.order-layout{
+    display:grid;
+    grid-template-columns:minmax(0,2fr) minmax(320px,1fr);
+    gap:32px;
+    align-items:start;
+}
+
+/* UNIFIED CARD SYSTEM */
+.card,
+.detail-card,
+.side-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:30px;
+    box-shadow:var(--shadow);
+    margin-bottom:28px;
+    transition:all .25s ease;
+}
+
+.card:hover,
+.detail-card:hover,
+.side-card:hover{
+    transform:translateY(-2px);
+}
+
+/* GRID */
+.grid-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+.grid-3{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+}
+
+.grid-2 > div,
+.grid-3 > div{
+    background:#f8fafc;
+    border:1px solid #eef2f7;
+    border-radius:18px;
+    padding:18px;
+}
+
+label{
+    display:block;
+    font-size:.82rem;
+    color:var(--muted);
+    margin-bottom:8px;
+}
+
+/* TIMELINE */
+.timeline{
+    margin-top:20px;
+    padding-left:24px;
+    position:relative;
+}
+
+.timeline::before{
+    content:"";
+    position:absolute;
+    left:8px;
+    top:0;
+    width:2px;
+    height:100%;
+    background:#e5e7eb;
+}
+
+.timeline-item{
+    display:flex;
+    gap:18px;
+    position:relative;
+    margin-bottom:30px;
+}
+
+.dot{
+    width:16px;
+    height:16px;
+    background:var(--brand-red);
+    border-radius:50%;
+    flex-shrink:0;
+    margin-left:-23px;
+    margin-top:6px;
+    box-shadow:0 0 0 5px rgba(227,30,36,.15);
+}
+
+.timeline-item h4{
+    font-size:1rem;
+    color:var(--brand-navy);
+    margin-bottom:6px;
+}
+
+.timeline-item p{
+    color:var(--muted);
+    line-height:1.6;
+    margin-bottom:8px;
+}
+
+.timeline-item small{
+    color:#94a3b8;
+}
+
+/* SIDEBAR */
+.sticky{
+    position:sticky;
+    top:110px;
+}
+
+/* PRICING */
+.price-row{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    padding:14px 0;
+    border-bottom:1px solid #edf2f7;
+}
+
+.price-row.highlight{
+    background:#f8fafc;
+    padding:18px;
+    border-radius:16px;
+    border:none;
+    margin:16px 0;
+}
+
+.price-row.total{
+    font-size:1.1rem;
+    font-weight:700;
+}
+
+.price-row.total strong{
+    color:var(--brand-red);
+}
+
+/* BUTTON */
+.btn{
+    display:block;
+    width:100%;
+    margin-top:24px;
+    background:var(--brand-red);
+    color:white;
+    text-align:center;
+    padding:14px 18px;
+    border-radius:14px;
+    text-decoration:none;
+    font-weight:700;
+    transition:.25s;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+/* DOCUMENTS */
+.documents-list{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
+
+.document-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px;
+    border:1px solid #eef2f7;
+    border-radius:18px;
+    text-decoration:none;
+    color:inherit;
+    background:white;
+    transition:.25s;
+}
+
+.document-item:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 20px rgba(0,0,0,.05);
+}
+
+/* GALLERY */
+.package-gallery{
+    margin-top:20px;
+}
+
+.gallery-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:24px;
+}
+
+.gallery-card{
+    background:white;
+    border-radius:22px;
+    overflow:hidden;
+    border:1px solid var(--border);
+    box-shadow:var(--shadow);
+    transition:.25s;
+}
+
+.gallery-card:hover{
+    transform:translateY(-4px);
+}
+
+.gallery-card img{
+    width:100%;
+    height:250px;
+    object-fit:cover;
+}
+
+.gallery-content{
+    padding:18px;
+}
+
+/* EMPTY */
+.empty-gallery{
+    padding:60px;
+    text-align:center;
+    background:white;
+    border:1px dashed #cbd5e1;
+    border-radius:24px;
+}
+
+/* REMOVE DEBUG BOXES */
+div[style*="background:red"]{
+    display:none !important;
+}
+
+/* MOBILE */
+@media (max-width: 1024px){
+    .order-layout{
+        grid-template-columns:1fr;
+    }
+
+    .sticky{
+        position:static;
+    }
+}
+
+@media (max-width: 768px){
+    .grid-2,
+    .grid-3{
+        grid-template-columns:1fr;
+    }
+
+    .order-detail-hero{
+        padding:70px 0;
+    }
+
+    .order-detail-hero h1{
+        font-size:2rem;
+    }
+
+    .container{
+        padding-left:16px;
+        padding-right:16px;
+    }
+
+    .card,
+    .detail-card,
+    .side-card{
+        padding:22px;
+        border-radius:18px;
+    }
+}
+</style>
+{% endblock %}

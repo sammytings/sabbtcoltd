@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="supplier-page">
+
+    <div class="animation-box">
+        <lottie-player
+            src="/static/animations/nothing.json"
+            background="transparent"
+            speed="1"
+            style="width: 300px; height: 300px;"
+            loop
+            autoplay>
+        </lottie-player>
+    </div>
+
+    <div class="message-box">
+
+    <div class="message-box">
+        <h2>We’ll Be Back Soon 👋</h2>
+
+        <p>
+            Supplier registration is temporarily unavailable as we improve our onboarding experience.
+        </p>
+
+        <p>
+            We appreciate your interest in working with <strong>SABBTCo</strong>.
+            Our team is making a few upgrades to ensure everything runs smoothly.
+        </p>
+
+        <p>
+            Need help right away? You can reach us directly via WhatsApp below.
+        </p>
+
+        <div class="action-buttons">
+            <a href="https://wa.me/254790644050?text=Hello%20SABBTCo,%20I%20want%20to%20become%20a%20supplier."
+               class="wa-btn">
+               Become a Supplier
+            </a>
+
+            <a href="https://wa.me/254790644050?text=Hallo%20DMK,%20I%20want%20to%20pay%20my%20supplier%20via%20SABBTCo"
+               class="dmk-btn">
+               Message DMK
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.supplier-page{
+    min-height:80vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
+}
+
+.animation-box{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.placeholder-animation{
+    width:140px;
+    height:140px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:60px;
+    background:#f5f5f5;
+}
+
+.message-box{
+    max-width:650px;
+    text-align:center;
+    line-height:1.8;
+}
+
+.message-box h2{
+    margin-bottom:20px;
+    font-size:32px;
+}
+
+.message-box p{
+    margin-bottom:15px;
+    color:#555;
+}
+
+.action-buttons{
+    margin-top:30px;
+    display:flex;
+    gap:15px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.wa-btn,
+.dmk-btn{
+    padding:14px 24px;
+    border-radius:12px;
+    text-decoration:none;
+    color:white;
+    font-weight:600;
+}
+
+.wa-btn{
+    background:#25D366;
+}
+
+.dmk-btn{
+    background:#111827;
+}
+</style>
+
+{% endblock %}

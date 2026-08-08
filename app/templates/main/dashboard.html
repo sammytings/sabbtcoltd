@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+        </div>
+
+        <section class="supplier-cards">
+
+            <div class="supplier-card">
+                <h4>Company</h4>
+                <h2>{{ supplier.company_name }}</h2>
+            </div>
+
+            <div class="supplier-card">
+                <h4>Country</h4>
+                <h2>{{ supplier.country }}</h2>
+            </div>
+
+            <div class="supplier-card">
+                <h4>Category</h4>
+                <h2>{{ supplier.product_category }}</h2>
+            </div>
+
+            <div class="supplier-card">
+                <h4>Status</h4>
+                <h2>
+                    {% if supplier.is_verified %}
+                        Verified
+                    {% else %}
+                        Pending
+                    {% endif %}
+                </h2>
+            </div>
+
+        </section>
+
+        <section class="supplier-panel">
+
+            <h2>Supplier Details</h2>
+
+            <div class="details-grid">
+
+                <div>
+                    <strong>Contact Person</strong>
+                    <p>{{ supplier.contact_person }}</p>
+                </div>
+
+                <div>
+                    <strong>Email</strong>
+                    <p>{{ supplier.email }}</p>
+                </div>
+
+                <div>
+                    <strong>Phone</strong>
+                    <p>{{ supplier.phone }}</p>
+                </div>
+
+                <div>
+                    <strong>Address</strong>
+                    <p>{{ supplier.address }}</p>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</section>
+
+{% endblock %}

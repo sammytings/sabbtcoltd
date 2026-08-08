@@ -1,0 +1,161 @@
+:root{
+--primary:#0f4c81;
+--secondary:#1da1f2;
+--accent:#ff6b35;
+--bg:#f7f9fc;
+--text:#243447;
+--white:#fff;
+}
+
+.services-page *{box-sizing:border-box}
+.services-page{
+background:var(--bg);
+color:var(--text);
+}
+
+.services-page .hero{
+background:linear-gradient(135deg,#0f4c81,#163b65);
+color:#fff;
+padding:90px 20px;
+text-align:center;
+}
+
+.services-page .hero h1{
+font-size:clamp(2.3rem,5vw,4rem);
+margin-bottom:20px;
+}
+
+.services-page .hero p{
+max-width:760px;
+margin:auto;
+line-height:1.8;
+opacity:.95;
+}
+
+.services-page .btns{
+display:flex;
+justify-content:center;
+gap:15px;
+margin-top:35px;
+flex-wrap:wrap;
+}
+
+.services-page .btn{
+padding:14px 28px;
+border-radius:8px;
+text-decoration:none;
+font-weight:700;
+transition:.3s;
+display:inline-block;
+}
+
+.services-page .btn-primary{
+background:#fff;
+color:#0f4c81;
+}
+
+.services-page .btn-outline{
+border:2px solid #fff;
+color:#fff;
+}
+
+.services-page section{
+padding:80px 20px;
+}
+
+.services-page .container{
+max-width:1200px;
+margin:auto;
+}
+
+.services-page h2{
+text-align:center;
+font-size:2.2rem;
+margin-bottom:15px;
+}
+
+.services-page .lead{
+text-align:center;
+max-width:720px;
+margin:0 auto 55px;
+color:#666;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:25px;
+}
+
+.card{
+background:#fff;
+padding:35px;
+border-radius:16px;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+}
+
+.icon{
+width:70px;
+height:70px;
+background:#e8f4ff;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+margin-bottom:20px;
+}
+
+.rates{
+background:#fff;
+border-radius:16px;
+overflow:hidden;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.row{
+display:flex;
+justify-content:space-between;
+padding:22px 30px;
+border-bottom:1px solid #eee;
+}
+
+.row:last-child{border-bottom:none}
+
+.price{
+font-weight:bold;
+font-size:1.4rem;
+color:#0f4c81;
+}
+
+.cta{
+background:linear-gradient(135deg,#0f4c81,#1b75bb);
+color:#fff;
+border-radius:18px;
+padding:60px 30px;
+text-align:center;
+}
+
+.cta h2{color:#fff}
+
+@media(max-width:768px){
+.row{
+flex-direction:column;
+gap:10px;
+text-align:center;
+}
+}
+.loader-overlay{
+    display:none;   /* important */
+    position:fixed;
+    inset:0;
+    background:rgba(255,255,255,.85);
+    z-index:99999;
+    justify-content:center;
+    align-items:center;
+}

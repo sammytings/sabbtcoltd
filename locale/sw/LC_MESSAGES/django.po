@@ -1,0 +1,1078 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-21 11:43+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: .\app\templates\about.html:6
+msgid "About — SABBTCo"
+msgstr ""
+
+#: .\app\templates\about.html:21
+msgid "About SABBTCo."
+msgstr ""
+
+#: .\app\templates\about.html:25
+msgid "Building Global Partnership."
+msgstr ""
+
+#: .\app\templates\about.html:29
+msgid ""
+"\n"
+"      Shenzhen Autumn Breeze Business Trade Co. Ltd. (SABBTCo.)\n"
+"      is a Shenzhen-based sourcing and shipping company\n"
+"      connecting buyers worldwide with verified Chinese manufacturers.\n"
+"      "
+msgstr ""
+
+#: .\app\templates\about.html:41
+msgid "Start a Project"
+msgstr ""
+
+#: .\app\templates\about.html:48
+msgid "View Services"
+msgstr ""
+
+#: .\app\templates\about.html:67
+msgid "Shipping port"
+msgstr ""
+
+#: .\app\templates\about.html:76
+msgid "Your eyes & feet on the ground in China."
+msgstr ""
+
+#: .\app\templates\about.html:80
+msgid ""
+"\n"
+"        Importing from China should not be a gamble.\n"
+"        Our team lives and works in Shenzhen —\n"
+"        we visit factories in person, negotiate in Mandarin,\n"
+"        inspect goods before they ship,\n"
+"        and consolidate cargo so you save on freight.\n"
+"        "
+msgstr ""
+
+#: .\app\templates\about.html:90
+msgid ""
+"\n"
+"        With offices in Shenzhen and clients across Kenya and beyond,\n"
+"        we have made cross-border trade simple,\n"
+"        honest, and predictable for hundreds of buyers.\n"
+"        "
+msgstr ""
+
+#: .\app\templates\about.html:103 .\app\templates\index.html:96
+msgid "Verified Factories"
+msgstr ""
+
+#: .\app\templates\about.html:107
+msgid "We confirm supplier legitimacy before you pay."
+msgstr ""
+
+#: .\app\templates\about.html:115
+msgid "Transparent Pricing"
+msgstr ""
+
+#: .\app\templates\about.html:119
+msgid "No hidden fees, clear breakdowns and receipts."
+msgstr ""
+
+#: .\app\templates\about.html:127
+msgid "Reliable Shipping"
+msgstr ""
+
+#: .\app\templates\about.html:131
+msgid "Sea & air freight with tracking and support."
+msgstr ""
+
+#: .\app\templates\about.html:142 .\app\templates\index.html:48
+#: .\app\templates\orders.html:107 .\app\templates\quote.html:17
+#: .\app\templates\services.html:33
+msgid "Request a Quote"
+msgstr ""
+
+#: .\app\templates\about.html:160
+msgid "Our Purpose"
+msgstr ""
+
+#: .\app\templates\about.html:164
+msgid "Mission, Vision & Values"
+msgstr ""
+
+#: .\app\templates\about.html:168
+msgid "We focus on trust, long-term partnership, and consistent delivery."
+msgstr ""
+
+#: .\app\templates\about.html:183
+msgid "Mission"
+msgstr ""
+
+#: .\app\templates\about.html:187
+msgid ""
+"\n"
+"          To make sourcing from China transparent,\n"
+"          affordable, and worry-free for importers everywhere.\n"
+"          "
+msgstr ""
+
+#: .\app\templates\about.html:203
+msgid "Vision"
+msgstr ""
+
+#: .\app\templates\about.html:207
+msgid ""
+"\n"
+"          To be the most trusted Sino-African trade partner —\n"
+"          building bridges, not just shipping boxes.\n"
+"          "
+msgstr ""
+
+#: .\app\templates\about.html:223
+msgid "Values"
+msgstr ""
+
+#: .\app\templates\about.html:227
+msgid ""
+"\n"
+"          Honesty in pricing.\n"
+"          Care for every shipment.\n"
+"          Long-term partnership over one-time profit.\n"
+"          "
+msgstr ""
+
+#: .\app\templates\base.html:13
+msgid "SABBTCo"
+msgstr ""
+
+#: .\app\templates\base.html:18
+msgid ""
+"Shenzhen Autumn Breeze Business Trade Co. Ltd. Trusted sourcing, "
+"consolidation and shipping from China to Kenya and the world."
+msgstr ""
+
+#: .\app\templates\base.html:50
+msgid "SHENZHEN AUTUMN BREEZE"
+msgstr ""
+
+#: .\app\templates\base.html:57
+msgid "Menu"
+msgstr ""
+
+#: .\app\templates\base.html:65 .\app\templates\base.html:199
+msgid "Home"
+msgstr ""
+
+#: .\app\templates\base.html:69 .\app\templates\base.html:205
+msgid "Services"
+msgstr ""
+
+#: .\app\templates\base.html:73 .\app\templates\base.html:211
+msgid "About"
+msgstr ""
+
+#: .\app\templates\base.html:77 .\app\templates\base.html:217
+#: .\app\templates\index.html:544 .\app\templates\services.html:380
+msgid "Request Quote"
+msgstr ""
+
+#: .\app\templates\base.html:81 .\app\templates\base.html:223
+msgid "Orders"
+msgstr ""
+
+#: .\app\templates\base.html:87
+msgid "Notifications"
+msgstr ""
+
+#: .\app\templates\base.html:97
+msgid "Become a Supplier"
+msgstr ""
+
+#: .\app\templates\base.html:105 .\app\templates\base.html:229
+msgid "Login"
+msgstr ""
+
+#: .\app\templates\base.html:172
+msgid ""
+"\n"
+"        Shenzhen Autumn Breeze Business Trade Co. Ltd — Building Global "
+"Partnership.\n"
+"        "
+msgstr ""
+
+#: .\app\templates\base.html:192
+msgid "Explore"
+msgstr ""
+
+#: .\app\templates\base.html:241
+msgid "Contact"
+msgstr ""
+
+#: .\app\templates\base.html:262
+msgid "Office"
+msgstr ""
+
+#: .\app\templates\base.html:269
+msgid ""
+"\n"
+"        3rd Floor, D20, ASEAN Building, Minzhi Avenue 690,\n"
+"        Minzhi Street, Longhua District, Shenzhen City,\n"
+"        Guangdong Province.\n"
+"        "
+msgstr ""
+
+#: .\app\templates\base.html:288
+msgid "All rights reserved."
+msgstr ""
+
+#: .\app\templates\base.html:292
+msgid "Building Global Partnership · China → World"
+msgstr ""
+
+#: .\app\templates\index.html:6
+msgid "SABBTCo. — Sourcing & Shipping from China to the World"
+msgstr ""
+
+#: .\app\templates\index.html:23
+msgid "China → World"
+msgstr ""
+
+#: .\app\templates\index.html:27
+msgid "Sourcing & Shipping,"
+msgstr ""
+
+#: .\app\templates\index.html:29
+msgid "made simple."
+msgstr ""
+
+#: .\app\templates\index.html:35
+msgid ""
+"\n"
+"        We are your trusted partner on the ground in Shenzhen —\n"
+"        sourcing genuine suppliers, verifying factories,\n"
+"        consolidating cargo and shipping it safely to your doorstep.\n"
+"        "
+msgstr ""
+
+#: .\app\templates\index.html:55 .\app\templates\index.html:126
+#: .\app\templates\services.html:16
+msgid "Our Services"
+msgstr ""
+
+#: .\app\templates\index.html:66
+msgid "Years Experience"
+msgstr ""
+
+#: .\app\templates\index.html:71
+msgid "Shipments"
+msgstr ""
+
+#: .\app\templates\index.html:76
+msgid "Verified Suppliers"
+msgstr ""
+
+#: .\app\templates\index.html:101
+msgid "Worldwide Shipping"
+msgstr ""
+
+#: .\app\templates\index.html:106
+msgid "Secure Payments"
+msgstr ""
+
+#: .\app\templates\index.html:111
+msgid "Sea & Air Freight"
+msgstr ""
+
+#: .\app\templates\index.html:130
+msgid "Everything you need, end-to-end."
+msgstr ""
+
+#: .\app\templates\index.html:134
+msgid "From the first inquiry to the last container, we handle the details."
+msgstr ""
+
+#: .\app\templates\index.html:147
+msgid "Product Sourcing"
+msgstr ""
+
+#: .\app\templates\index.html:151
+msgid ""
+"\n"
+"          We locate the right manufacturers and negotiate\n"
+"          the best factory prices on your behalf.\n"
+"          "
+msgstr ""
+
+#: .\app\templates\index.html:165 .\app\templates\services.html:118
+msgid "Supplier Verification"
+msgstr ""
+
+#: .\app\templates\index.html:169
+msgid ""
+"\n"
+"          On-the-ground company visits and quality checks\n"
+"          before you commit a single dollar.\n"
+"          "
+msgstr ""
+
+#: .\app\templates\index.html:183 .\app\templates\quote.html:188
+msgid "Sea Freight"
+msgstr ""
+
+#: .\app\templates\index.html:187
+msgid ""
+"\n"
+"          Cost-effective LCL and FCL container shipping\n"
+"          from major Chinese ports.\n"
+"          "
+msgstr ""
+
+#: .\app\templates\index.html:201 .\app\templates\quote.html:192
+#: .\app\templates\services.html:185
+msgid "Air Freight"
+msgstr ""
+
+#: .\app\templates\index.html:205
+msgid ""
+"\n"
+"          Fast, tracked air-cargo for time-sensitive orders\n"
+"          and small parcels.\n"
+"          "
+msgstr ""
+
+#: .\app\templates\index.html:227
+msgid "The Sourcing Process"
+msgstr ""
+
+#: .\app\templates\index.html:232
+msgid "7 simple steps from inquiry to delivery."
+msgstr ""
+
+#: .\app\templates\index.html:246
+msgid "Initial Inquiry"
+msgstr ""
+
+#: .\app\templates\index.html:250
+msgid "Share details of the item, including product name and photos."
+msgstr ""
+
+#: .\app\templates\index.html:265
+msgid "Detailed Specifications"
+msgstr ""
+
+#: .\app\templates\index.html:269
+msgid "Share elaborated details such as required quantities and sizes."
+msgstr ""
+
+#: .\app\templates\index.html:284
+msgid "Negotiation & Consultation"
+msgstr ""
+
+#: .\app\templates\index.html:289
+msgid ""
+"\n"
+"              We negotiate locally with sellers and manufacturers.\n"
+"              A non-refundable $50 sourcing fee applies.\n"
+"              Feedback within 1–3 working days.\n"
+"              "
+msgstr ""
+
+#: .\app\templates\index.html:309
+msgid "Agreement & Payment"
+msgstr ""
+
+#: .\app\templates\index.html:313
+msgid ""
+"Once prices are agreed, payment is arranged via bank transfer or M-Pesa."
+msgstr ""
+
+#: .\app\templates\index.html:328
+msgid "Purchase & Confirmation"
+msgstr ""
+
+#: .\app\templates\index.html:332
+msgid "Goods are purchased and photos shared with the client for confirmation."
+msgstr ""
+
+#: .\app\templates\index.html:347
+msgid "Shipping"
+msgstr ""
+
+#: .\app\templates\index.html:351
+msgid "Arrangements are made according to client preference, by sea or air."
+msgstr ""
+
+#: .\app\templates\index.html:366
+msgid "Collection"
+msgstr ""
+
+#: .\app\templates\index.html:370
+msgid ""
+"Goods are loaded and a receipt is issued. Clients are notified to collect "
+"upon arrival."
+msgstr ""
+
+#: .\app\templates\index.html:385
+msgid "Sourcing process poster"
+msgstr ""
+
+#: .\app\templates\index.html:389
+msgid "Shipping rate card poster"
+msgstr ""
+
+#: .\app\templates\index.html:406
+msgid "Our Work"
+msgstr ""
+
+#: .\app\templates\index.html:410
+msgid "Business in Action"
+msgstr ""
+
+#: .\app\templates\index.html:414
+msgid ""
+"Real photos from sourcing, inspections, packing, and shipping operations."
+msgstr ""
+
+#: .\app\templates\index.html:424
+msgid "Warehouse storage"
+msgstr ""
+
+#: .\app\templates\index.html:428
+msgid "Warehouse Storage"
+msgstr ""
+
+#: .\app\templates\index.html:436
+msgid "Container loading"
+msgstr ""
+
+#: .\app\templates\index.html:440
+msgid "Container Loading"
+msgstr ""
+
+#: .\app\templates\index.html:448
+msgid "Quality inspection"
+msgstr ""
+
+#: .\app\templates\index.html:452
+msgid "Quality Inspection"
+msgstr ""
+
+#: .\app\templates\index.html:460
+msgid "Shenzhen sourcing"
+msgstr ""
+
+#: .\app\templates\index.html:464
+msgid "Shenzhen Sourcing"
+msgstr ""
+
+#: .\app\templates\index.html:472
+msgid "Packing goods"
+msgstr ""
+
+#: .\app\templates\index.html:476
+msgid "Packing & Consolidation"
+msgstr ""
+
+#: .\app\templates\index.html:484
+msgid "Air cargo shipping"
+msgstr ""
+
+#: .\app\templates\index.html:488
+msgid "Air Cargo Delivery"
+msgstr ""
+
+#: .\app\templates\index.html:506
+msgid ""
+"\n"
+"    SABBTCo. handled our first container shipment\n"
+"    from Shenzhen to Mombasa flawlessly.\n"
+"    Honest pricing, fast feedback,\n"
+"    and the goods arrived exactly as promised.\n"
+"    "
+msgstr ""
+
+#: .\app\templates\index.html:518
+msgid "Importer · Nairobi"
+msgstr ""
+
+#: .\app\templates\index.html:532
+msgid "Welcome — let's build a global partnership."
+msgstr ""
+
+#: .\app\templates\index.html:536
+msgid "Get a quote in 1–3 working days."
+msgstr ""
+
+#: .\app\templates\login.html:7
+msgid "Login — SABBTCo Client Portal"
+msgstr ""
+
+#: .\app\templates\login.html:19 .\app\templates\orders.html:15
+msgid "Client Portal"
+msgstr ""
+
+#: .\app\templates\login.html:23
+msgid "Welcome back."
+msgstr ""
+
+#: .\app\templates\login.html:25
+msgid "Let's ship."
+msgstr ""
+
+#: .\app\templates\login.html:30
+msgid ""
+"Sign in to track your shipments, view quotes, manage invoices, and chat with "
+"your dedicated SABBTCo. sourcing agent."
+msgstr ""
+
+#: .\app\templates\login.html:35
+msgid "Real-time shipment tracking"
+msgstr ""
+
+#: .\app\templates\login.html:39
+msgid "Sourcing requests history"
+msgstr ""
+
+#: .\app\templates\login.html:43
+msgid "Secure document storage"
+msgstr ""
+
+#: .\app\templates\login.html:53 .\app\templates\login.html:120
+msgid "Sign In"
+msgstr ""
+
+#: .\app\templates\login.html:57
+msgid "Enter your credentials to continue."
+msgstr ""
+
+#: .\app\templates\login.html:80
+msgid "Username"
+msgstr ""
+
+#: .\app\templates\login.html:85
+msgid "Enter username"
+msgstr ""
+
+#: .\app\templates\login.html:93
+msgid "Password"
+msgstr ""
+
+#: .\app\templates\login.html:98
+msgid "Enter password"
+msgstr ""
+
+#: .\app\templates\login.html:108
+msgid "Remember me"
+msgstr ""
+
+#: .\app\templates\login.html:112
+msgid "Forgot password?"
+msgstr ""
+
+#: .\app\templates\login.html:139
+msgid "or"
+msgstr ""
+
+#: .\app\templates\login.html:145
+msgid "Don’t have an account?"
+msgstr ""
+
+#: .\app\templates\login.html:148
+msgid "Register"
+msgstr ""
+
+#: .\app\templates\orders.html:5
+msgid "My Orders — SABBTCo"
+msgstr ""
+
+#: .\app\templates\orders.html:19
+msgid "My Orders"
+msgstr ""
+
+#: .\app\templates\orders.html:23
+msgid "Track your sourcing and shipping progress in real time."
+msgstr ""
+
+#: .\app\templates\orders.html:41
+msgid "Order No."
+msgstr ""
+
+#: .\app\templates\orders.html:45
+msgid "Product"
+msgstr ""
+
+#: .\app\templates\orders.html:49
+msgid "Qty"
+msgstr ""
+
+#: .\app\templates\orders.html:53
+msgid "Status"
+msgstr ""
+
+#: .\app\templates\orders.html:57
+msgid "Date"
+msgstr ""
+
+#: .\app\templates\orders.html:97
+msgid "No orders yet."
+msgstr ""
+
+#: .\app\templates\orders.html:101
+msgid "Once you place an order, it will appear here with its current status."
+msgstr ""
+
+#: .\app\templates\quote.html:6
+msgid "Request a Quote — SABBTCo"
+msgstr ""
+
+#: .\app\templates\quote.html:21
+msgid "Tell us what you need."
+msgstr ""
+
+#: .\app\templates\quote.html:25
+msgid "We respond with a sourcing & shipping plan within 1–3 working days."
+msgstr ""
+
+#: .\app\templates\quote.html:41
+msgid "Fast response, clear pricing."
+msgstr ""
+
+#: .\app\templates\quote.html:45
+msgid ""
+"Share your product details and our Shenzhen team will find verified "
+"suppliers, negotiate the best factory prices and prepare a complete shipping "
+"plan."
+msgstr ""
+
+#: .\app\templates\quote.html:53
+msgid "Add product photos/links"
+msgstr ""
+
+#: .\app\templates\quote.html:57
+msgid "Alibaba / 1688 links make sourcing faster."
+msgstr ""
+
+#: .\app\templates\quote.html:65
+msgid "Be clear on quantity"
+msgstr ""
+
+#: .\app\templates\quote.html:69
+msgid "MOQ affects pricing and shipping method."
+msgstr ""
+
+#: .\app\templates\quote.html:77
+msgid "Choose Sea or Air"
+msgstr ""
+
+#: .\app\templates\quote.html:81
+msgid "If unsure, we will recommend the best option."
+msgstr ""
+
+#: .\app\templates\quote.html:89
+msgid ""
+"\n"
+"        A non-refundable <b>$50 sourcing consultation fee</b> may apply at "
+"negotiation stage.\n"
+"        "
+msgstr ""
+
+#: .\app\templates\quote.html:120
+msgid "Full Name"
+msgstr ""
+
+#: .\app\templates\quote.html:130
+msgid "Email"
+msgstr ""
+
+#: .\app\templates\quote.html:142
+msgid "Phone (with code)"
+msgstr ""
+
+#: .\app\templates\quote.html:152
+msgid "Country"
+msgstr ""
+
+#: .\app\templates\quote.html:162
+msgid "Product Name"
+msgstr ""
+
+#: .\app\templates\quote.html:172
+msgid "Quantity"
+msgstr ""
+
+#: .\app\templates\quote.html:182
+msgid "Preferred Shipping"
+msgstr ""
+
+#: .\app\templates\quote.html:196
+msgid "Not sure — advise me"
+msgstr ""
+
+#: .\app\templates\quote.html:206
+msgid "Specifications & Notes"
+msgstr ""
+
+#: .\app\templates\quote.html:212
+msgid "Sizes, colors, target price, photos / links..."
+msgstr ""
+
+#: .\app\templates\quote.html:221
+msgid "Send Request"
+msgstr ""
+
+#: .\app\templates\quote.html:226
+msgid "We respond in 1–3 working days."
+msgstr ""
+
+#: .\app\templates\services.html:6
+msgid "Services & 2026 Rate Card — SABBTCo."
+msgstr ""
+
+#: .\app\templates\services.html:20
+msgid "Sourcing & Shipping"
+msgstr ""
+
+#: .\app\templates\services.html:22
+msgid "Rate Card 2026"
+msgstr ""
+
+#: .\app\templates\services.html:27
+msgid ""
+"From China to Kenya and worldwide — transparent rates, professional "
+"handling, no surprises."
+msgstr ""
+
+#: .\app\templates\services.html:40
+msgid "WhatsApp Us"
+msgstr ""
+
+#: .\app\templates\services.html:54
+msgid "What We Do"
+msgstr ""
+
+#: .\app\templates\services.html:58
+msgid "End-to-end services for importers."
+msgstr ""
+
+#: .\app\templates\services.html:62
+msgid ""
+"We help you source products, verify suppliers, consolidate cargo and ship "
+"safely by air or sea."
+msgstr ""
+
+#: .\app\templates\services.html:74
+msgid "Sourcing & Consultation"
+msgstr ""
+
+#: .\app\templates\services.html:78
+msgid ""
+"We help you identify trusted suppliers, negotiate pricing, and create a "
+"shipping plan."
+msgstr ""
+
+#: .\app\templates\services.html:83
+msgid "Fast Feedback"
+msgstr ""
+
+#: .\app\templates\services.html:87
+msgid "Trusted"
+msgstr ""
+
+#: .\app\templates\services.html:97
+msgid "Consolidation & Shipping"
+msgstr ""
+
+#: .\app\templates\services.html:101
+msgid ""
+"We consolidate goods from different suppliers and ship as one cost-efficient "
+"load."
+msgstr ""
+
+#: .\app\templates\services.html:108
+msgid "Affordable"
+msgstr ""
+
+#: .\app\templates\services.html:122
+msgid ""
+"We visit suppliers physically, inspect the company and send proof photos and "
+"videos."
+msgstr ""
+
+#: .\app\templates\services.html:127
+msgid "Factory Visit"
+msgstr ""
+
+#: .\app\templates\services.html:131
+msgid "Secure"
+msgstr ""
+
+#: .\app\templates\services.html:141 .\app\templates\services.html:295
+msgid "Supplier Payments"
+msgstr ""
+
+#: .\app\templates\services.html:145
+msgid "We help you pay Chinese suppliers safely using verified local accounts."
+msgstr ""
+
+#: .\app\templates\services.html:149
+msgid "Fee"
+msgstr ""
+
+#: .\app\templates\services.html:152
+msgid "Safe"
+msgstr ""
+
+#: .\app\templates\services.html:162
+msgid "Sea Freight (LCL / FCL)"
+msgstr ""
+
+#: .\app\templates\services.html:166
+msgid ""
+"Cost-effective sea shipping through trusted cargo networks and port handling."
+msgstr ""
+
+#: .\app\templates\services.html:171
+msgid "Bulk Cargo"
+msgstr ""
+
+#: .\app\templates\services.html:175
+msgid "Reliable"
+msgstr ""
+
+#: .\app\templates\services.html:189
+msgid ""
+"Fast delivery for urgent goods, with tracking support and safe packaging."
+msgstr ""
+
+#: .\app\templates\services.html:194
+msgid "Fast"
+msgstr ""
+
+#: .\app\templates\services.html:198
+msgid "Tracked"
+msgstr ""
+
+#: .\app\templates\services.html:208
+msgid "Trade Consultancy"
+msgstr ""
+
+#: .\app\templates\services.html:212
+msgid ""
+"Advice on customs regulations, product classification and importing "
+"strategies."
+msgstr ""
+
+#: .\app\templates\services.html:217
+msgid "Beginner Friendly"
+msgstr ""
+
+#: .\app\templates\services.html:221
+msgid "Professional"
+msgstr ""
+
+#: .\app\templates\services.html:231
+msgid "Documentation"
+msgstr ""
+
+#: .\app\templates\services.html:235
+msgid ""
+"We assist with invoices, packing lists, AWB/BL and required shipping "
+"paperwork."
+msgstr ""
+
+#: .\app\templates\services.html:240
+msgid "Paperwork"
+msgstr ""
+
+#: .\app\templates\services.html:244
+msgid "Handled"
+msgstr ""
+
+#: .\app\templates\services.html:260
+msgid "2026 Rate Card"
+msgstr ""
+
+#: .\app\templates\services.html:264
+msgid "Clear pricing, no confusion."
+msgstr ""
+
+#: .\app\templates\services.html:268
+msgid ""
+"Our service charges are transparent and communicated before any payment."
+msgstr ""
+
+#: .\app\templates\services.html:279
+msgid "Sourcing & Shipping Consultation"
+msgstr ""
+
+#: .\app\templates\services.html:283
+msgid "Non-refundable consultation fee for supplier sourcing and negotiation."
+msgstr ""
+
+#: .\app\templates\services.html:299
+msgid "We assist with supplier payments securely through our accounts."
+msgstr ""
+
+#: .\app\templates\services.html:311
+msgid "Service Fee"
+msgstr ""
+
+#: .\app\templates\services.html:315
+msgid "Service charge applied to sourcing and handling logistics."
+msgstr ""
+
+#: .\app\templates\services.html:327
+msgid "Company Visit & Verification"
+msgstr ""
+
+#: .\app\templates\services.html:331
+msgid "Factory visit and company verification report."
+msgstr ""
+
+#: .\app\templates\services.html:337
+msgid "Negotiable"
+msgstr ""
+
+#: .\app\templates\services.html:345
+msgid "Note:"
+msgstr ""
+
+#: .\app\templates\services.html:347
+msgid "Consultation feedback is provided within"
+msgstr ""
+
+#: .\app\templates\services.html:348
+msgid "working days"
+msgstr ""
+
+#: .\app\templates\services.html:350
+msgid "For bulk shipping rates, request a custom quote."
+msgstr ""
+
+#: .\app\templates\services.html:356
+msgid "Request a Custom Quote"
+msgstr ""
+
+#: .\app\templates\services.html:370
+msgid "Need help sourcing your next product?"
+msgstr ""
+
+#: .\app\templates\services.html:374
+msgid "Send your inquiry today and we’ll guide you step-by-step."
+msgstr ""
+
+#: .\app\templates\supplier_register.html:6
+msgid "Become a Supplier — SABBTCo."
+msgstr ""
+
+#: .\app\templates\supplier_register.html:16
+msgid "Supplier Portal"
+msgstr ""
+
+#: .\app\templates\supplier_register.html:20
+msgid "Become a"
+msgstr ""
+
+#: .\app\templates\supplier_register.html:22
+msgid "Verified Supplier"
+msgstr ""
+
+#: .\app\templates\supplier_register.html:27
+msgid ""
+"Register your company details and start receiving business inquiries from "
+"international buyers."
+msgstr ""
+
+#: .\app\templates\supplier_register.html:40
+msgid "Supplier Registration Form"
+msgstr ""
+
+#: .\app\templates\supplier_register.html:44
+msgid ""
+"Fill in the required details below. We will review and approve your supplier "
+"profile."
+msgstr ""
+
+#: .\app\templates\supplier_register.html:55
+msgid "Company Name"
+msgstr ""
+
+#: .\app\templates\supplier_register.html:60
+msgid "Enter company name"
+msgstr ""
+
+#: .\app\templates\supplier_register.html:67
+msgid "Contact Person"
+msgstr ""
+
+#: .\app\templates\supplier_register.html:72
+msgid "Enter full name"
+msgstr ""
+
+#: .\app\templates\supplier_register.html:79
+msgid "Email Address"
+msgstr ""
+
+#: .\app\templates\supplier_register.html:91
+msgid "Phone / WhatsApp"
+msgstr ""
+
+#: .\app\templates\supplier_register.html:103
+msgid "Location (City / Province)"
+msgstr ""
+
+#: .\app\templates\supplier_register.html:108
+msgid "Shenzhen, Guangdong"
+msgstr ""
+
+#: .\app\templates\supplier_register.html:115
+msgid "Business Category"
+msgstr ""
+
+#: .\app\templates\supplier_register.html:120
+msgid "Electronics, Furniture, Fashion..."
+msgstr ""
+
+#: .\app\templates\supplier_register.html:130
+msgid "Company Description"
+msgstr ""
+
+#: .\app\templates\supplier_register.html:134
+msgid "Tell us about your products and factory..."
+msgstr ""
+
+#: .\app\templates\supplier_register.html:143
+msgid "Create Supplier Account"
+msgstr ""
+
+#: .\app\templates\supplier_register.html:147
+msgid "Cancel"
+msgstr ""
+
+#: .\project\settings.py:138
+msgid "English"
+msgstr ""
+
+#: .\project\settings.py:139
+msgid "Swahili"
+msgstr ""
+
+#: .\project\settings.py:140
+msgid "German"
+msgstr ""
+
+#: .\project\settings.py:141
+msgid "Chinese"
+msgstr ""

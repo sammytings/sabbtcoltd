@@ -1,0 +1,294 @@
+{% extends 'dashboard/dashboard_base.html' %}
+
+{% block workspace_title %}
+
+<h1>News Feed</h1>
+
+<p>
+    Manage shipping, sourcing and consolidation updates.
+</p>
+
+{% endblock %}
+
+
+{% block content %}
+
+<style>
+
+.admin-news-container {
+    width: 100%;
+}
+
+.news-admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 15px;
+}
+
+.add-news-btn {
+    background: #dc2626;
+    color: white;
+    padding: 11px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.admin-news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.admin-news-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.admin-news-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.admin-news-body {
+    padding: 18px;
+}
+
+.admin-news-body h3 {
+    margin: 0 0 8px;
+    color: #111e38;
+}
+
+.admin-news-body p {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.news-status {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.published {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.unpublished {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.admin-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.admin-actions a,
+.admin-actions button {
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.edit-btn {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.delete-btn {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.view-btn {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+@media(max-width:900px) {
+    .admin-news-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width:600px) {
+    .news-admin-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .admin-news-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
+
+
+<div class="admin-news-container">
+
+    <div class="news-admin-header">
+
+        <div>
+
+            <h2>
+                News Posts
+            </h2>
+
+            <p>
+                {{ news_posts|length }} news post{{ news_posts|length|pluralize }}
+            </p>
+
+        </div>
+
+        <a
+            href="{% url 'news_create' %}"
+            class="add-news-btn"
+        >
+            + Create News
+        </a>
+
+    </div>
+
+
+    <div class="admin-news-grid">
+
+        {% for post in news_posts %}
+
+        <div class="admin-news-card">
+
+            {% if post.image %}
+
+            <img
+                src="{{ post.image.url }}"
+                alt="{{ post.image_alt|default:post.title }}"
+            >
+
+            {% endif %}
+
+            <div class="admin-news-body">
+
+                <h3>
+                    {{ post.title|default:"Untitled News" }}
+                </h3>
+
+                <span
+                    class="news-status
+                    {% if post.is_published %}
+                        published
+                    {% else %}
+                        unpublished
+                    {% endif %}"
+                >
+
+                    {% if post.is_published %}
+                        Published
+                    {% else %}
+                        Draft
+                    {% endif %}
+
+                </span>
+
+
+                <p>
+                    {% if post.description %}
+                        {{ post.description|truncatewords:20 }}
+                    {% else %}
+                        Photo-only update
+                    {% endif %}
+                </p>
+
+
+                <p>
+                    <strong>
+                        SEO:
+                    </strong>
+
+                    {{ post.seo_score }}/100
+                </p>
+
+
+                <p>
+                    <strong>
+                        Photos:
+                    </strong>
+
+                    {{ post.gallery_images.count|add:"1" }}
+                </p>
+
+
+                <div class="admin-actions">
+
+                    <a
+                        href="{% url 'news_detail' post.slug %}"
+                        target="_blank"
+                        class="view-btn"
+                    >
+                        View
+                    </a>
+
+                    <a
+                        href="{% url 'news_edit' post.pk %}"
+                        class="edit-btn"
+                    >
+                        Edit
+                    </a>
+
+                    <a
+                        href="{% url 'news_delete' post.pk %}"
+                        class="delete-btn"
+                    >
+                        Delete
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div style="
+            grid-column:1/-1;
+            background:white;
+            padding:50px;
+            text-align:center;
+            border-radius:15px;
+        ">
+
+            <h2>No News Posts</h2>
+
+            <p>
+                Create your first news update.
+            </p>
+
+            <a
+                href="{% url 'news_create' %}"
+                class="add-news-btn"
+            >
+                Create News
+            </a>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

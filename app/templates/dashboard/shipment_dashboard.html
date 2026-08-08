@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2 style="color:#0B1F3B;">Shipment Dashboard</h2>
+
+<!-- Summary Cards -->
+<div style="display:flex; gap:10px; margin:20px 0;">
+  <div>All: {{ total }}</div>
+  <div>Pending: {{ pending }}</div>
+  <div>In Transit: {{ in_transit }}</div>
+  <div>Delivered: {{ delivered }}</div>
+</div>
+
+<!-- Table -->
+<table style="width:100%; border-collapse:collapse;">
+  <thead>
+    <tr style="background:#1E5EFF; color:white;">
+      <th>Order ID</th>
+      <th>Product</th>
+      <th>Status</th>
+      <th>Shipping</th>
+      <th>Tracking</th>
+      <th>Updated</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for s in shipments %}
+    <tr style="border-bottom:1px solid #ddd;">
+      <td>{{ s.order_id }}</td>
+      <td>{{ s.product_name }}</td>
+      <td>{{ s.get_status_display }}</td>
+      <td>{{ s.get_shipping_method_display }}</td>
+      <td>{{ s.tracking_number }}</td>
+      <td>{{ s.updated_at }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

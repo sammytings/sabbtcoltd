@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+{% trans "My Profile — SABBTCo" %}
+{% endblock %}
+
+{% block content %}
+
+<!-- =========================
+   HERO
+========================= -->
+<section class="page-hero profile-hero">
+  <div class="container">
+    <span class="chip">{% trans "Account" %}</span>
+    <h1>{% trans "My Profile" %}</h1>
+    <p>{% trans "Manage your account details and view your activity." %}</p>
+  </div>
+</section>
+
+<!-- =========================
+   PROFILE CONTENT
+========================= -->
+<section class="section">
+  <div class="container profile-grid">
+
+    <!-- LEFT: USER INFO -->
+    <div class="profile-main">
+
+      <h2>{% trans "Account Details" %}</h2>
+
+      <div class="profile-row">
+        <span class="label">{% trans "Full Name" %}</span>
+        <span class="value">{{ user.get_full_name|default:user.username }}</span>
+      </div>
+
+      <div class="profile-row">
+        <span class="label">{% trans "Email" %}</span>
+        <span class="value">{{ user.email }}</span>
+      </div>
+
+      <div class="profile-row">
+        <span class="label">{% trans "Username" %}</span>
+        <span class="value">{{ user.username }}</span>
+      </div>
+
+      <div class="profile-row">
+        <span class="label">{% trans "Member Since" %}</span>
+        <span class="value">{{ user.date_joined|date:"F Y" }}</span>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: ACTIONS -->
+    <div class="profile-side">
+
+      <h3>{% trans "Quick Actions" %}</h3>
+
+      <a href="{% url 'quote' %}" class="profile-action">
+        {% trans "Request a Quote" %}
+      </a>
+
+      <a href="{% url 'tracking_search' %}" class="profile-action">
+        {% trans "Track Order" %}
+      </a>
+
+      <a href="#" class="profile-action">
+        {% trans "Edit Profile" %}
+      </a>
+
+      <a href="#" class="profile-action danger">
+        {% trans "Logout" %}
+      </a>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- =========================
+   CSS (MINIMAL CLEAN SYSTEM)
+========================= -->
+<style>
+
+/* HERO */
+.profile-hero {
+  padding: 5rem 0 4rem;
+  background: linear-gradient(135deg, rgba(43,42,133,0.95), rgba(15,23,42,0.9));
+  color: #fff;
+}
+
+/* LAYOUT */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2.5rem;
+}
+
+/* MAIN SECTION */
+.profile-main h2 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  color: #2B2A85;
+}
+
+/* ROWS (NO BOXES, JUST CLEAN LINES) */
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.profile-row:last-child {
+  border-bottom: none;
+}
+
+.label {
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.value {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+/* SIDE PANEL */
+.profile-side {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.profile-side h3 {
+  font-size: 1.1rem;
+  color: #2B2A85;
+  margin-bottom: 0.5rem;
+}
+
+/* ACTION LINKS */
+.profile-action {
+  display: block;
+  padding: 0.9rem 1rem;
+  text-decoration: none;
+  background: #f8fafc;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #0f172a;
+  transition: 0.2s;
+}
+
+.profile-action:hover {
+  background: #e2e8f0;
+}
+
+.profile-action.danger {
+  color: #E31E24;
+}
+
+/* CHIP (reused style) */
+.chip {
+  background: #00AEEF;
+  color: #fff;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+</style>
+
+{% endblock %}

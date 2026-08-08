@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+{{ news_post.meta_title|default:news_post.title|default:"SABBTCo. News Update" }}
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+.news-detail-page {
+    background: #f8fafc;
+    padding: 50px 20px 80px;
+}
+
+.news-detail-container {
+    max-width: 1000px;
+    margin: auto;
+}
+
+.news-detail-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.news-detail-header h1 {
+    font-size: 40px;
+    line-height: 1.2;
+    color: #111e38;
+    margin-bottom: 15px;
+}
+
+.news-date {
+    color: #dc2626;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.news-main-image {
+    width: 100%;
+    max-height: 600px;
+    object-fit: cover;
+    border-radius: 18px;
+    display: block;
+    margin-bottom: 35px;
+    box-shadow: 0 10px 35px rgba(15,23,42,.12);
+}
+
+.news-description {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 30px;
+    color: #334155;
+    font-size: 17px;
+    line-height: 1.85;
+    margin-bottom: 40px;
+}
+
+.news-description p {
+    margin-top: 0;
+}
+
+.news-gallery-title {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.news-gallery-title h2 {
+    color: #111e38;
+    font-size: 28px;
+}
+
+.news-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.news-gallery-item {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 5px 20px rgba(15,23,42,.07);
+}
+
+.news-gallery-item img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    display: block;
+    transition: transform .3s ease;
+}
+
+.news-gallery-item:hover img {
+    transform: scale(1.04);
+}
+
+.news-gallery-caption {
+    padding: 12px 15px;
+    color: #475569;
+    font-size: 14px;
+}
+
+.news-back {
+    display: inline-block;
+    margin-top: 40px;
+    background: #111e38;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.news-back:hover {
+    background: #dc2626;
+}
+
+@media(max-width: 800px) {
+
+    .news-detail-header h1 {
+        font-size: 30px;
+    }
+
+    .news-gallery {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+@media(max-width: 550px) {
+
+    .news-detail-page {
+        padding: 35px 15px 60px;
+    }
+
+    .news-detail-header h1 {
+        font-size: 26px;
+    }
+
+    .news-description {
+        padding: 20px;
+        font-size: 16px;
+    }
+
+    .news-gallery {
+        grid-template-columns: 1fr;
+    }
+
+    .news-gallery-item img {
+        height: auto;
+        max-height: 400px;
+    }
+
+}
+
+</style>
+
+<section class="news-detail-page">
+
+    <div class="news-detail-container">
+
+        <header class="news-detail-header">
+
+            <h1>
+                {{ news_post.title|default:"SABBTCo. News Update" }}
+            </h1>
+
+            {% if news_post.published_at %}
+
+            <div class="news-date">
+                Published {{ news_post.published_at|date:"F d, Y" }}
+            </div>
+
+            {% endif %}
+
+        </header>
+
+
+        <!-- MAIN IMAGE -->
+
+        {% if news_post.image %}
+
+        <img
+            src="{{ news_post.image.url }}"
+            alt="{{ news_post.image_alt|default:news_post.title }}"
+            class="news-main-image"
+        >
+
+        {% endif %}
+
+
+        <!-- DESCRIPTION -->
+
+        {% if news_post.description %}
+
+        <article class="news-description">
+
+            {{ news_post.description|linebreaks }}
+
+        </article>
+
+        {% endif %}
+
+
+        <!-- ADDITIONAL IMAGES -->
+
+        {% if gallery_images %}
+
+        <div class="news-gallery-title">
+
+            <h2>More Photos</h2>
+
+        </div>
+
+        <div class="news-gallery">
+
+            {% for gallery in gallery_images %}
+
+            <figure class="news-gallery-item">
+
+                <img
+                    src="{{ gallery.image.url }}"
+                    alt="{{ gallery.image_alt|default:news_post.title }}"
+                    loading="lazy"
+                >
+
+                {% if gallery.caption %}
+
+                <figcaption class="news-gallery-caption">
+                    {{ gallery.caption }}
+                </figcaption>
+
+                {% endif %}
+
+            </figure>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+
+        <a
+            href="{% url 'news_list' %}"
+            class="news-back"
+        >
+            ← Back to News
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}

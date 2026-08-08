@@ -1,0 +1,56 @@
+{% extends 'dashboard/dashboard_base.html' %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">Shipments Dashboard</h1>
+        <a href="/en/dashboard/shipments/add/" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add New Shipment
+        </a>
+    </div>
+
+    <!-- Dashboard Main Card -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Container Number</th>
+                            <th>Status</th>
+                            <th>Date Created</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for shipment in shipments %}
+                        <tr>
+                            <td class="ps-4">
+                                <span class="fw-bold text-dark">{{ shipment.container_number }}</span>
+                            </td>
+                            <td>
+                                <!-- Example status badge using standard Bootstrap classes -->
+                                <span class="badge bg-secondary rounded-pill">
+                                    {{ shipment.status|default:"Pending" }}
+                                </span>
+                            </td>
+                            <td>{{ shipment.created_at|date:"M d, Y H:i" }}</td>
+                            <td class="text-end pe-4">
+                                <a href="{% url 'shipment_detail' shipment.container_number %}" class="btn btn-sm btn-outline-secondary">View Details</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">
+                                <i class="fas fa-box-open fa-2x mb-3 d-block"></i>
+                                No shipments found. Click <strong>"Add New Shipment"</strong> to get started.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About SABBTCo | China Sourcing & Freight Forwarding Kenya{% endblock %}
+
+{% block extra_head %}
+<meta name="description" content="Learn about SABBTCo, a trusted China sourcing and freight forwarding company serving Kenya. Discover our mission, vision, location, and logistics services.">
+<meta name="keywords" content="about SABBTCo, freight forwarding Kenya, China sourcing company, shipping from China to Kenya, import services Kenya">
+<meta name="robots" content="index, follow">
+{% endblock %}
+
+{% block content %}
+
+<section class="about-page">
+
+    <!-- HERO -->
+    <div class="about-hero">
+        <h1>About SABBTCo</h1>
+        <p>
+            SABBTCo is a trusted sourcing and freight forwarding company helping businesses
+            and individuals import goods from China to Kenya with confidence, speed, and transparency.
+        </p>
+    </div>
+
+    <!-- EXISTING IMAGES -->
+    <!-- Keep your previous images here -->
+    <div class="about-existing-images">
+        <img src="{% static 'img/about-port.jpg' %}" alt="SABBTCo logistics">
+        <img src="{% static 'img/hero-cargo.jpg' %}" alt="SABBTCo shipping">
+    </div>
+
+    <!-- COMPANY OVERVIEW -->
+    <div class="about-card">
+        <h2>Company Overview</h2>
+        <p>
+            SABBTCo specializes in product sourcing, supplier verification, freight forwarding,
+            customs clearance, shipment tracking, and door-to-door delivery. We bridge the gap
+            between Chinese manufacturers and East African buyers by providing secure and efficient logistics solutions.
+        </p>
+    </div>
+
+    <!-- MISSION -->
+    <div class="about-card">
+        <h2>Our Mission</h2>
+        <p>
+            To simplify global trade by making sourcing, shipping, and delivery from China to Kenya
+            affordable, transparent, and reliable for every client.
+        </p>
+    </div>
+
+    <!-- VISION -->
+    <div class="about-card">
+        <h2>Our Vision</h2>
+        <p>
+            To become Africa’s most trusted cross-border sourcing and logistics partner,
+            connecting businesses to global supply chains efficiently.
+        </p>
+    </div>
+
+    <!-- LOCATION -->
+    <div class="about-card">
+        <h2>Our Location</h2>
+        <p>
+            We operate between <strong>Shenzhen, China</strong> and <strong>Nairobi, Kenya</strong>,
+            enabling seamless sourcing, freight consolidation, and delivery.
+        </p>
+    </div>
+
+    <!-- SERVICES -->
+    <div class="about-card">
+        <h2>Our Services</h2>
+        <ul class="services-list">
+            <li>Product sourcing from China</li>
+            <li>Supplier verification</li>
+            <li>Air freight</li>
+            <li>Sea freight</li>
+            <li>Customs clearance</li>
+            <li>Shipment tracking</li>
+            <li>Door-to-door delivery</li>
+        </ul>
+    </div>
+
+    <!-- TEAM -->
+    <section class="team-section">
+        <h2>Meet Our Team</h2>
+        <p>Dedicated professionals working across China and Kenya.</p>
+
+        <div class="team-wrapper">
+            <div class="team-slider" id="teamSlider">
+                <img src="{% static 'img/team1.png' %}" alt="">
+                <img src="{% static 'img/team2.png' %}" alt="">
+                <img src="{% static 'img/team3.png' %}" alt="">
+                <img src="{% static 'img/team4.png' %}" alt="">
+                <img src="{% static 'img/team5.png' %}" alt="">
+                <img src="{% static 'img/team6.png' %}" alt="">
+                <img src="{% static 'img/team7.png' %}" alt="">
+                <img src="{% static 'img/team8.png' %}" alt="">
+                <img src="{% static 'img/team9.png' %}" alt="">
+                <img src="{% static 'img/team10.png' %}" alt="">
+            </div>
+        </div>
+    </section>
+
+</section>
+
+<style>
+.about-page{
+    max-width:1200px;
+    margin:auto;
+    padding:40px 20px;
+}
+
+.about-hero{
+    text-align:center;
+    margin-bottom:50px;
+}
+
+.about-hero h1{
+    font-size:42px;
+    color:#0f172a;
+}
+
+.about-hero p{
+    max-width:800px;
+    margin:auto;
+    color:#64748b;
+    line-height:1.8;
+}
+
+.about-existing-images{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+    margin-bottom:40px;
+}
+
+.about-existing-images img{
+    width:100%;
+    border-radius:18px;
+    object-fit:cover;
+}
+
+.about-card{
+    background:white;
+    padding:28px;
+    border-radius:18px;
+    margin-bottom:25px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.08);
+}
+
+.about-card h2{
+    color:#c1121f;
+    margin-bottom:15px;
+}
+
+.services-list{
+    padding-left:20px;
+}
+
+.services-list li{
+    margin-bottom:10px;
+}
+
+.team-section{
+    margin-top:70px;
+    text-align:center;
+}
+
+.team-wrapper{
+    overflow:hidden;
+    margin-top:30px;
+}
+
+.team-slider{
+    display:flex;
+    gap:20px;
+    transition:transform 0.8s ease;
+}
+
+.team-slider img{
+    width:calc((100% - 40px)/3);
+    height:320px;
+    object-fit:cover;
+    border-radius:18px;
+    flex-shrink:0;
+}
+
+@media(max-width:768px){
+    .about-existing-images{
+        grid-template-columns:1fr;
+    }
+
+    .team-slider img{
+        width:calc((100% - 20px)/2);
+        height:240px;
+    }
+}
+</style>
+
+<script>
+const slider = document.getElementById("teamSlider");
+const total = slider.children.length;
+let index = 0;
+
+function visibleCount(){
+    return window.innerWidth <= 768 ? 2 : 3;
+}
+
+function rotateTeam(){
+    const count = visibleCount();
+    index += count;
+    if(index >= total){
+        index = 0;
+    }
+    const width = slider.children[0].offsetWidth + 20;
+    slider.style.transform = `translateX(-${index * width}px)`;
+}
+
+setInterval(rotateTeam, 3000);
+</script>
+
+{% endblock %}

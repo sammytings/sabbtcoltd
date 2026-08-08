@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Our Services - SABBTCo" %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/services.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="services-page">
+
+  <!-- ===== HERO ===== -->
+  <div class="hero">
+    <div class="container">
+      <h1>{% trans "Shipping & Sourcing Solutions" %}</h1>
+      <p>{% trans "Reliable sourcing, supplier verification, cargo consolidation, and freight services from China to Kenya." %}</p>
+
+      <div class="btns">
+        <a href="{% url 'quote' %}"
+           class="btn btn-primary quote-link"
+           data-auth="{{ user.is_authenticated|lower }}"
+           data-login-url="{% url 'login' %}">
+          {% trans "Request Quote" %}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SERVICES GRID ===== -->
+  <section>
+    <div class="container">
+      <h2>{% trans "Our Services" %}</h2>
+      <p class="lead">{% trans "Everything you need to import with confidence." %}</p>
+
+      <div class="grid">
+
+        <div class="card">
+          <div class="icon">Search</div>
+          <h3>{% trans "Product Sourcing" %}</h3>
+          <p>{% trans "We identify trusted manufacturers and negotiate competitive prices on your behalf." %}</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">Factory</div>
+          <h3>{% trans "Supplier Verification" %}</h3>
+          <p>{% trans "We conduct background checks and verify factories before any payments are made." %}</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">Box</div>
+          <h3>{% trans "Cargo Consolidation" %}</h3>
+          <p>{% trans "We combine multiple purchases into a single shipment to help reduce shipping costs." %}</p>
+        </div>
+
+        <div class="card">
+          <div class="icon">Transport</div>
+          <h3>{% trans "Air & Sea Freight" %}</h3>
+          <p>{% trans "Fast and secure logistics services from China to Kenya." %}</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RATE CARD ===== -->
+  <section>
+    <div class="container">
+      <h2>{% trans "2026 Rate Card" %}</h2>
+
+      <div class="rates">
+
+        <div class="row">
+          <div>
+            <h4>{% trans "Consultation" %}</h4>
+            <small>{% trans "Supplier sourcing consultation service." %}</small>
+          </div>
+          <div class="price">$50</div>
+        </div>
+
+        <div class="row">
+          <div>
+            <h4>{% trans "Supplier Payments" %}</h4>
+          </div>
+          <div class="price">3%</div>
+        </div>
+
+        <div class="row">
+          <div>
+            <h4>{% trans "Service Fee" %}</h4>
+          </div>
+          <div class="price">5%</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section>
+    <div class="container">
+      <div class="cta">
+        <h2>{% trans "Ready to Import?" %}</h2>
+        <p>{% trans "Contact SABBTCo today to get a tailored quotation for your needs." %}</p>
+        <br>
+        <a href="{% url 'quote' %}"
+           class="btn btn-primary quote-link"
+           data-auth="{{ user.is_authenticated|lower }}"
+           data-login-url="{% url 'login' %}">
+          {% trans "Get Started" %}
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+{# No custom loader script needed — base.html handles all quote-link clicks #}
+
+{% endblock %}

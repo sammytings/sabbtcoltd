@@ -1,0 +1,361 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}
+{% trans "My Orders — SABBTCo" %}
+{% endblock %}
+
+{% block content %}
+
+<section class="page-hero orders-hero">
+    <div class="container">
+        <span class="chip">
+            {% trans "Client Portal" %}
+        </span>
+        <h1>
+            {% trans "My Orders" %}
+        </h1>
+        <p>
+            {% trans "Track your sourcing, shipment and delivery updates in real time." %}
+        </p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% if orders %}
+        <div class="orders-wrapper">
+
+            <div class="orders-head">
+                <span>{% trans "Order" %}</span>
+                <span>{% trans "Product Details" %}</span>
+                <span>{% trans "Status" %}</span>
+                <span>{% trans "Tracking" %}</span>
+                <span>{% trans "Total" %}</span>
+                <span>{% trans "Date" %}</span>
+                <span>{% trans "Action" %}</span>
+            </div>
+
+            {% for order in orders %}
+            <div class="orders-card-wrapper" style="border-bottom: 1px solid #f1f5f9;">
+
+                <div class="orders-row" style="border-bottom: none;">
+
+                    <div class="order-col">
+                        <strong class="order-id-txt">#{{ order.order_id }}</strong>
+                    </div>
+
+                    <div class="order-col">
+                        <h4>{{ order.product_name }}</h4>
+                        <small>{% trans "Qty:" %} {{ order.quantity }}</small>
+                        {% if order.product_description %}
+                            <div style="margin-top: 6px; font-size: 0.8rem; color: #64748b;">
+                                📝 <em>{{ order.product_description|truncatewords:10 }}</em>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="order-col">
+                        <span class="status-badge {{ order.status|lower }}">
+                            {{ order.get_status_display }}
+                        </span>
+                    </div>
+
+                    <div class="order-col">
+                        {% if order.shipment.tracking_number %}
+                            <span class="tracking-number">
+                                {{ order.shipment.tracking_number }}
+                            </span>
+                        {% else %}
+                            <span class="muted">{% trans "Pending" %}</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="order-col">
+                        <span class="muted">
+                            {% trans "Pricing available in details" %}
+                        </span>
+                    </div>
+
+                    <div class="order-col date-col">
+                        {{ order.created_at|date:"M d, Y" }}
+                    </div>
+
+                    <div class="order-col" style="display:flex; flex-direction:column; gap:8px;">
+                        {% if order.order_id %}
+                            <a href="{% url 'order_detail' order.order_id %}"
+                               class="btn btn-primary btn-sm btn-terminal-action">
+                                {% trans "View Details" %}
+                            </a>
+                        {% else %}
+                            <span class="text-muted">{% trans "No Order ID" %}</span>
+                        {% endif %}
+
+                        {% if order.shipment %}
+                        <a href="{% url 'track_container' order.shipment.container_number %}"
+                           class="btn btn-sm"
+                           style="background:#00AEEF;color:white;text-decoration:none;padding:8px 12px;border-radius:6px;text-align:center;font-weight:600;">
+                            <i class="fa-solid fa-location-dot"></i>
+                            {% trans "Track Shipment" %}
+                        </a>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+                {% if order.found_items.all or order.cbm_total > 0 %}
+                <div class="warehouse-specs-drawer" style="background:#f8fafc;padding:1.25rem 1.5rem;margin:0 1.5rem 1.5rem 1.5rem;border-radius:4px;border:1px solid #e2e8f0;">
+                    <h5 style="margin:0 0 0.85rem 0;font-size:0.85rem;color:#2B2A85;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;">
+                        🇨🇳 {% trans "Verified Warehouse Packaging Specs" %}
+                    </h5>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;align-items:center;">
+                        <div style="font-size:0.85rem;color:#334155;line-height:1.6;">
+                            <div>🌐 <strong>{% trans "Destination:" %}</strong> {{ order.destination|default:"Nairobi, Kenya" }}</div>
+                            <div>⚖️ <strong>{% trans "Gross Weight:" %}</strong> {{ order.weight_kg|default:"0.00" }} KG</div>
+                            <div>📐 <strong>{% trans "Dimensions:" %}</strong> {{ order.length_cm|floatformat:0 }} × {{ order.width_cm|floatformat:0 }} × {{ order.height_cm|floatformat:0 }} cm</div>
+                            <div>📊 <strong>{% trans "Total Volume:" %}</strong> <span style="font-family:monospace;font-weight:600;color:#00AEEF;">{{ order.cbm_total|floatformat:4 }} CBM</span></div>
+                        </div>
+                        <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;">
+                            {% if order.found_items.all %}
+                                {% for item in order.found_items.all %}
+                                    <div style="position:relative;flex-shrink:0;width:65px;height:65px;border-radius:4px;overflow:hidden;border:1px solid #cbd5e1;background:#fff;" title="{{ item.item_name }}">
+                                        <img src="{{ item.admin_image.url }}" alt="{{ item.item_name }}" style="width:100%;height:100%;object-fit:cover;">
+                                    </div>
+                                {% endfor %}
+                            {% elif order.product_image %}
+                                <div style="position:relative;flex-shrink:0;width:65px;height:65px;border-radius:4px;overflow:hidden;border:1px solid #cbd5e1;background:#fff;" title="Sourcing Sample">
+                                    <img src="{{ order.product_image.url }}" alt="Sourcing Sample" style="width:100%;height:100%;object-fit:cover;">
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div style="text-align:right;font-size:0.82rem;color:#64748b;">
+                            <span>{% trans "Freight Mode:" %}</span>
+                            <strong style="color:#2B2A85;display:block;margin-top:2px;font-weight:700;">
+                                {% if order.shipping_method == 'AIR' %}✈️ {% trans "Air Freight" %}{% else %}🚢 {% trans "Sea Freight" %}{% endif %}
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        {# ── Empty state — quote button uses base.html quote-link system ── #}
+        <div class="empty-orders">
+            <div id="no-orders-lottie" class="lottie-box"></div>
+            <h2>{% trans "No orders yet" %}</h2>
+            <p>{% trans "Once you submit a sourcing request, your shipment progress will appear here." %}</p>
+            <a href="{% url 'quote' %}"
+               class="btn btn-primary btn-terminal-action quote-link"
+               data-auth="{{ user.is_authenticated|lower }}"
+               data-login-url="{% url 'login' %}">
+                {% trans "Request a Quote" %}
+            </a>
+        </div>
+
+        {% endif %}
+    </div>
+</section>
+
+<style>
+
+:root {
+    --navy:   #0f172a;
+    --blue:   #1F3AA8;
+    --sky:    #11B5F4;
+    --red:    #F41E2D;
+    --bg:     #f6f9ff;
+    --card:   #ffffff;
+    --text:   #0f172a;
+    --muted:  #64748b;
+    --border: #e2e8f0;
+    --shadow: 0 10px 25px rgba(15,23,42,0.06);
+}
+
+/* ── Hero ── */
+.orders-hero {
+    padding: 70px 0;
+    background: linear-gradient(120deg, var(--navy), var(--blue));
+    color: #fff;
+}
+.orders-hero h1 {
+    font-size: 42px;
+    margin: 10px 0;
+    letter-spacing: -0.5px;
+}
+.orders-hero p { color: rgba(255,255,255,0.75); max-width: 600px; }
+.orders-hero .chip {
+    background: rgba(244,30,45,0.15);
+    border: 1px solid rgba(244,30,45,0.35);
+    color: #fff;
+}
+
+/* ── Chip ── */
+.chip {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* ── Wrapper ── */
+.orders-wrapper {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-top: 40px;
+}
+
+/* ── Table header ── */
+.orders-head {
+    display: grid;
+    grid-template-columns: 0.8fr 2.4fr 1fr 1.3fr 1fr 1fr 1fr;
+    padding: 14px 18px;
+    background: var(--navy);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--red);
+}
+.orders-head span { position: relative; }
+
+/* ── Row ── */
+.orders-row {
+    display: grid;
+    grid-template-columns: 0.8fr 2.4fr 1fr 1.3fr 1fr 1fr 1fr;
+    padding: 16px 18px;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    transition: background .15s ease;
+}
+.orders-row:hover { background: #f8fafc; }
+
+/* ── Order ID ── */
+.order-id-txt {
+    font-family: monospace;
+    color: var(--red);
+    font-weight: 600;
+}
+
+/* ── Status badges ── */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-block;
+    text-transform: uppercase;
+}
+.pending    { background: #fff7db; color: #a16207; }
+.processing { background: #dbeafe; color: #1d4ed8; }
+.paid       { background: #dcfce7; color: #166534; }
+.shipping   { background: #e0f2fe; color: #0369a1; }
+.arrived    { background: #ede9fe; color: #6d28d9; }
+.delivered  { background: #dcfce7; color: #166534; }
+.cancelled  { background: #fee2e2; color: #991b1b; }
+
+/* ── Tracking number ── */
+.tracking-number {
+    font-family: monospace;
+    font-size: 12px;
+    background: #f1f5f9;
+    padding: 5px 8px;
+    border-radius: 6px;
+    color: var(--navy);
+}
+
+/* ── Buttons ── */
+.btn {
+    display: inline-block;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    text-align: center;
+    text-decoration: none;
+    transition: .15s ease;
+    font-family: inherit;
+    border: none;
+    cursor: pointer;
+}
+.btn-primary { background: #2B2A85; color: #fff; border: 1px solid #2B2A85; }
+.btn-terminal-action { background: var(--red); border: 1px solid var(--red); color: #fff; }
+.btn-primary:hover,
+.btn-terminal-action:hover {
+    background: var(--red);
+    border-color: var(--red);
+    color: #fff;
+    transform: translateY(-2px);
+}
+.orders-row a[href*="track_container"] {
+    background: var(--sky) !important;
+    border: 1px solid var(--sky) !important;
+    color: #fff !important;
+    transition: none !important;
+}
+.orders-row a[href*="track_container"]:hover {
+    background: var(--sky) !important;
+    border: 1px solid var(--sky) !important;
+    color: #fff !important;
+}
+
+/* ── Warehouse specs ── */
+.warehouse-specs-drawer {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+/* ── Empty state ── */
+.empty-orders {
+    text-align: center;
+    padding: 60px 20px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #fff;
+    margin-top: 40px;
+}
+.lottie-box {
+    width: 240px;
+    height: 240px;
+    margin: 0 auto 20px auto;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1000px) {
+    .orders-head { display: none; }
+    .orders-row  { grid-template-columns: 1fr; gap: 10px; }
+    .orders-hero h1 { font-size: 30px; }
+}
+@media (max-width: 768px) {
+    .lottie-box { width: 180px; height: 180px; }
+}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var container = document.getElementById("no-orders-lottie");
+    if (container) {
+        lottie.loadAnimation({
+            container: container,
+            renderer:  "svg",
+            loop:      true,
+            autoplay:  true,
+            path:      "{% static 'animations/nothing.json' %}"
+        });
+    }
+});
+</script>
+
+{% endblock %}

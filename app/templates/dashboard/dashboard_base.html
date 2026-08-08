@@ -1,0 +1,1027 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SABBTCo. Admin Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+    <style>
+        :root {
+            --primary-navy: #111e38;
+            --accent-red: #dc2626;
+            --surface-bg: #f8fafc;
+            --border-light: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        body {
+            background-color: var(--surface-bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+
+        .notification-btn {
+            position: relative;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .notification-btn i {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            transition: color 0.15s ease;
+        }
+
+        .notification-btn:hover i {
+            color: var(--text-main);
+        }
+
+        .notification-btn span {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--accent-red);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 50%;
+            padding: 2px 6px;
+            min-width: 18px;
+            text-align: center;
+            border: 2px solid #ffffff;
+        }
+
+        .notification-btn span:empty,
+        .notification-btn span[data-count="0"] {
+            display: none;
+        }
+
+        .notification-dropdown {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            width: 340px;
+            background: #ffffff;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            border: 1px solid var(--border-light);
+            z-index: 9999;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .notification-dropdown.active {
+            display: block;
+        }
+
+        .notification-dropdown-header {
+            padding: 12px 16px;
+            background-color: #f8fafc;
+            border-bottom: 1px solid var(--border-light);
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-main);
+        }
+
+        .notification-item {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            text-align: left;
+            white-space: normal;
+            transition: background-color 0.1s ease;
+        }
+
+        .notification-item:hover {
+            background-color: #f8fafc;
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item strong {
+            display: block;
+            font-size: 13.5px;
+            color: var(--text-main);
+            margin-bottom: 3px;
+            font-weight: 600;
+        }
+
+        .notification-item p {
+            margin: 0 0 6px 0;
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.4;
+        }
+
+        .notification-item small {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: ui-monospace, SFMono-Regular, monospace;
+        }
+
+        /* 🛠️ TABLE CONTENT RE-ALIGNMENT (Fixes image_3134fe.png Squeezing) */
+        .dashboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .dashboard-table th {
+            padding: 14px 16px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: var(--text-muted);
+            font-weight: 700;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .dashboard-table td {
+            padding: 16px;
+            font-size: 0.9rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .notes-box a {
+            color: #4f46e5 !important;
+            text-decoration: underline !important;
+            word-break: break-all;
+        }
+
+        /* Freight & Status Badges CSS overrides */
+        .status-badge {
+            display: inline-block;
+            padding: 0.35rem 0.65rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.78rem;
+        }
+        .status-badge.on-hold { background-color: #f1f5f9; color: #334155; }
+        .status-badge.pending { background-color: #fef3c7; color: #92400e; }
+        .status-badge.info { background-color: #e0f2fe; color: #0369a1; }
+
+        .freight-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .freight-badge.sea { background-color: #e0f2fe; color: #0369a1; }
+        .freight-badge.air { background-color: #f3e8ff; color: #6b21a8; }
+        .freight-badge.none { background-color: #f1f5f9; color: #64748b; }
+
+        .action-card-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+            padding: 12px 16px;
+            background-color: #ffffff;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            text-decoration: none;
+            color: var(--text-main);
+            text-align: left;
+            transition: all 0.15s ease;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+
+        .action-card-btn:hover {
+            background-color: #f8fafc;
+            border-color: #cbd5e1;
+            transform: translateY(-1px);
+        }
+
+        .action-card-btn .icon-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: rgba(220, 38, 38, 0.06);
+            color: var(--accent-red);
+            border-radius: 6px;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .action-card-btn.secondary-action .icon-box {
+            background-color: rgba(17, 30, 56, 0.06);
+            color: var(--primary-navy);
+        }
+
+        .action-card-btn h5 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .action-card-btn p {
+            margin: 2px 0 0 0;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .admin-logo{
+    width:58px;
+    height:58px;
+    object-fit:contain;
+}
+.dashboard-layout{
+    display:flex;
+    min-height:100vh;
+}
+
+.sidebar{
+    width:280px;
+    min-width:280px;
+    transition:0.3s ease;
+}
+
+.main-content{
+    flex:1;
+    padding:24px;
+    overflow-x:hidden;
+}
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+}
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:20px;
+}
+
+.mobile-topbar{
+    display:none;
+}
+
+.sidebar-overlay{
+    display:none;
+}
+
+@media (max-width: 992px){
+    .stats-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .dashboard-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media (max-width: 768px){
+
+    .mobile-topbar{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:14px 18px;
+        background:white;
+        border-bottom:1px solid #e2e8f0;
+        position:sticky;
+        top:0;
+        z-index:1000;
+    }
+
+    .sidebar{
+        position:fixed;
+        left:-300px;
+        top:0;
+        height:100%;
+        z-index:9999;
+    }
+
+    .sidebar.show{
+        left:0;
+    }
+
+    .sidebar-overlay{
+        display:block;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.45);
+        opacity:0;
+        visibility:hidden;
+        z-index:9998;
+        transition:.3s;
+    }
+
+    .sidebar-overlay.show{
+        opacity:1;
+        visibility:visible;
+    }
+
+    .stats-grid{
+        grid-template-columns:1fr;
+    }
+
+    .topbar{
+        flex-direction:column;
+        gap:15px;
+        align-items:flex-start;
+    }
+
+    .admin-profile div{
+        display:none;
+    }
+
+    .main-content{
+        padding:16px;
+    }
+
+    .dashboard-table{
+        min-width:1100px;
+    }
+}
+
+.mobile-logo{
+    width:45px;
+    height:45px;
+    object-fit:contain;
+}
+.sidebar-nav{
+    display:flex;
+    flex-direction:column;
+    padding:20px 12px;
+}
+
+.sidebar-nav a{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 16px;
+    color:#cbd5e1;
+    text-decoration:none;
+    border-radius:10px;
+    margin-bottom:6px;
+    transition:.25s;
+}
+
+.sidebar-nav a:hover,
+.sidebar-nav a.active{
+    background:rgba(255,255,255,0.08);
+    color:white;
+}
+
+.sidebar-nav i{
+    width:24px;
+    min-width:24px;
+    text-align:center;
+    font-size:18px;
+    display:inline-block;
+}
+.dashboard-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.dashboard-table thead th {
+    position: sticky;
+    top: 0;
+    background: #f8fafc;
+    z-index: 2;
+    padding: 14px 12px;
+    font-size: 13px;
+}
+
+.dashboard-table tbody tr {
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border-radius: 12px;
+}
+
+.dashboard-table td {
+    padding: 14px 12px;
+    vertical-align: middle;
+    font-size: 14px;
+}
+.mobile-orders {
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    .table-responsive {
+        display: none !important;
+    }
+
+    .mobile-orders {
+        display: block;
+        width: 100%;
+    }
+
+    .mobile-order-card {
+        background: white;
+        border-radius: 18px;
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+        border: 1px solid #eef2f7;
+    }
+
+    .mobile-order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+        gap: 10px;
+    }
+
+    .mobile-order-header h4 {
+        margin: 0;
+        font-size: 16px;
+        color: #0f172a;
+    }
+
+    .mobile-order-header small {
+        color: #64748b;
+    }
+
+    .mobile-order-body {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .mobile-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .mobile-row span {
+        color: #64748b;
+        font-size: 13px;
+        min-width: 90px;
+    }
+
+    .mobile-row strong {
+        color: #0f172a;
+        font-size: 14px;
+        text-align: right;
+        word-break: break-word;
+    }
+
+    .mobile-image-wrap {
+        margin-top: 12px;
+        text-align: center;
+    }
+
+    .mobile-image-wrap img {
+        width: 100%;
+        max-height: 220px;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+}
+.sidebar {
+    transition: left 0.3s ease;
+}
+
+    </style>
+    {% block extrahead %}{% endblock %}
+</head>
+
+<body>
+
+<div class="mobile-topbar">
+    <button class="menu-toggle" id="menuToggle">
+        <span></span><span></span><span></span>
+    </button>
+
+    <img src="{% static 'img/logo.png' %}" class="mobile-logo" alt="Logo">
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="dashboard-layout">
+
+    <!-- SIDEBAR NAVIGATION PANEL -->
+    <aside class="sidebar" id="sidebar" style="background-color: var(--primary-navy);">
+   <div class="sidebar-logo">
+    <img src="{% static 'img/logo.png' %}" alt="SABBTCo Logo" class="admin-logo">
+    <div class="logo-text">
+        <h2>SABBTCo.</h2>
+        <span>Admin Dashboard</span>
+    </div>
+</div>
+        <nav class="sidebar-nav">
+            <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <i class="fa-solid fa-chart-line"></i> Dashboard
+            </a>
+            <a href="{% url 'Orders_alt' %}"
+   class="{% if request.resolver_match.url_name == 'Orders_alt' %}active{% endif %}">
+    <i class="fa-solid fa-box"></i> Orders
+</a>
+            </a>
+            <a href="{% url 'shipment_dashboard' %}" class="{% if request.resolver_match.url_name == 'shipment_dashboard' %}active{% endif %}">
+                <i class="fa-solid fa-ship"></i> Shipments
+            </a>
+        
+            <a href="{% url 'customers' %}" class="{% if request.resolver_match.url_name == 'customers' %}active{% endif %}">
+                <i class="fa-solid fa-users"></i> Customers
+            </a>
+            <a href="{% url 'news_admin_list' %}"
+   class="{% if request.resolver_match.url_name == 'news_admin_list' or request.resolver_match.url_name == 'news_create' or request.resolver_match.url_name == 'news_edit' %}active{% endif %}">
+    <i class="fa-solid fa-newspaper"></i>
+    News Feed
+</a>
+           
+            <a href="{%url 'reports' %}">
+                <i class="fa-solid fa-chart-pie"></i> Reports
+            </a>
+            <div class="settings-dropdown" style="margin-top:16px;border-top:1px solid rgba(255,255,255,0.05);padding-top:16px;">
+    <a href="#" onclick="toggleSettingsMenu(event)">
+        <i class="fa-solid fa-gear"></i> Settings
+        <i class="fa-solid fa-chevron-down" style="margin-left:auto;"></i>
+    </a>
+
+    <div id="settingsMenu" style="display:none;padding-left:20px;margin-top:8px;">
+        <a href="{% url 'change_password' %}" style="display:block;padding:10px 0;color:#cbd5e1;text-decoration:none;">
+            Change Password
+        </a>
+
+        <a href="{% url 'add_admin' %}" style="display:block;padding:10px 0;color:#cbd5e1;text-decoration:none;">
+            Add Admin
+        </a>
+    </div>
+</div>
+     
+<a href="{% url 'admin_logout' %}"
+   onclick="return confirm('Logout from admin dashboard?')"
+   style="color:#fca5a5;">
+    <i class="fa-solid fa-right-from-bracket"></i> Logout
+</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN DATA DISPLAY COMPONENT WRAPPER -->
+    <main class="main-content">
+        
+        <div class="topbar">
+            <div>
+                {% block workspace_title %}
+                <h1>Dashboard</h1>
+                <p>Welcome back, Admin</p>
+                {% endblock workspace_title %}
+            </div>
+
+            <div class="topbar-right">
+                <div class="notification-btn" id="notificationBtn">
+                    <i class="fa-regular fa-bell"></i>
+                    {% if unread_count > 0 %}
+                        <span data-count="{{ unread_count }}">{{ unread_count }}</span>
+                    {% endif %}
+
+                    <div class="notification-dropdown" id="notificationDropdown">
+                        <div class="notification-dropdown-header">System Notifications</div>
+                        {% for n in notifications %}
+                        <div class="notification-item">
+                            <strong>{{ n.title }}</strong>
+                            <p>{{ n.message }}</p>
+                            <small>{{ n.created_at|date:"Y-m-d H:i" }}</small>
+                        </div>
+                        {% empty %}
+                        <div class="notification-item" style="text-align: center; color: var(--text-muted); font-size: 13px;">
+                            No unread notifications active.
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="admin-profile">
+                    <img src="https://i.pravatar.cc/100" alt="Admin">
+                    <div>
+                        <h4>Admin User</h4>
+                        <small>Super Admin</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% block content %}
+        
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon red"><i class="fa-solid fa-box"></i></div>
+        <div>
+            <h3>{{ total_orders }}</h3>
+            <p>Total Orders</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon blue"><i class="fa-solid fa-ship"></i></div>
+        <div>
+            <h3>{{ total_shipments }}</h3>
+            <p>Shipments</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon yellow"><i class="fa-solid fa-users"></i></div>
+        <div>
+            <h3>{{ total_customers }}</h3>
+            <p>Customers</p>
+        </div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon green"><i class="fa-solid fa-dollar-sign"></i></div>
+        <div>
+            <h3>${{ revenue }}</h3>
+            <p>Revenue</p>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+
+    <!-- LEFT -->
+    <div class="dashboard-card" style="overflow:hidden;">
+
+        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;">
+            <h3>Recent Orders</h3>
+            <a href="{% url 'Orders_alt' %}"
+               style="color:#dc2626;font-weight:700;text-decoration:none;">
+                View All
+            </a>
+        </div>
+
+        <div class="table-responsive" style="width:100%;overflow-x:auto;">
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;gap:10px;flex-wrap:wrap;">
+                <select onchange="filterOrders(this.value)"
+                        style="padding:8px;border:1px solid #e2e8f0;border-radius:6px;">
+                    <option value="all">All Orders</option>
+                    <option value="pending" {% if status == "pending" %}selected{% endif %}>Pending</option>
+                    <option value="processing" {% if status == "processing" %}selected{% endif %}>Processing</option>
+                    <option value="shipping" {% if status == "shipping" %}selected{% endif %}>Shipping</option>
+                    <option value="arrived" {% if status == "arrived" %}selected{% endif %}>Arrived</option>
+                    <option value="delivered" {% if status == "delivered" %}selected{% endif %}>Delivered</option>
+                    <option value="on_hold" {% if status == "on_hold" %}selected{% endif %}>On Hold</option>
+                </select>
+
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <input type="text"
+                           id="bulkMessage"
+                           placeholder="Write WhatsApp message..."
+                           style="padding:8px;border:1px solid #e2e8f0;border-radius:6px;width:250px;">
+
+                    <button onclick="sendBulkWhatsApp()"
+                            style="background:#25D366;color:white;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;">
+                        Send WhatsApp
+                    </button>
+                </div>
+            </div>
+
+            <table class="dashboard-table" style="min-width:1050px;table-layout:fixed;">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" onclick="toggleAll(this)"></th>
+                        <th>Order ID</th>
+                        <th>Client</th>
+                        <th>Phone</th>
+                        <th>Destination</th>
+                        <th>Product</th>
+                        <th>Shipping</th>
+                        <th>Units</th>
+                        <th>Links</th>
+                        <th>Photo</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>
+                            <input type="checkbox"
+                                   class="order-check"
+                                   value="{{ order.id }}"
+                                   data-phone="{{ order.phone_number }}"
+                                   data-order="{{ order.order_id }}">
+                        </td>
+
+                        <td>#{{ order.order_id }}</td>
+                        <td>{{ order.user.username }}</td>
+                        <td>{{ order.phone_number }}</td>
+                        <td>{{ order.destination|default:order.address }}</td>
+                        <td>{{ order.product_name }}</td>
+
+                        <td>
+                            {% if order.shipping_method == "sea" %}
+                                <span class="freight-badge sea">Sea</span>
+                            {% elif order.shipping_method == "air" %}
+                                <span class="freight-badge air">Air</span>
+                            {% else %}
+                                <span class="freight-badge none">-</span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ order.quantity }}</td>
+                        <td>{{ order.links_specs|default:"-" }}</td>
+
+                        <td>{% if order.product_image %}
+    <a href="{{ order.product_image.url }}" target="_blank">
+        <img src="{{ order.product_image.url }}"
+             style="width:60px;height:60px;object-fit:cover;border-radius:8px;cursor:pointer;">
+    </a>
+{% else %}
+    <span style="color:#94a3b8;">No Image</span>
+{% endif %}
+                        </td>
+
+                        <td>${{ order.total_amount|default:"0.00" }}</td>
+
+                        <td>
+                            {% if order.status == 'on_hold' %}
+                                <span class="status-badge on-hold">On Hold</span>
+                            {% elif order.status == 'pending' %}
+                                <span class="status-badge pending">Pending</span>
+                            {% else %}
+                                <span class="status-badge info">{{ order.status }}</span>
+                            {% endif %}
+                        </td>
+
+                        <td>-</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="13" style="text-align:center;padding:48px 0;">
+                            No active orders found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="mobile-orders">
+    {% for order in orders %}
+    <div class="mobile-order-card">
+
+        <div class="mobile-order-header">
+            <div>
+                <h4>#{{ order.order_id }}</h4>
+                <small>{{ order.user.username }}</small>
+            </div>
+
+            <div>
+                {% if order.status == 'on_hold' %}
+                    <span class="status-badge on-hold">On Hold</span>
+                {% elif order.status == 'pending' %}
+                    <span class="status-badge pending">Pending</span>
+                {% else %}
+                    <span class="status-badge info">{{ order.status }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mobile-order-body">
+
+            <div class="mobile-row">
+                <span>Phone</span>
+                <strong>{{ order.phone_number }}</strong>
+            </div>
+
+            <div class="mobile-row">
+                <span>Destination</span>
+                <strong>{{ order.destination|default:order.address }}</strong>
+            </div>
+
+            <div class="mobile-row">
+                <span>Product</span>
+                <strong>{{ order.product_name }}</strong>
+            </div>
+
+            <div class="mobile-row">
+                <span>Shipping</span>
+                <strong>
+                    {% if order.shipping_method == "sea" %}
+                        🚢 Sea Freight
+                    {% elif order.shipping_method == "air" %}
+                        ✈ Air Freight
+                    {% else %}
+                        -
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="mobile-row">
+                <span>Units</span>
+                <strong>{{ order.quantity }}</strong>
+            </div>
+
+            <div class="mobile-row">
+                <span>Amount</span>
+                <strong>${{ order.total_amount|default:"0.00" }}</strong>
+            </div>
+
+            <div class="mobile-row">
+                <span>Specs</span>
+                <strong>{{ order.links_specs|default:"-" }}</strong>
+            </div>
+
+            {% if order.product_image %}
+            <div class="mobile-image-wrap">
+                <a href="{{ order.product_image.url }}" target="_blank">
+    <img src="{{ order.product_image.url }}" alt="Product">
+</a>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+    {% empty %}
+    <div class="mobile-order-card">
+        No orders available
+    </div>
+    {% endfor %}
+</div>
+
+    <!-- RIGHT -->
+    <div class="dashboard-card">
+        <div class="card-header">
+            <h3>Quick Actions</h3>
+        </div>
+
+        <div class="quick-actions" style="display:flex;flex-direction:column;gap:10px;">
+            <a href="{% url 'add_shipment' %}" class="action-card-btn">
+                <div class="icon-box"><i class="fa-solid fa-plus"></i></div>
+                <div>
+                    <h5>Add Shipment</h5>
+                    <p>Create shipment manifest</p>
+                </div>
+            </a>
+
+            <a href="#" class="action-card-btn secondary-action">
+                <div class="icon-box"><i class="fa-solid fa-user-plus"></i></div>
+                <div>
+                    <h5>New Supplier</h5>
+                    <p>Add supplier record</p>
+                </div>
+            </a>
+
+            <a href="#" class="action-card-btn secondary-action">
+                <div class="icon-box"><i class="fa-solid fa-file-invoice"></i></div>
+                <div>
+                    <h5>Generate Invoice</h5>
+                    <p>Create customer invoice</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+</div>
+
+{% endblock content %}
+    </main>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("sidebarOverlay");
+
+        if (menuToggle && sidebar && overlay) {
+            menuToggle.addEventListener("click", (e) => {
+                e.stopPropagation();
+                sidebar.classList.toggle("show");
+                overlay.classList.toggle("show");
+            });
+
+            overlay.addEventListener("click", () => {
+                sidebar.classList.remove("show");
+                overlay.classList.remove("show");
+            });
+        }
+
+        const notificationBtn = document.getElementById("notificationBtn");
+        const notificationDropdown = document.getElementById("notificationDropdown");
+
+        if (notificationBtn && notificationDropdown) {
+            notificationBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                notificationDropdown.classList.toggle("active");
+            });
+
+            document.addEventListener("click", (e) => {
+                if (!notificationBtn.contains(e.target)) {
+                    notificationDropdown.classList.remove("active");
+                }
+            });
+        }
+    });
+    function toggleAll(source) {
+    document.querySelectorAll('.order-check').forEach(cb => {
+        cb.checked = source.checked;
+    });
+}
+
+function sendBulkWhatsApp() {
+    const message = document.getElementById("bulkMessage").value;
+    const selected = document.querySelectorAll(".order-check:checked");
+
+    if (!message) {
+        alert("Write a message first");
+        return;
+    }
+
+    if (selected.length === 0) {
+        alert("Select at least one order");
+        return;
+    }
+
+    let delay = 0;
+
+    selected.forEach((cb, index) => {
+        const phone = cb.dataset.phone;
+        const orderId = cb.dataset.order;
+        const destination = cb.dataset.destination;
+
+        const finalMsg =
+            `Order #${orderId}\nDestination: ${destination}\n\n${message}`;
+
+        const url = `https://wa.me/${phone}?text=${encodeURIComponent(finalMsg)}`;
+
+        setTimeout(() => {
+            window.open(url, "_blank");
+        }, delay);
+
+        delay += 1500; // prevents browser blocking
+    });
+}
+
+function filterOrders(status) {
+    window.location.href = `?status=${status}`;
+}
+function openImageModal(src) {
+    const modal = document.getElementById("imageModal");
+    const img = document.getElementById("modalImg");
+
+    img.src = src;
+    modal.style.display = "flex";
+}
+
+document.getElementById("imageModal").addEventListener("click", function () {
+    this.style.display = "none";
+});
+function toggleSettingsMenu(e) {
+    e.preventDefault();
+    const menu = document.getElementById("settingsMenu");
+
+    if (menu.style.display === "none" || menu.style.display === "") {
+        menu.style.display = "block";
+    } else {
+        menu.style.display = "none";
+    }
+}
+</script>
+<div id="imageModal" style="
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.8);
+    justify-content:center;
+    align-items:center;
+    z-index:99999;
+">
+    <img id="modalImg" style="
+        max-width:90%;
+        max-height:90%;
+        border-radius:10px;
+    ">
+</div>
+</body>
+</html>

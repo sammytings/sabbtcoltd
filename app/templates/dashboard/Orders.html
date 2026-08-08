@@ -1,0 +1,139 @@
+{% extends 'dashboard/dashboard_base.html' %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2 mb-1">Orders Management</h1>
+            <p class="text-muted small mb-0">Track customer requests, payments, and fulfillment status.</p>
+        </div>
+        <a href="/en/dashboard/orders/add/" class="btn btn-primary">
+            <i class="fas fa-plus-circle me-1"></i> Create Manual Order
+        </a>
+    </div>
+
+    <!-- Quick Insights Metrics Row -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+    <div class="card border-0 shadow-sm p-3">
+        <span class="text-muted small fw-bold text-warning">Pending Orders</span>
+        <h3 class="mb-0 mt-1 text-warning">{{ pending_orders_count|default:"0" }}</h3>
+    </div>
+</div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm p-3">
+                <span class="text-muted small fw-bold text-warning">Pending Payment</span>
+                <h3 class="mb-0 mt-1 text-warning">{{ pending_payment_count|default:"0" }}</h3>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm p-3">
+                <span class="text-muted small fw-bold text-info">In Transit</span>
+                <h3 class="mb-0 mt-1 text-info">{{ in_transit_count|default:"0" }}</h3>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm p-3">
+                <span class="text-muted small fw-bold text-success">Completed</span>
+                <h3 class="mb-0 mt-1 text-success">{{ completed_count|default:"0" }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Orders Table Card -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+    <th class="ps-4">Order ID</th>
+    <th>Customer Details</th>
+    <th>Product & Qty</th>
+    <th>Tracking / Shipment ID</th>
+    <th>Status</th>
+    <th>Total Cost</th>
+    <th>Date Ordered</th>
+    <th class="text-end pe-4">Actions</th>
+</tr>
+                    </thead>
+                    {% for order in orders %}
+<tr>
+    <td class="ps-4">
+        <span class="fw-bold text-primary">#{{ order.order_id|default:order.id }}</span>
+    </td>
+    
+    <td>
+        <div class="fw-semibold text-dark">{{ order.full_name }}</div>
+        <span class="text-muted small">{{ order.phone_number }}</span>
+        <div class="text-muted text-truncate" style="max-width: 150px; font-size: 0.75rem;">{{ order.email }}</div>
+    </td>
+
+    <td>
+        <div class="text-dark small fw-semibold">{{ order.product_name }}</div>
+        <span class="badge bg-light text-dark border">Qty: {{ order.quantity|default:"1" }}</span>
+    </td>
+    
+    <td>
+        {% if order.tracking_number %}
+            <code class="text-dark small">{{ order.tracking_number }}</code>
+        {% endif %}
+        {% if order.shipment_id %}
+            <div class="text-muted small mt-1"><i class="fas fa-box me-1"></i>ID: {{ order.shipment_id }}</div>
+        {% elif not order.tracking_number %}
+            <span class="text-muted small italic">Not Assigned</span>
+        {% endif %}
+    </td>
+    
+    <td>
+        {% if order.status == 'Delivered' or order.status == 'Completed' %}
+            <span class="badge bg-success rounded-pill px-2 py-1">Delivered</span>
+        {% elif order.status == 'In Transit' %}
+            <span class="badge bg-info text-dark rounded-pill px-2 py-1">In Transit</span>
+        {% elif order.status == 'Pending' %}
+            <span class="badge bg-warning text-dark rounded-pill px-2 py-1">Pending</span>
+        {% else %}
+            <span class="badge bg-secondary rounded-pill px-2 py-1">{{ order.status|default:"Received" }}</span>
+        {% endif %}
+    </td>
+    
+    <td>
+        <span class="fw-bold text-dark">
+            KES {{ order.amount }}
+        </span>
+    </td>
+    
+    <td class="text-muted small">
+        {{ order.created_at|date:"M d, Y" }}
+        <div style="font-size: 0.75rem;">{{ order.created_at|date:"H:i" }}</div>
+    </td>
+    
+    <td class="text-end pe-4">
+        <div class="btn-group">
+            <a href="/en/dashboard/orders/{{ order.id }}/" class="btn btn-sm btn-outline-secondary"><i class="fas fa-eye"></i> View</a>
+        </div>
+    </td>
+</tr>
+{% empty %}
+...
+               
+                        <!-- Fallback empty state -->
+                        <tr>
+                            <td colspan="8" class="text-center py-5 text-muted">
+                                <i class="fas fa-shopping-bag fa-3x mb-3 text-muted opacity-50"></i>
+                                <h5 class="fw-semibold mb-1">No Orders Logged Yet</h5>
+                                <p class="small text-muted mb-3">Incoming e-commerce purchases or manual shipments will look clean here.</p>
+                                <a href="/en/dashboard/orders/add/" class="btn btn-sm btn-primary">Create Your First Order</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

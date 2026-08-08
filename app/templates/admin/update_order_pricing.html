@@ -1,0 +1,241 @@
+{% extends "dashboard/dashboard_base.html" %}
+
+{% block content %}
+<div class="pricing-page">
+
+    <div class="pricing-header">
+        <h1>Update Order Pricing</h1>
+        <p>Adjust quantity, unit price and extra logistics charges.</p>
+    </div>
+
+    <form method="POST" id="pricingForm">
+        {% csrf_token %}
+
+        <div class="pricing-layout">
+
+            <!-- LEFT -->
+            <div class="pricing-card">
+                <h2>Order Details</h2>
+
+                <label>Product Name</label>
+                <input type="text" value="{{ order.product_name }}" disabled>
+
+                <label>Quantity</label>
+                <input
+                    id="quantity"
+                    type="number"
+                    name="quantity"
+                    value="{{ order.quantity }}"
+                    min="1"
+                >
+
+                <label>Unit Price (USD)</label>
+                <input
+                    id="unitPrice"
+                    type="number"
+                    step="0.01"
+                    name="unit_price"
+                    value="{{ order.unit_price|default:0 }}"
+                >
+
+                <label>Extra Charges (Tax / Transport)</label>
+                <input
+                    id="extraCharges"
+                    type="number"
+                    step="0.01"
+                    name="extra_charges"
+                    value="{{ order.extra_charges|default:0 }}"
+                >
+            </div>
+
+            <!-- RIGHT -->
+            <div class="summary-card">
+                <h2>Pricing Preview</h2>
+
+                <div class="summary-row">
+                    <span>Buying Total</span>
+                    <strong id="buyingTotal">$0.00</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Supplier Fee (3%)</span>
+                    <strong id="supplierFee">$0.00</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Service Fee (5%)</span>
+                    <strong id="serviceFee">$0.00</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Extra Charges</span>
+                    <strong id="extraDisplay">$0.00</strong>
+                </div>
+
+                <hr>
+
+                <div class="summary-row total">
+                    <span>Total Amount</span>
+                    <strong id="grandTotal">$0.00</strong>
+                </div>
+
+                <button type="submit" class="save-btn">
+                    Save Pricing
+                </button>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<style>
+.pricing-page{
+    max-width:1200px;
+    margin:auto;
+    padding:30px 20px;
+}
+
+.pricing-header{
+    margin-bottom:30px;
+}
+
+.pricing-header h1{
+    margin:0;
+    font-size:32px;
+    color:#0f172a;
+}
+
+.pricing-header p{
+    color:#64748b;
+    margin-top:8px;
+}
+
+.pricing-layout{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:30px;
+}
+
+.pricing-card,
+.summary-card{
+    background:#fff;
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 8px 25px rgba(0,0,0,.06);
+    border:1px solid #e2e8f0;
+}
+
+.pricing-card h2,
+.summary-card h2{
+    margin-top:0;
+    margin-bottom:25px;
+    color:#0f172a;
+}
+
+label{
+    display:block;
+    font-weight:600;
+    margin-top:18px;
+    margin-bottom:8px;
+    color:#334155;
+}
+
+input{
+    width:100%;
+    padding:14px 16px;
+    border:1px solid #cbd5e1;
+    border-radius:12px;
+    font-size:15px;
+    outline:none;
+    transition:.2s;
+    box-sizing:border-box;
+}
+
+input:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 4px rgba(37,99,235,.1);
+}
+
+input:disabled{
+    background:#f8fafc;
+    color:#64748b;
+}
+
+.summary-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 0;
+    border-bottom:1px solid #f1f5f9;
+}
+
+.summary-row span{
+    color:#64748b;
+}
+
+.summary-row strong{
+    color:#0f172a;
+}
+
+.summary-row.total{
+    font-size:20px;
+    font-weight:700;
+    border-bottom:none;
+    padding-top:22px;
+}
+
+.summary-row.total strong{
+    color:#dc2626;
+}
+
+.save-btn{
+    width:100%;
+    margin-top:25px;
+    padding:16px;
+    background:#dc2626;
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.save-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(220,38,38,.25);
+}
+
+@media(max-width:900px){
+    .pricing-layout{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+
+<script>
+function calculatePricing(){
+    let qty = parseFloat(document.getElementById("quantity").value) || 0;
+    let unit = parseFloat(document.getElementById("unitPrice").value) || 0;
+    let extra = parseFloat(document.getElementById("extraCharges").value) || 0;
+
+    let buying = qty * unit;
+    let supplier = buying * 0.03;
+    let service = buying * 0.05;
+    let total = buying + supplier + service + extra;
+
+    document.getElementById("buyingTotal").innerText = "$" + buying.toFixed(2);
+    document.getElementById("supplierFee").innerText = "$" + supplier.toFixed(2);
+    document.getElementById("serviceFee").innerText = "$" + service.toFixed(2);
+    document.getElementById("extraDisplay").innerText = "$" + extra.toFixed(2);
+    document.getElementById("grandTotal").innerText = "$" + total.toFixed(2);
+}
+
+document.querySelectorAll("#quantity, #unitPrice, #extraCharges")
+    .forEach(input => input.addEventListener("input", calculatePricing));
+
+calculatePricing();
+</script>
+
+{% endblock %}
