@@ -1061,12 +1061,12 @@ from django.utils import timezone
 # ============================================================
 # NEWS FEED
 # ============================================================
-
 class NewsPost(models.Model):
 
     POST_TYPE_CHOICES = [
         ("photo", "Photo Only"),
         ("article", "Photo + Description"),
+        ("video", "Video + Description"),
     ]
 
     title = models.CharField(
@@ -1087,10 +1087,22 @@ class NewsPost(models.Model):
         default="article"
     )
 
-    # Main/featured image
+    # ========================================================
+    # MEDIA
+    # ========================================================
+
     image = models.ImageField(
         upload_to="news/",
+        blank=True,
+        null=True,
         help_text="Main image for this news post."
+    )
+
+    video = models.FileField(
+        upload_to="news/videos/",
+        blank=True,
+        null=True,
+        help_text="Upload an MP4, WebM or compatible video file."
     )
 
     image_alt = models.CharField(
@@ -1099,9 +1111,13 @@ class NewsPost(models.Model):
         help_text="SEO-friendly alternative text for the main image."
     )
 
+    # ========================================================
+    # DESCRIPTION
+    # ========================================================
+
     description = models.TextField(
         blank=True,
-        help_text="News description. Leave empty for photo-only posts."
+        help_text="News description. Supports rich text formatting."
     )
 
     # ========================================================
@@ -1207,6 +1223,10 @@ class NewsPost(models.Model):
         # Photo-only posts do not need description
         if self.post_type == "photo":
             self.description = ""
+
+        # Video posts do not require a main image
+        if self.post_type == "video":
+            self.image = self.image if self.image else None
 
         super().save(*args, **kwargs)
 

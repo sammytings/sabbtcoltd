@@ -9,6 +9,10 @@
 
 <style>
 
+/* =========================================================
+   NEWS DETAIL
+========================================================= */
+
 .news-detail-page {
     background: #f8fafc;
     padding: 50px 20px 80px;
@@ -16,8 +20,13 @@
 
 .news-detail-container {
     max-width: 1000px;
-    margin: auto;
+    margin: 0 auto;
 }
+
+
+/* =========================================================
+   HEADER
+========================================================= */
 
 .news-detail-header {
     text-align: center;
@@ -28,7 +37,8 @@
     font-size: 40px;
     line-height: 1.2;
     color: #111e38;
-    margin-bottom: 15px;
+    margin: 0 0 15px;
+    font-weight: 800;
 }
 
 .news-date {
@@ -37,6 +47,11 @@
     font-weight: 700;
 }
 
+
+/* =========================================================
+   MAIN IMAGE
+========================================================= */
+
 .news-main-image {
     width: 100%;
     max-height: 600px;
@@ -44,23 +59,396 @@
     border-radius: 18px;
     display: block;
     margin-bottom: 35px;
-    box-shadow: 0 10px 35px rgba(15,23,42,.12);
+    box-shadow: 0 10px 35px rgba(15, 23, 42, .12);
 }
 
+
+/* =========================================================
+   VIDEO
+========================================================= */
+
+.news-video-wrapper {
+    width: 100%;
+    margin-bottom: 35px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 10px 35px rgba(15, 23, 42, .12);
+}
+
+.news-video {
+    width: 100%;
+    height: auto;
+    max-height: 650px;
+    min-height: 300px;
+    display: block;
+    background: #000;
+    object-fit: contain;
+}
+
+.news-video-caption {
+    padding: 12px 18px;
+    background: #111e38;
+    color: #cbd5e1;
+    font-size: 13px;
+}
+
+.news-video-fallback {
+    padding: 18px;
+    background: #111e38;
+    color: #ffffff;
+    text-align: center;
+    font-size: 14px;
+}
+
+.news-video-fallback a {
+    color: #ffffff;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   RICH TEXT CONTENT
+========================================================= */
+
 .news-description {
-    background: white;
+    background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 16px;
-    padding: 30px;
+    padding: 32px;
     color: #334155;
     font-size: 17px;
     line-height: 1.85;
     margin-bottom: 40px;
+    overflow-wrap: anywhere;
 }
 
+
+/* ---------------------------------------------------------
+   PARAGRAPHS
+--------------------------------------------------------- */
+
 .news-description p {
+    margin: 0 0 18px;
+}
+
+.news-description p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ---------------------------------------------------------
+   HEADINGS
+--------------------------------------------------------- */
+
+.news-description h1,
+.news-description h2,
+.news-description h3,
+.news-description h4,
+.news-description h5,
+.news-description h6 {
+    color: #111e38;
+    line-height: 1.3;
+    font-weight: 800;
+    margin-top: 32px;
+    margin-bottom: 14px;
+}
+
+.news-description h1:first-child,
+.news-description h2:first-child,
+.news-description h3:first-child,
+.news-description h4:first-child,
+.news-description h5:first-child,
+.news-description h6:first-child {
     margin-top: 0;
 }
+
+
+/* H1 */
+
+.news-description h1 {
+    font-size: 32px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #dc2626;
+}
+
+
+/* H2 */
+
+.news-description h2 {
+    font-size: 28px;
+}
+
+
+/* H3 */
+
+.news-description h3 {
+    font-size: 24px;
+    color: #1e293b;
+}
+
+
+/* H4 */
+
+.news-description h4 {
+    font-size: 21px;
+    color: #334155;
+}
+
+
+/* H5 */
+
+.news-description h5 {
+    font-size: 18px;
+    color: #475569;
+}
+
+
+/* H6 */
+
+.news-description h6 {
+    font-size: 16px;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+
+/* ---------------------------------------------------------
+   BOLD / ITALIC / UNDERLINE
+--------------------------------------------------------- */
+
+.news-description strong,
+.news-description b {
+    color: #111e38;
+    font-weight: 800;
+}
+
+.news-description em,
+.news-description i {
+    color: #475569;
+}
+
+.news-description u {
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+}
+
+
+/* ---------------------------------------------------------
+   LINKS
+--------------------------------------------------------- */
+
+.news-description a {
+    color: #dc2626;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    transition: color .2s ease;
+}
+
+.news-description a:hover {
+    color: #111e38;
+}
+
+
+/* ---------------------------------------------------------
+   UNORDERED / ORDERED LISTS
+--------------------------------------------------------- */
+
+.news-description ul,
+.news-description ol {
+    margin: 0 0 22px;
+    padding-left: 28px;
+}
+
+.news-description ul {
+    list-style-type: disc;
+}
+
+.news-description ol {
+    list-style-type: decimal;
+}
+
+.news-description li {
+    margin-bottom: 8px;
+    padding-left: 4px;
+}
+
+.news-description li::marker {
+    color: #dc2626;
+    font-weight: 700;
+}
+
+
+/* Nested lists */
+
+.news-description ul ul,
+.news-description ol ol,
+.news-description ul ol,
+.news-description ol ul {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+
+/* ---------------------------------------------------------
+   BLOCKQUOTE
+--------------------------------------------------------- */
+
+.news-description blockquote {
+    margin: 28px 0;
+    padding: 20px 24px;
+    border-left: 4px solid #dc2626;
+    background: #f8fafc;
+    color: #475569;
+    font-size: 18px;
+    font-style: italic;
+    border-radius: 0 10px 10px 0;
+}
+
+.news-description blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ---------------------------------------------------------
+   HORIZONTAL RULE
+--------------------------------------------------------- */
+
+.news-description hr {
+    border: 0;
+    height: 1px;
+    background: #e2e8f0;
+    margin: 32px 0;
+}
+
+
+/* ---------------------------------------------------------
+   IMAGES INSIDE EDITOR
+--------------------------------------------------------- */
+
+.news-description img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 24px auto;
+    box-shadow: 0 6px 22px rgba(15, 23, 42, .08);
+}
+
+
+/* ---------------------------------------------------------
+   IMAGE CAPTION
+--------------------------------------------------------- */
+
+.news-description figure {
+    margin: 25px 0;
+}
+
+.news-description figcaption {
+    text-align: center;
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-top: 8px;
+}
+
+
+/* ---------------------------------------------------------
+   TABLES
+--------------------------------------------------------- */
+
+.news-description table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 28px 0;
+    font-size: 15px;
+    overflow: hidden;
+}
+
+.news-description th,
+.news-description td {
+    border: 1px solid #e2e8f0;
+    padding: 11px 13px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.news-description th {
+    background: #111e38;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.news-description tr:nth-child(even) td {
+    background: #f8fafc;
+}
+
+
+/* ---------------------------------------------------------
+   CODE / PRE
+--------------------------------------------------------- */
+
+.news-description code {
+    background: #f1f5f9;
+    color: #991b1b;
+    padding: 2px 6px;
+    border-radius: 5px;
+    font-size: .9em;
+}
+
+.news-description pre {
+    background: #111e38;
+    color: #f8fafc;
+    padding: 18px;
+    border-radius: 10px;
+    overflow-x: auto;
+    margin: 25px 0;
+    line-height: 1.6;
+}
+
+.news-description pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+}
+
+
+/* ---------------------------------------------------------
+   TEXT ALIGNMENT FROM EDITOR
+--------------------------------------------------------- */
+
+.news-description [style*="text-align: center"] {
+    text-align: center;
+}
+
+.news-description [style*="text-align: right"] {
+    text-align: right;
+}
+
+.news-description [style*="text-align: justify"] {
+    text-align: justify;
+}
+
+
+/* ---------------------------------------------------------
+   TEXT COLORS
+--------------------------------------------------------- */
+
+.news-description mark {
+    background: #fef3c7;
+    color: #111e38;
+    padding: 1px 4px;
+    border-radius: 3px;
+}
+
+
+/* =========================================================
+   GALLERY
+========================================================= */
 
 .news-gallery-title {
     text-align: center;
@@ -70,20 +458,23 @@
 .news-gallery-title h2 {
     color: #111e38;
     font-size: 28px;
+    margin: 0;
 }
 
 .news-gallery {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
+    margin-bottom: 10px;
 }
 
 .news-gallery-item {
-    background: white;
+    background: #ffffff;
     border-radius: 14px;
     overflow: hidden;
     border: 1px solid #e2e8f0;
-    box-shadow: 0 5px 20px rgba(15,23,42,.07);
+    box-shadow: 0 5px 20px rgba(15, 23, 42, .07);
+    margin: 0;
 }
 
 .news-gallery-item img {
@@ -102,24 +493,232 @@
     padding: 12px 15px;
     color: #475569;
     font-size: 14px;
+    line-height: 1.5;
 }
 
+
+/* =========================================================
+   SHARE SECTION
+========================================================= */
+
+.news-share-section {
+    margin: 45px 0 35px;
+    padding: 28px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 5px 20px rgba(15, 23, 42, .05);
+}
+
+.news-share-heading {
+    text-align: center;
+    margin-bottom: 22px;
+}
+
+.news-share-heading h2 {
+    margin: 0 0 7px;
+    color: #111e38;
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.news-share-heading p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.news-share-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.news-share-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 44px;
+    padding: 11px 17px;
+    border-radius: 9px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #111e38;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        color .2s ease,
+        border-color .2s ease;
+}
+
+.news-share-button:hover {
+    transform: translateY(-1px);
+    background: #111e38;
+    border-color: #111e38;
+    color: #ffffff;
+}
+
+.news-share-button i {
+    font-size: 16px;
+}
+
+.news-share-facebook:hover {
+    background: #1877f2;
+    border-color: #1877f2;
+}
+
+.news-share-whatsapp:hover {
+    background: #25d366;
+    border-color: #25d366;
+}
+
+.news-share-x:hover {
+    background: #000000;
+    border-color: #000000;
+}
+
+.news-share-linkedin:hover {
+    background: #0a66c2;
+    border-color: #0a66c2;
+}
+
+.news-copy-button {
+    background: #f8fafc;
+}
+
+.news-copy-button.copied {
+    background: #111e38;
+    border-color: #111e38;
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   MEDIA ACTIONS
+========================================================= */
+
+.news-media-actions {
+    margin-top: 22px;
+    padding-top: 22px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.news-media-label {
+    width: 100%;
+    text-align: center;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.news-download-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 44px;
+    padding: 11px 17px;
+    background: #111e38;
+    color: #ffffff;
+    border-radius: 9px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 700;
+    transition:
+        background .2s ease,
+        transform .2s ease;
+}
+
+.news-download-button:hover {
+    background: #dc2626;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   SHARE URL
+========================================================= */
+
+.news-share-url {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.news-share-url input {
+    flex: 1;
+    min-width: 0;
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+    color: #64748b;
+    font-size: 13px;
+    outline: none;
+}
+
+.news-share-url button {
+    height: 42px;
+    padding: 0 15px;
+    border: 0;
+    border-radius: 8px;
+    background: #111e38;
+    color: #ffffff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.news-share-url button:hover {
+    background: #dc2626;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
 .news-back {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     margin-top: 40px;
     background: #111e38;
-    color: white;
+    color: #ffffff;
     padding: 12px 20px;
     border-radius: 8px;
     text-decoration: none;
     font-weight: 700;
+    transition:
+        background .2s ease,
+        transform .2s ease;
 }
 
 .news-back:hover {
     background: #dc2626;
+    color: #ffffff;
+    transform: translateY(-1px);
 }
 
-@media(max-width: 800px) {
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 800px) {
 
     .news-detail-header h1 {
         font-size: 30px;
@@ -129,9 +728,25 @@
         grid-template-columns: repeat(2, 1fr);
     }
 
+    .news-video {
+        min-height: 220px;
+    }
+
+    .news-description h1 {
+        font-size: 28px;
+    }
+
+    .news-description h2 {
+        font-size: 25px;
+    }
+
+    .news-description h3 {
+        font-size: 22px;
+    }
+
 }
 
-@media(max-width: 550px) {
+@media (max-width: 550px) {
 
     .news-detail-page {
         padding: 35px 15px 60px;
@@ -144,6 +759,29 @@
     .news-description {
         padding: 20px;
         font-size: 16px;
+        line-height: 1.75;
+    }
+
+    .news-description h1 {
+        font-size: 25px;
+    }
+
+    .news-description h2 {
+        font-size: 23px;
+    }
+
+    .news-description h3 {
+        font-size: 20px;
+    }
+
+    .news-description h4 {
+        font-size: 18px;
+    }
+
+    .news-description table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
     }
 
     .news-gallery {
@@ -155,105 +793,543 @@
         max-height: 400px;
     }
 
+    .news-video-wrapper {
+        border-radius: 12px;
+    }
+
+    .news-video {
+        min-height: 200px;
+    }
+
+    .news-share-section {
+        padding: 22px 16px;
+    }
+
+    .news-share-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .news-share-button {
+        width: 100%;
+    }
+
+    .news-share-url {
+        flex-direction: column;
+    }
+
+    .news-share-url input,
+    .news-share-url button {
+        width: 100%;
+    }
+
 }
 
 </style>
 
 <section class="news-detail-page">
 
-    <div class="news-detail-container">
+<div class="news-detail-container">
 
-        <header class="news-detail-header">
+<!-- =================================================
+     NEWS HEADER
+================================================== -->
 
-            <h1>
-                {{ news_post.title|default:"SABBTCo. News Update" }}
-            </h1>
+<header class="news-detail-header">
 
-            {% if news_post.published_at %}
 
-            <div class="news-date">
-                Published {{ news_post.published_at|date:"F d, Y" }}
-            </div>
+<h1>
+    {{ news_post.title|default:"SABBTCo. News Update" }}
+</h1>
 
+{% if news_post.published_at %}
+
+    <div class="news-date">
+        Published {{ news_post.published_at|date:"F d, Y" }}
+    </div>
+
+{% endif %}
+
+
+</header>
+
+<!-- =================================================
+     MEDIA
+================================================== -->
+
+{% if news_post.post_type == "video" %}
+
+
+{% if news_post.video %}
+
+    <div class="news-video-wrapper">
+
+        <video
+            class="news-video"
+            controls
+            playsinline
+            preload="metadata"
+            {% if news_post.image %}
+                poster="{{ news_post.image.url }}"
             {% endif %}
-
-        </header>
-
-
-        <!-- MAIN IMAGE -->
-
-        {% if news_post.image %}
-
-        <img
-            src="{{ news_post.image.url }}"
-            alt="{{ news_post.image_alt|default:news_post.title }}"
-            class="news-main-image"
         >
 
-        {% endif %}
+            <source
+                src="{{ news_post.video.url }}"
+                type="video/mp4"
+            >
 
+            Your browser does not support HTML5 video.
 
-        <!-- DESCRIPTION -->
+        </video>
 
-        {% if news_post.description %}
+        <div class="news-video-caption">
+            SABBTCo. News Update
+        </div>
 
-        <article class="news-description">
+        <div class="news-video-fallback">
 
-            {{ news_post.description|linebreaks }}
-
-        </article>
-
-        {% endif %}
-
-
-        <!-- ADDITIONAL IMAGES -->
-
-        {% if gallery_images %}
-
-        <div class="news-gallery-title">
-
-            <h2>More Photos</h2>
+            If the video does not play,
+            <a
+                href="{{ news_post.video.url }}"
+                target="_blank"
+                rel="noopener"
+            >
+                open the video directly
+            </a>.
 
         </div>
 
-        <div class="news-gallery">
+    </div>
 
-            {% for gallery in gallery_images %}
+{% else %}
 
-            <figure class="news-gallery-item">
+    <div class="news-video-wrapper">
 
-                <img
-                    src="{{ gallery.image.url }}"
-                    alt="{{ gallery.image_alt|default:news_post.title }}"
-                    loading="lazy"
-                >
+        <div class="news-video-fallback">
+            This news post does not have a video available.
+        </div>
 
-                {% if gallery.caption %}
+    </div>
+
+{% endif %}
+
+
+{% if news_post.image %}
+
+    <img
+        src="{{ news_post.image.url }}"
+        alt="{{ news_post.image_alt|default:news_post.title }}"
+        class="news-main-image"
+    >
+
+{% endif %}
+
+
+{% else %}
+
+
+{% if news_post.image %}
+
+    <img
+        src="{{ news_post.image.url }}"
+        alt="{{ news_post.image_alt|default:news_post.title }}"
+        class="news-main-image"
+    >
+
+{% endif %}
+
+
+{% endif %}
+
+<!-- =================================================
+     RICH TEXT DESCRIPTION
+================================================== -->
+
+{% if news_post.description %}
+
+
+<article
+    class="news-description"
+    aria-label="News article content"
+>
+
+    {{ news_post.description|safe }}
+
+</article>
+
+
+{% endif %}
+
+<!-- =================================================
+     ADDITIONAL GALLERY IMAGES
+================================================== -->
+
+{% if gallery_images %}
+
+
+<div class="news-gallery-title">
+
+    <h2>
+        More Photos
+    </h2>
+
+</div>
+
+<div class="news-gallery">
+
+    {% for gallery in gallery_images %}
+
+        <figure class="news-gallery-item">
+
+            <img
+                src="{{ gallery.image.url }}"
+                alt="{{ gallery.image_alt|default:news_post.title }}"
+                loading="lazy"
+            >
+
+            {% if gallery.caption %}
 
                 <figcaption class="news-gallery-caption">
                     {{ gallery.caption }}
                 </figcaption>
 
-                {% endif %}
+            {% endif %}
 
-            </figure>
+        </figure>
 
-            {% endfor %}
+    {% endfor %}
 
+</div>
+
+
+{% endif %}
+
+<!-- =================================================
+     PUBLIC SOCIAL SHARING
+================================================== -->
+
+<section
+    class="news-share-section"
+    aria-labelledby="newsShareTitle"
+>
+
+
+<div class="news-share-heading">
+
+    <h2 id="newsShareTitle">
+        Share this update
+    </h2>
+
+    <p>
+        Share this SABBTCo. update with your network.
+    </p>
+
+</div>
+
+
+<div class="news-share-buttons">
+
+    <a
+        href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}"
+        class="news-share-button news-share-facebook"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Share on Facebook"
+    >
+        <i class="fa-brands fa-facebook-f"></i>
+        Facebook
+    </a>
+
+
+    <a
+        href="https://wa.me/?text={{ news_post.title|default:'SABBTCo. News Update'|urlencode }}%20{{ request.build_absolute_uri|urlencode }}"
+        class="news-share-button news-share-whatsapp"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Share on WhatsApp"
+    >
+        <i class="fa-brands fa-whatsapp"></i>
+        WhatsApp
+    </a>
+
+
+    <a
+        href="https://twitter.com/intent/tweet?text={{ news_post.title|default:'SABBTCo. News Update'|urlencode }}&url={{ request.build_absolute_uri|urlencode }}"
+        class="news-share-button news-share-x"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Share on X"
+    >
+        <i class="fa-brands fa-x-twitter"></i>
+        X
+    </a>
+
+
+    <a
+        href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri|urlencode }}"
+        class="news-share-button news-share-linkedin"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Share on LinkedIn"
+    >
+        <i class="fa-brands fa-linkedin-in"></i>
+        LinkedIn
+    </a>
+
+
+    <button
+        type="button"
+        class="news-share-button news-copy-button"
+        id="copyNewsLink"
+    >
+        <i class="fa-solid fa-link"></i>
+        <span id="copyNewsText">Copy Link</span>
+    </button>
+
+</div>
+
+
+<!-- MEDIA DOWNLOADS -->
+
+{% if news_post.image or news_post.video %}
+
+    <div class="news-media-actions">
+
+        <div class="news-media-label">
+            Want to share the actual media?
         </div>
+
+        {% if news_post.image %}
+
+            <a
+                href="{{ news_post.image.url }}"
+                class="news-download-button"
+                download
+            >
+                <i class="fa-solid fa-image"></i>
+                Download Photo
+            </a>
 
         {% endif %}
 
+        {% if news_post.video %}
 
-        <a
-            href="{% url 'news_list' %}"
-            class="news-back"
-        >
-            ← Back to News
-        </a>
+            <a
+                href="{{ news_post.video.url }}"
+                class="news-download-button"
+                download
+            >
+                <i class="fa-solid fa-download"></i>
+                Download Video
+            </a>
+
+        {% endif %}
 
     </div>
 
+{% endif %}
+
+
+<!-- PUBLIC URL -->
+
+<div class="news-share-url">
+
+    <input
+        type="text"
+        value="{{ request.build_absolute_uri }}"
+        readonly
+        aria-label="News post URL"
+        id="newsPublicUrl"
+    >
+
+    <button
+        type="button"
+        id="copyNewsUrl"
+    >
+        Copy
+    </button>
+
+</div>
+
+
 </section>
+
+<!-- =================================================
+     BACK
+================================================== -->
+
+<a
+href="{% url 'news_list' %}"
+class="news-back"
+
+>
+
+
+<i class="fa-solid fa-arrow-left"></i>
+
+
+
+Back to News
+
+
+</a>
+
+</div>
+
+</section>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const copyButton =
+        document.getElementById("copyNewsLink");
+
+    const copyUrlButton =
+        document.getElementById("copyNewsUrl");
+
+    const copyText =
+        document.getElementById("copyNewsText");
+
+    const publicUrlInput =
+        document.getElementById("newsPublicUrl");
+
+
+    const newsUrl =
+        "{{ request.build_absolute_uri|escapejs }}";
+
+
+    function showCopied(button, textElement) {
+
+        if(textElement){
+            textElement.textContent = "Copied";
+        }
+
+        button.classList.add("copied");
+
+        setTimeout(function(){
+
+            if(textElement){
+                textElement.textContent = "Copy Link";
+            }
+
+            button.classList.remove("copied");
+
+        }, 1800);
+
+    }
+
+
+    function fallbackCopy() {
+
+        if(!publicUrlInput){
+            return false;
+        }
+
+        publicUrlInput.focus();
+        publicUrlInput.select();
+
+        try {
+
+            return document.execCommand("copy");
+
+        } catch(error) {
+
+            return false;
+
+        }
+
+    }
+
+
+    function copyNewsUrl(button, textElement) {
+
+        if(navigator.clipboard){
+
+            navigator.clipboard.writeText(newsUrl)
+                .then(function(){
+
+                    showCopied(
+                        button,
+                        textElement
+                    );
+
+                })
+                .catch(function(){
+
+                    if(fallbackCopy()){
+
+                        showCopied(
+                            button,
+                            textElement
+                        );
+
+                    }
+
+                });
+
+        }else{
+
+            if(fallbackCopy()){
+
+                showCopied(
+                    button,
+                    textElement
+                );
+
+            }
+
+        }
+
+    }
+
+
+    if(copyButton){
+
+        copyButton.addEventListener(
+            "click",
+            function(){
+
+                copyNewsUrl(
+                    copyButton,
+                    copyText
+                );
+
+            }
+        );
+
+    }
+
+
+    if(copyUrlButton){
+
+        copyUrlButton.addEventListener(
+            "click",
+            function(){
+
+                copyNewsUrl(
+                    copyUrlButton,
+                    null
+                );
+
+                copyUrlButton.textContent =
+                    "Copied";
+
+                setTimeout(function(){
+
+                    copyUrlButton.textContent =
+                        "Copy";
+
+                },1800);
+
+            }
+        );
+
+    }
+
+});
+
+</script>
 
 {% endblock %}

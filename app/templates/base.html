@@ -206,44 +206,95 @@
       </div>
     {% endif %}
 
-    <nav class="drawer-links">
-      <a href="{% url 'index' %}"><i class="fa-solid fa-house"></i> Home</a>
-      <a href="{% url 'services' %}"><i class="fa-solid fa-truck-fast"></i> Services</a>
-      <a href="{% url 'about' %}"><i class="fa-solid fa-circle-info"></i> About</a>
-      <a href="{% url 'orders' %}"><i class="fa-solid fa-box"></i> Orders</a>
-      <a href="{% url 'supplier_payments' %}"><i class="fa-solid fa-money-bill"></i> Pay Supplier</a>
-      <a href="{% url 'faq' %}"><i class="fa-solid fa-circle-question"></i> FAQ</a>
-      <a href="#contact"><i class="fa-solid fa-phone"></i> Contact</a>
+<nav class="drawer-links">
 
-      <a href="{% url 'notifications' %}" class="mobile-notification-link">
-        <span class="mobile-bell-wrapper">
-          <i class="fa-solid fa-bell"></i>
-          {% if unread_notifications_count > 0 %}
-            <span class="mobile-notif-count">{{ unread_notifications_count }}</span>
-          {% endif %}
+  <a href="{% url 'index' %}">
+    <i class="fa-solid fa-house"></i>
+    Home
+  </a>
+
+  <a href="{% url 'services' %}">
+    <i class="fa-solid fa-truck-fast"></i>
+    Services
+  </a>
+
+  <a href="{% url 'about' %}">
+    <i class="fa-solid fa-circle-info"></i>
+    About
+  </a>
+
+  <!-- NEWS FEED -->
+  <a href="{% url 'news_list' %}" class="mobile-news-link">
+    <i class="fa-solid fa-newspaper"></i>
+    News
+  </a>
+
+  <a href="{% url 'orders' %}">
+    <i class="fa-solid fa-box"></i>
+    Orders
+  </a>
+
+  <a href="{% url 'supplier_payments' %}">
+    <i class="fa-solid fa-money-bill"></i>
+    Pay Supplier
+  </a>
+
+  <a href="{% url 'faq' %}">
+    <i class="fa-solid fa-circle-question"></i>
+    FAQ
+  </a>
+
+  <a href="#contact">
+    <i class="fa-solid fa-phone"></i>
+    Contact
+  </a>
+
+  <!-- NOTIFICATIONS -->
+  <a href="{% url 'notifications' %}" class="mobile-notification-link">
+    <span class="mobile-bell-wrapper">
+      <i class="fa-solid fa-bell"></i>
+
+      {% if unread_notifications_count > 0 %}
+        <span class="mobile-notif-count">
+          {{ unread_notifications_count }}
         </span>
-        Notifications
-      </a>
-
-      {% if user.is_authenticated %}
-        <a href="{% url 'quote' %}"
-           class="drawer-quote-btn quote-link"
-           data-auth="true"
-           data-login-url="{% url 'login' %}">
-          <i class="fa-solid fa-file-invoice"></i> Request a Quote
-        </a>
-      {% else %}
-        <a href="{% url 'login' %}" class="drawer-login-btn">
-          <i class="fa-solid fa-right-to-bracket"></i> Login
-        </a>
-        <a href="{% url 'quote' %}"
-           class="drawer-quote-btn quote-link"
-           data-auth="false"
-           data-login-url="{% url 'login' %}">
-          <i class="fa-solid fa-file-invoice"></i> Request a Quote
-        </a>
       {% endif %}
-    </nav>
+    </span>
+
+    Notifications
+  </a>
+
+  {% if user.is_authenticated %}
+
+    <!-- REQUEST QUOTE -->
+    <a href="{% url 'quote' %}"
+       class="drawer-quote-btn quote-link"
+       data-auth="true"
+       data-login-url="{% url 'login' %}">
+      <i class="fa-solid fa-file-invoice"></i>
+      Request a Quote
+    </a>
+
+  {% else %}
+
+    <!-- LOGIN -->
+    <a href="{% url 'login' %}" class="drawer-login-btn">
+      <i class="fa-solid fa-right-to-bracket"></i>
+      Login
+    </a>
+
+    <!-- REQUEST QUOTE -->
+    <a href="{% url 'quote' %}"
+       class="drawer-quote-btn quote-link"
+       data-auth="false"
+       data-login-url="{% url 'login' %}">
+      <i class="fa-solid fa-file-invoice"></i>
+      Request a Quote
+    </a>
+
+  {% endif %}
+
+</nav>
   </div>
 
   <!-- MAIN CONTENT WRAPPER -->

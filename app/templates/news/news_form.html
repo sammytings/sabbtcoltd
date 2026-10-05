@@ -1,592 +1,818 @@
-{% extends 'dashboard/dashboard_base.html' %}
+{% extends "base.html" %}
 {% load static %}
 
-{% block workspace_title %}
-<div>
-    <h1>{% if editing %}Edit News Post{% else %}Create News Post{% endif %}</h1>
-    <p>
-        {% if editing %}
-            Update your shipping, sourcing or consolidation news.
-        {% else %}
-            Publish a new update for your customers.
-        {% endif %}
-    </p>
-</div>
-{% endblock workspace_title %}
-
+{% block title %}
+{% if editing %}
+Edit News Post
+{% else %}
+Create News Post
+{% endif %}
+{% endblock %}
 
 {% block content %}
 
 <style>
 
-.news-editor-wrapper{
-    max-width:1200px;
-    margin:0 auto;
+/* =========================================================
+   PAGE
+========================================================= */
+
+.news-form-page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 35px 20px 70px;
+}
+
+.news-form-header {
+    margin-bottom: 28px;
+}
+
+.news-form-header h1 {
+    margin: 0 0 8px;
+    color: #111e38;
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.news-form-header p {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.news-form-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(15, 23, 42, .06);
+    overflow: hidden;
+}
+
+.news-form-section {
+    padding: 28px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.news-form-section:last-child {
+    border-bottom: 0;
+}
+
+.news-section-title {
+    margin: 0 0 20px;
+    color: #111e38;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.news-section-title span {
+    color: #dc2626;
+}
+
+
+/* =========================================================
+   FORM GRID
+========================================================= */
+
+.news-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
 }
 
-.news-editor-grid{
-    display:grid;
-    grid-template-columns:minmax(0,2fr) minmax(300px,1fr);
-    gap:22px;
+.news-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
 }
 
-.news-card{
-    background:#fff;
-    border:1px solid #e2e8f0;
-    border-radius:14px;
-    padding:24px;
-    box-shadow:0 3px 12px rgba(15,23,42,.04);
+.news-form-group.full {
+    grid-column: 1 / -1;
 }
 
-.news-card + .news-card{
-    margin-top:20px;
+.news-form-group label {
+    color: #111e38;
+    font-size: 14px;
+    font-weight: 700;
 }
 
-.news-card-title{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin:0 0 20px;
-    color:#0f172a;
-    font-size:17px;
-    font-weight:700;
+.news-form-group label .required {
+    color: #dc2626;
 }
 
-.news-card-title i{
-    color:#dc2626;
+.news-form-help {
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.5;
 }
 
-.news-label{
-    display:block;
-    margin-bottom:7px;
-    color:#334155;
-    font-size:13px;
-    font-weight:700;
+.news-form-input,
+.news-form-select,
+.news-form-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #111e38;
+    font: inherit;
+    font-size: 14px;
+    outline: none;
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
 }
 
-.news-input,
-.news-textarea,
-.news-select{
-    width:100%;
-    box-sizing:border-box;
-    border:1px solid #dbe3ec;
-    border-radius:9px;
-    background:#fff;
-    color:#0f172a;
-    padding:12px 13px;
-    font-family:inherit;
-    font-size:14px;
-    outline:none;
-    transition:.2s;
+.news-form-input,
+.news-form-select {
+    min-height: 46px;
+    padding: 10px 13px;
 }
 
-.news-input:focus,
-.news-textarea:focus,
-.news-select:focus{
-    border-color:#2563eb;
-    box-shadow:0 0 0 3px rgba(37,99,235,.08);
+.news-form-textarea {
+    min-height: 130px;
+    padding: 13px;
+    resize: vertical;
+    line-height: 1.6;
 }
 
-.news-textarea{
-    min-height:260px;
-    resize:vertical;
-    line-height:1.7;
+.news-form-input:focus,
+.news-form-select:focus,
+.news-form-textarea:focus {
+    border-color: #111e38;
+    box-shadow: 0 0 0 3px rgba(17, 30, 56, .08);
 }
 
-.form-group{
-    margin-bottom:20px;
+
+/* =========================================================
+   POST TYPE
+========================================================= */
+
+.post-type-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
 }
 
-.post-type-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
+.post-type-option {
+    position: relative;
 }
 
-.post-type-option{
-    position:relative;
+.post-type-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
 }
 
-.post-type-option input{
-    position:absolute;
-    opacity:0;
-    pointer-events:none;
+.post-type-label {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-height: 105px;
+    padding: 17px;
+    border: 1px solid #cbd5e1;
+    border-radius: 11px;
+    cursor: pointer;
+    transition:
+        border-color .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
 }
 
-.post-type-label{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:15px;
-    border:1px solid #dbe3ec;
-    border-radius:10px;
-    cursor:pointer;
-    transition:.2s;
+.post-type-label:hover {
+    border-color: #111e38;
 }
 
-.post-type-label i{
-    width:38px;
-    height:38px;
-    border-radius:9px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#f1f5f9;
-    color:#475569;
+.post-type-option input:checked + .post-type-label {
+    border-color: #111e38;
+    background: #f8fafc;
+    box-shadow: inset 0 0 0 1px #111e38;
 }
 
-.post-type-label strong{
-    display:block;
-    color:#0f172a;
-    font-size:14px;
+.post-type-icon {
+    color: #dc2626;
+    font-size: 18px;
 }
 
-.post-type-label small{
-    display:block;
-    color:#64748b;
-    margin-top:3px;
+.post-type-name {
+    color: #111e38;
+    font-size: 14px;
+    font-weight: 800;
 }
 
-.post-type-option input:checked + .post-type-label{
-    border-color:#dc2626;
-    background:#fff7f7;
+.post-type-description {
+    color: #64748b;
+    font-size: 12px;
+    line-height: 1.45;
 }
+
 
-.post-type-option input:checked + .post-type-label i{
-    background:#fee2e2;
-    color:#dc2626;
+/* =========================================================
+   MEDIA
+========================================================= */
+
+.media-field {
+    display: none;
 }
 
-.image-upload{
-    border:2px dashed #cbd5e1;
-    border-radius:12px;
-    min-height:250px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    cursor:pointer;
-    overflow:hidden;
-    position:relative;
-    background:#f8fafc;
-    transition:.2s;
+.media-field.active {
+    display: flex;
 }
 
-.image-upload:hover{
-    border-color:#2563eb;
-    background:#f8fbff;
+.media-preview {
+    display: none;
+    margin-top: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px;
+    background: #f8fafc;
 }
 
-.image-upload.has-image{
-    border-style:solid;
+.media-preview.active {
+    display: block;
 }
 
-.image-upload-content{
-    padding:30px;
+.media-preview img,
+.media-preview video {
+    width: 100%;
+    max-height: 360px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #111e38;
 }
+
+
+/* =========================================================
+   RICH TEXT EDITOR
+========================================================= */
 
-.image-upload-content i{
-    font-size:38px;
-    color:#94a3b8;
-    margin-bottom:12px;
+.rich-editor-wrapper {
+    border: 1px solid #cbd5e1;
+    border-radius: 11px;
+    overflow: hidden;
+    background: #ffffff;
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
 }
 
-.image-upload-content strong{
-    display:block;
-    color:#334155;
-    margin-bottom:5px;
+.rich-editor-wrapper:focus-within {
+    border-color: #111e38;
+    box-shadow: 0 0 0 3px rgba(17, 30, 56, .08);
 }
 
-.image-upload-content span{
-    color:#64748b;
-    font-size:12px;
+
+/* Toolbar */
+
+.rich-editor-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding: 9px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
 }
 
-#imagePreview{
-    width:100%;
-    height:100%;
-    min-height:250px;
-    max-height:430px;
-    object-fit:contain;
-    display:none;
-    background:#f8fafc;
+.rich-editor-toolbar select,
+.rich-editor-toolbar button {
+    height: 36px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    background: #ffffff;
+    color: #111e38;
+    cursor: pointer;
+    font-size: 13px;
 }
 
-.seo-score-card{
-    border:1px solid #e2e8f0;
-    border-radius:12px;
-    padding:18px;
-    background:#fff;
+.rich-editor-toolbar select {
+    min-width: 125px;
+    padding: 0 8px;
 }
 
-.seo-score-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:10px;
-    margin-bottom:12px;
+.rich-editor-toolbar button {
+    min-width: 36px;
+    padding: 0 9px;
+    font-weight: 700;
 }
 
-.seo-score-number{
-    font-size:30px;
-    font-weight:800;
-    color:#dc2626;
+.rich-editor-toolbar button:hover,
+.rich-editor-toolbar select:hover {
+    border-color: #111e38;
+    background: #ffffff;
 }
 
-.seo-score-label{
-    color:#64748b;
-    font-size:12px;
+.rich-editor-toolbar button.active {
+    background: #111e38;
+    border-color: #111e38;
+    color: #ffffff;
 }
 
-.seo-progress{
-    height:9px;
-    background:#e2e8f0;
-    border-radius:20px;
-    overflow:hidden;
-    margin-bottom:18px;
+.toolbar-divider {
+    width: 1px;
+    height: 25px;
+    background: #cbd5e1;
+    margin: 0 3px;
 }
+
 
-.seo-progress-bar{
-    height:100%;
-    width:0%;
-    background:#dc2626;
-    border-radius:20px;
-    transition:.3s;
+/* Editor */
+
+.rich-editor-content {
+    min-height: 330px;
+    padding: 20px;
+    outline: none;
+    color: #334155;
+    font-size: 16px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
 }
 
-.seo-check{
-    display:flex;
-    align-items:flex-start;
-    gap:9px;
-    padding:8px 0;
-    font-size:13px;
-    border-bottom:1px solid #f1f5f9;
+.rich-editor-content:empty::before {
+    content: attr(data-placeholder);
+    color: #94a3b8;
+    pointer-events: none;
 }
 
-.seo-check:last-child{
-    border-bottom:none;
+.rich-editor-content p {
+    margin: 0 0 16px;
 }
 
-.seo-check i{
-    margin-top:2px;
+.rich-editor-content h1,
+.rich-editor-content h2,
+.rich-editor-content h3 {
+    color: #111e38;
+    line-height: 1.3;
+    margin: 26px 0 12px;
 }
 
-.seo-check.good{
-    color:#166534;
+.rich-editor-content h1 {
+    font-size: 30px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #dc2626;
 }
 
-.seo-check.warning{
-    color:#92400e;
+.rich-editor-content h2 {
+    font-size: 25px;
 }
 
-.seo-check.bad{
-    color:#991b1b;
+.rich-editor-content h3 {
+    font-size: 21px;
 }
 
-.ai-box{
-    border:1px solid #dbeafe;
-    background:linear-gradient(135deg,#f8fbff,#eff6ff);
-    border-radius:12px;
-    padding:18px;
+.rich-editor-content h1:first-child,
+.rich-editor-content h2:first-child,
+.rich-editor-content h3:first-child {
+    margin-top: 0;
 }
 
-.ai-box-title{
-    display:flex;
-    align-items:center;
-    gap:9px;
-    color:#1e40af;
-    font-weight:800;
-    margin-bottom:7px;
+.rich-editor-content strong {
+    color: #111e38;
 }
 
-.ai-box-description{
-    color:#64748b;
-    font-size:12px;
-    line-height:1.6;
-    margin-bottom:16px;
+.rich-editor-content a {
+    color: #dc2626;
+    font-weight: 700;
 }
 
-.ai-buttons{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
+.rich-editor-content ul,
+.rich-editor-content ol {
+    padding-left: 28px;
+    margin-bottom: 18px;
 }
 
-.ai-btn{
-    border:1px solid #bfdbfe;
-    background:#fff;
-    color:#1d4ed8;
-    padding:11px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:700;
-    font-size:13px;
+.rich-editor-content li {
+    margin-bottom: 6px;
 }
 
-.ai-btn:hover{
-    background:#eff6ff;
+.rich-editor-content blockquote {
+    margin: 20px 0;
+    padding: 15px 20px;
+    border-left: 4px solid #dc2626;
+    background: #f8fafc;
+    color: #475569;
+    font-style: italic;
 }
+
+
+/* Hidden field */
 
-.ai-prompt{
-    margin-top:14px;
-    display:none;
+#newsDescription {
+    display: none;
 }
 
-.ai-prompt.show{
-    display:block;
+
+/* =========================================================
+   SEO
+========================================================= */
+
+.seo-analysis {
+    margin-top: 20px;
+    padding: 18px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
 }
 
-.switch-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:15px;
-    padding:12px 0;
-    border-bottom:1px solid #f1f5f9;
+.seo-score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
 }
 
-.switch-row:last-child{
-    border-bottom:none;
+.seo-score-label {
+    color: #111e38;
+    font-weight: 800;
+    font-size: 14px;
 }
 
-.switch-text strong{
-    display:block;
-    color:#334155;
-    font-size:13px;
+.seo-score {
+    color: #dc2626;
+    font-size: 20px;
+    font-weight: 800;
 }
 
-.switch-text small{
-    color:#64748b;
-    font-size:11px;
+.seo-progress {
+    width: 100%;
+    height: 7px;
+    background: #e2e8f0;
+    border-radius: 999px;
+    overflow: hidden;
 }
 
-.switch{
-    position:relative;
-    width:42px;
-    height:23px;
-    flex-shrink:0;
+.seo-progress-bar {
+    width: 0;
+    height: 100%;
+    background: #dc2626;
+    transition: width .25s ease;
 }
 
-.switch input{
-    opacity:0;
-    width:0;
-    height:0;
+.seo-checks {
+    margin-top: 14px;
+    display: grid;
+    gap: 7px;
 }
 
-.slider{
-    position:absolute;
-    inset:0;
-    background:#cbd5e1;
-    border-radius:30px;
-    cursor:pointer;
-    transition:.2s;
+.seo-check {
+    color: #64748b;
+    font-size: 13px;
 }
 
-.slider:before{
-    content:"";
-    position:absolute;
-    width:17px;
-    height:17px;
-    left:3px;
-    top:3px;
-    background:#fff;
-    border-radius:50%;
-    transition:.2s;
+.seo-check.good {
+    color: #166534;
 }
 
-.switch input:checked + .slider{
-    background:#dc2626;
+.seo-check::before {
+    content: "•";
+    margin-right: 7px;
 }
 
-.switch input:checked + .slider:before{
-    transform:translateX(19px);
+.seo-check.good::before {
+    content: "✓";
 }
+
 
-.action-bar{
-    display:flex;
-    justify-content:flex-end;
-    gap:10px;
-    margin-top:22px;
-    flex-wrap:wrap;
+/* =========================================================
+   CHECKBOXES
+========================================================= */
+
+.news-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
-.btn{
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    padding:11px 18px;
-    border-radius:8px;
-    border:none;
-    font-weight:700;
-    font-size:13px;
-    cursor:pointer;
-    text-decoration:none;
+.news-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
 }
 
-.btn-primary{
-    background:#dc2626;
-    color:#fff;
+.news-checkbox input {
+    width: 17px;
+    height: 17px;
+    accent-color: #111e38;
 }
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
 
-.btn-primary:hover{
-    background:#b91c1c;
+.news-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 24px 28px;
+    background: #f8fafc;
 }
 
-.btn-secondary{
-    background:#f1f5f9;
-    color:#334155;
+.news-cancel-button,
+.news-save-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 45px;
+    padding: 11px 20px;
+    border-radius: 9px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
 }
 
-.btn-secondary:hover{
-    background:#e2e8f0;
+.news-cancel-button {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
 }
 
-.current-image{
-    margin-bottom:12px;
-    color:#64748b;
-    font-size:12px;
+.news-cancel-button:hover {
+    border-color: #111e38;
+    color: #111e38;
 }
 
-.current-image img{
-    display:block;
-    width:100%;
-    max-height:220px;
-    object-fit:contain;
-    border-radius:10px;
-    background:#f8fafc;
-    border:1px solid #e2e8f0;
-    margin-top:8px;
+.news-save-button {
+    border: 1px solid #111e38;
+    background: #111e38;
+    color: #ffffff;
 }
 
-.keyword-hint{
-    color:#64748b;
-    font-size:11px;
-    margin-top:6px;
+.news-save-button:hover {
+    background: #dc2626;
+    border-color: #dc2626;
 }
 
-.char-counter{
-    text-align:right;
-    color:#64748b;
-    font-size:11px;
-    margin-top:5px;
+
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+.news-form-message {
+    margin-bottom: 20px;
+    padding: 13px 16px;
+    border-radius: 9px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    font-size: 14px;
 }
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 800px) {
+
+    .news-form-grid {
+        grid-template-columns: 1fr;
+    }
 
-@media(max-width:900px){
+    .news-form-group.full {
+        grid-column: auto;
+    }
 
-    .news-editor-grid{
-        grid-template-columns:1fr;
+    .post-type-options {
+        grid-template-columns: 1fr;
     }
 
 }
 
-@media(max-width:600px){
+@media (max-width: 600px) {
 
-    .news-card{
-        padding:17px;
+    .news-form-page {
+        padding: 25px 14px 50px;
     }
 
-    .post-type-grid,
-    .ai-buttons{
-        grid-template-columns:1fr;
+    .news-form-section {
+        padding: 20px;
     }
 
-    .action-bar{
-        flex-direction:column;
+    .news-form-header h1 {
+        font-size: 27px;
     }
 
-    .action-bar .btn{
-        width:100%;
+    .rich-editor-toolbar {
+        gap: 4px;
+    }
+
+    .rich-editor-toolbar select {
+        width: 100%;
+    }
+
+    .rich-editor-content {
+        min-height: 280px;
+        padding: 16px;
+        font-size: 15px;
+    }
+
+    .news-form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        padding: 20px;
+    }
+
+    .news-cancel-button,
+    .news-save-button {
+        width: 100%;
     }
 
 }
 
 </style>
 
+<div class="news-form-page">
 
-<div class="news-editor-wrapper">
 
-<form method="POST"
-      enctype="multipart/form-data"
-      id="newsForm">
+<div class="news-form-header">
 
-    {% csrf_token %}
-    <input
-    type="hidden"
-    name="seo_score"
-    id="seoScoreInput"
-    value="{{ news_post.seo_score|default:0 }}"
+    <h1>
+        {% if editing %}
+            Edit News Post
+        {% else %}
+            Create News Post
+        {% endif %}
+    </h1>
+
+    <p>
+        Publish a photo, article or video update to the SABBTCo. News Feed.
+    </p>
+
+</div>
+
+
+{% if messages %}
+
+    {% for message in messages %}
+
+        <div class="news-form-message">
+            {{ message }}
+        </div>
+
+    {% endfor %}
+
+{% endif %}
+
+
+<form
+    method="post"
+    enctype="multipart/form-data"
+    id="newsForm"
 >
 
-    <div class="news-editor-grid">
-
-        <!-- ================================================= -->
-        <!-- LEFT SIDE -->
-        <!-- ================================================= -->
-
-        <div>
-
-            <!-- POST TYPE -->
-
-            <div class="news-card">
-
-                <h3 class="news-card-title">
-                    <i class="fa-solid fa-layer-group"></i>
-                    Post Type
-                </h3>
-
-                <div class="post-type-grid">
-
-                    <div class="post-type-option">
-
-                        <input
-                            type="radio"
-                            name="post_type"
-                            id="postTypePhoto"
-                            value="photo"
-                            {% if news_post.post_type == "photo" or not news_post %}checked{% endif %}
-                        >
-
-                        <label
-                            for="postTypePhoto"
-                            class="post-type-label"
-                        >
-
-                            <i class="fa-solid fa-image"></i>
-
-                            <div>
-                                <strong>Photo Only</strong>
-                                <small>Publish an image without an article.</small>
-                            </div>
-
-                        </label>
-
-                    </div>
+    {% csrf_token %}
 
 
-                    <div class="post-type-option">
+    <!-- =================================================
+         BASIC INFORMATION
+    ================================================== -->
 
-                        <input
-                            type="radio"
-                            name="post_type"
-                            id="postTypeArticle"
-                            value="article"
-                            {% if news_post.post_type == "article" %}checked{% endif %}
-                        >
+    <div class="news-form-card">
 
-                        <label
-                            for="postTypeArticle"
-                            class="post-type-label"
-                        >
+        <section class="news-form-section">
 
-                            <i class="fa-solid fa-newspaper"></i>
+            <h2 class="news-section-title">
+                <span>01</span>
+                Basic Information
+            </h2>
 
-                            <div>
-                                <strong>Photo + Description</strong>
-                                <small>Publish an image with SEO content.</small>
-                            </div>
+            <div class="news-form-grid">
 
-                        </label>
+                <div class="news-form-group full">
+
+                    <label for="newsTitle">
+                        Title / Caption
+                    </label>
+
+                    <input
+                        type="text"
+                        name="title"
+                        id="newsTitle"
+                        class="news-form-input"
+                        maxlength="255"
+                        value="{{ news_post.title|default:'' }}"
+                        placeholder="Enter the news title or short caption"
+                    >
+
+                </div>
+
+
+                <div class="news-form-group full">
+
+                    <label>
+                        Post Type
+                        <span class="required">*</span>
+                    </label>
+
+                    <div class="post-type-options">
+
+                        <div class="post-type-option">
+
+                            <input
+                                type="radio"
+                                name="post_type"
+                                id="postTypePhoto"
+                                value="photo"
+                                {% if news_post.post_type == "photo" or not news_post.post_type and not editing %}checked{% endif %}
+                            >
+
+                            <label
+                                for="postTypePhoto"
+                                class="post-type-label"
+                            >
+
+                                <span class="post-type-icon">
+                                    <i class="fa-solid fa-image"></i>
+                                </span>
+
+                                <span class="post-type-name">
+                                    Photo Only
+                                </span>
+
+                                <span class="post-type-description">
+                                    Image with no written description.
+                                </span>
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="post-type-option">
+
+                            <input
+                                type="radio"
+                                name="post_type"
+                                id="postTypeArticle"
+                                value="article"
+                                {% if news_post.post_type == "article" or not editing %}checked{% endif %}
+                            >
+
+                            <label
+                                for="postTypeArticle"
+                                class="post-type-label"
+                            >
+
+                                <span class="post-type-icon">
+                                    <i class="fa-solid fa-file-lines"></i>
+                                </span>
+
+                                <span class="post-type-name">
+                                    Photo + Description
+                                </span>
+
+                                <span class="post-type-description">
+                                    Image with a formatted news article.
+                                </span>
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="post-type-option">
+
+                            <input
+                                type="radio"
+                                name="post_type"
+                                id="postTypeVideo"
+                                value="video"
+                                {% if news_post.post_type == "video" %}checked{% endif %}
+                            >
+
+                            <label
+                                for="postTypeVideo"
+                                class="post-type-label"
+                            >
+
+                                <span class="post-type-icon">
+                                    <i class="fa-solid fa-video"></i>
+                                </span>
+
+                                <span class="post-type-name">
+                                    Video + Description
+                                </span>
+
+                                <span class="post-type-description">
+                                    Video with a formatted description.
+                                </span>
+
+                            </label>
+
+                        </div>
 
                     </div>
 
@@ -594,88 +820,40 @@
 
             </div>
 
-
-            <!-- BASIC INFORMATION -->
-
-            <div class="news-card">
-
-                <h3 class="news-card-title">
-                    <i class="fa-solid fa-pen"></i>
-                    News Content
-                </h3>
+        </section>
 
 
-                <div class="form-group">
+        <!-- =================================================
+             MEDIA
+        ================================================== -->
 
-                    <label class="news-label">
-                        News Title
-                    </label>
+        <section class="news-form-section">
 
-                    <input
-                        type="text"
-                        name="title"
-                        id="newsTitle"
-                        class="news-input"
-                        maxlength="255"
-                        value="{{ news_post.title|default:'' }}"
-                        placeholder="Example: New Consolidated Shipment Has Arrived"
-                    >
+            <h2 class="news-section-title">
+                <span>02</span>
+                Media
+            </h2>
 
-                </div>
+            <div class="news-form-grid">
 
 
                 <!-- IMAGE -->
 
-                <div class="form-group">
+                <div
+                    class="news-form-group media-field"
+                    id="imageField"
+                >
 
-                    <label class="news-label">
-                        News Photo
-                    </label>
+                    <label for="newsImage">
 
-                    {% if news_post.image %}
+                        Main Image
 
-                    <div class="current-image">
-
-                        Current image:
-
-                        <img
-                            src="{{ news_post.image.url }}"
-                            alt="{{ news_post.image_alt|default:news_post.title }}"
+                        <span
+                            class="required"
+                            id="imageRequired"
                         >
-
-                    </div>
-
-                    {% endif %}
-
-
-                    <label
-                        for="newsImage"
-                        class="image-upload"
-                        id="imageUploadBox"
-                    >
-
-                        <div
-                            class="image-upload-content"
-                            id="uploadContent"
-                        >
-
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-
-                            <strong>
-                                Click to upload a photo
-                            </strong>
-
-                            <span>
-                                JPG, JPEG, PNG or WEBP
-                            </span>
-
-                        </div>
-
-
-                        <img
-                            id="imagePreview"
-                            alt="Selected image preview"
-                        >
+                            *
+                        </span>
 
                     </label>
 
@@ -683,277 +861,366 @@
                         type="file"
                         name="image"
                         id="newsImage"
-                        accept="image/jpeg,image/png,image/webp"
-                        style="display:none;"
+                        class="news-form-input"
+                        accept="image/*"
                     >
+
+                    <div class="news-form-help">
+                        Required for Photo Only and Photo + Description.
+                        Optional for Video + Description.
+                    </div>
+
+                    <div
+                        class="media-preview"
+                        id="imagePreview"
+                    >
+
+                        <img
+                            id="imagePreviewImage"
+                            src=""
+                            alt="Image preview"
+                        >
+
+                    </div>
 
                 </div>
 
 
-                <!-- ALT TEXT -->
+                <!-- VIDEO -->
 
-                <div class="form-group">
+                <div
+                    class="news-form-group media-field"
+                    id="videoField"
+                >
 
-                    <label class="news-label">
-                        Image ALT Text
+                    <label for="newsVideo">
+
+                        Video
+
+                        <span
+                            class="required"
+                            id="videoRequired"
+                        >
+                            *
+                        </span>
+
+                    </label>
+
+                    <input
+                        type="file"
+                        name="video"
+                        id="newsVideo"
+                        class="news-form-input"
+                        accept="video/mp4,video/webm,video/*"
+                    >
+
+                    <div class="news-form-help">
+                        Required for Video + Description.
+                    </div>
+
+                    <div
+                        class="media-preview"
+                        id="videoPreview"
+                    >
+
+                        <video
+                            id="videoPreviewPlayer"
+                            controls
+                            preload="metadata"
+                        ></video>
+
+                    </div>
+
+                </div>
+
+
+                <!-- IMAGE ALT -->
+
+                <div class="news-form-group full">
+
+                    <label for="imageAlt">
+                        Image Alt Text
                     </label>
 
                     <input
                         type="text"
                         name="image_alt"
                         id="imageAlt"
-                        class="news-input"
+                        class="news-form-input"
                         maxlength="255"
                         value="{{ news_post.image_alt|default:'' }}"
-                        placeholder="Example: SABBTCo consolidated cargo shipment from China"
+                        placeholder="Describe the image for accessibility and SEO"
                     >
-
-                    <div class="keyword-hint">
-                        Describe what is actually visible in the photo.
-                    </div>
 
                 </div>
 
 
-                <!-- DESCRIPTION -->
+                <!-- GALLERY -->
 
-                <div
-                    class="form-group"
-                    id="descriptionSection"
-                >
+                <div class="news-form-group full">
 
-                    <label class="news-label">
-                        Description
+                    <label for="galleryImages">
+                        Additional Gallery Images
                     </label>
 
-                    <textarea
-                        name="description"
-                        id="newsDescription"
-                        class="news-textarea"
-                        placeholder="Write a useful update about the shipment, sourcing activity, consolidation or logistics service..."
-                    >{{ news_post.description|default:'' }}</textarea>
+                    <input
+                        type="file"
+                        name="gallery_images"
+                        id="galleryImages"
+                        class="news-form-input"
+                        accept="image/*"
+                        multiple
+                    >
 
-                    <div class="char-counter">
-                        <span id="descriptionCount">0</span> characters
+                    <div class="news-form-help">
+                        Optional. Select multiple images to create a gallery on the public news page.
                     </div>
 
                 </div>
 
             </div>
 
-
-            <!-- AI -->
-
-            <div class="news-card">
-
-                <div class="ai-box">
-
-                    <div class="ai-box-title">
-
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-
-                        AI SEO Content Assistant
-
-                    </div>
-
-                    <div class="ai-box-description">
-
-                        Generate an SEO-friendly news description from
-                        a written prompt or from the uploaded photo.
-
-                    </div>
+        </section>
 
 
-                    <div class="ai-buttons">
+        <!-- =================================================
+             RICH TEXT
+        ================================================== -->
 
-                        <button
-                            type="button"
-                            class="ai-btn"
-                            id="promptAiButton"
-                        >
-                            <i class="fa-solid fa-comment-dots"></i>
-                            Generate from Prompt
-                        </button>
+        <section
+            class="news-form-section"
+            id="descriptionSection"
+        >
 
-
-                        <button
-                            type="button"
-                            class="ai-btn"
-                            id="photoAiButton"
-                        >
-                            <i class="fa-solid fa-camera"></i>
-                            Generate from Photo
-                        </button>
-
-                    </div>
+            <h2 class="news-section-title">
+                <span>03</span>
+                News Description
+            </h2>
 
 
-                    <div
-                        class="ai-prompt"
-                        id="aiPromptBox"
+            <div class="news-form-group">
+
+                <label>
+                    Description
+                    <span
+                        class="required"
+                        id="descriptionRequired"
                     >
+                        *
+                    </span>
+                </label>
 
-                        <label class="news-label">
-                            AI Prompt
-                        </label>
 
-                        <textarea
-                            id="aiPrompt"
-                            class="news-textarea"
-                            style="min-height:130px;"
-                            placeholder="Example: Write a professional SEO-friendly update about our latest sea freight consolidation shipment from China to Kenya. Mention our sourcing, shipping and consolidation services."
-                        ></textarea>
+                <div class="rich-editor-wrapper">
+
+                    <div class="rich-editor-toolbar">
+
+                        <select
+                            id="formatBlock"
+                            aria-label="Text style"
+                        >
+
+                            <option value="p">
+                                Paragraph
+                            </option>
+
+                            <option value="h1">
+                                Heading 1
+                            </option>
+
+                            <option value="h2">
+                                Heading 2
+                            </option>
+
+                            <option value="h3">
+                                Heading 3
+                            </option>
+
+                        </select>
+
+
+                        <span class="toolbar-divider"></span>
 
 
                         <button
                             type="button"
-                            class="btn btn-primary"
-                            id="generatePromptBtn"
-                            style="margin-top:10px;"
+                            data-command="bold"
+                            title="Bold"
+                            aria-label="Bold"
                         >
-                            <i class="fa-solid fa-wand-magic-sparkles"></i>
-                            Generate Description
+                            <i class="fa-solid fa-bold"></i>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            data-command="italic"
+                            title="Italic"
+                            aria-label="Italic"
+                        >
+                            <i class="fa-solid fa-italic"></i>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            data-command="underline"
+                            title="Underline"
+                            aria-label="Underline"
+                        >
+                            <i class="fa-solid fa-underline"></i>
+                        </button>
+
+
+                        <span class="toolbar-divider"></span>
+
+
+                        <button
+                            type="button"
+                            data-command="insertUnorderedList"
+                            title="Bulleted List"
+                            aria-label="Bulleted List"
+                        >
+                            <i class="fa-solid fa-list-ul"></i>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            data-command="insertOrderedList"
+                            title="Numbered List"
+                            aria-label="Numbered List"
+                        >
+                            <i class="fa-solid fa-list-ol"></i>
+                        </button>
+
+
+                        <span class="toolbar-divider"></span>
+
+
+                        <button
+                            type="button"
+                            id="blockquoteButton"
+                            title="Quote"
+                            aria-label="Quote"
+                        >
+                            <i class="fa-solid fa-quote-left"></i>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            id="linkButton"
+                            title="Add Link"
+                            aria-label="Add Link"
+                        >
+                            <i class="fa-solid fa-link"></i>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            id="unlinkButton"
+                            title="Remove Link"
+                            aria-label="Remove Link"
+                        >
+                            <i class="fa-solid fa-link-slash"></i>
+                        </button>
+
+
+                        <span class="toolbar-divider"></span>
+
+
+                        <button
+                            type="button"
+                            id="clearFormattingButton"
+                            title="Clear Formatting"
+                            aria-label="Clear Formatting"
+                        >
+                            <i class="fa-solid fa-eraser"></i>
                         </button>
 
                     </div>
 
 
                     <div
-                        id="aiStatus"
-                        style="
-                        display:none;
-                        margin-top:12px;
-                        padding:10px 12px;
-                        border-radius:8px;
-                        background:#eff6ff;
-                        color:#1d4ed8;
-                        font-size:12px;
-                        "
+                        id="richEditor"
+                        class="rich-editor-content"
+                        contenteditable="true"
+                        data-placeholder="Write your news update here. Use headings, subheadings, paragraphs, lists and formatting to structure the article..."
+                    >{{ news_post.description|safe }}</div>
+
+                </div>
+
+
+                <textarea
+                    name="description"
+                    id="newsDescription"
+                >{{ news_post.description|default:'' }}</textarea>
+
+
+                <div class="news-form-help">
+                    Use headings and subheadings to structure longer updates.
+                    The formatting will appear on the public News page.
+                </div>
+
+            </div>
+
+
+            <!-- SEO -->
+
+            <div class="seo-analysis">
+
+                <div class="seo-score-row">
+
+                    <span class="seo-score-label">
+                        Content SEO Score
+                    </span>
+
+                    <span
+                        class="seo-score"
+                        id="seoScoreDisplay"
+                    >
+                        0
+                    </span>
+
+                </div>
+
+                <div class="seo-progress">
+
+                    <div
+                        class="seo-progress-bar"
+                        id="seoProgressBar"
                     ></div>
 
                 </div>
 
-            </div>
-
-        </div>
-
-
-        <!-- ================================================= -->
-        <!-- RIGHT SIDE -->
-        <!-- ================================================= -->
-
-        <div>
-
-            <!-- SEO SCORE -->
-
-            <div class="news-card">
-
-                <h3 class="news-card-title">
-                    <i class="fa-solid fa-chart-line"></i>
-                    SEO Analysis
-                </h3>
-
-
-                <div class="seo-score-card">
-
-                    <div class="seo-score-header">
-
-                        <div>
-                            <div class="seo-score-label">
-                                Content SEO Score
-                            </div>
-
-                            <div
-                                id="seoMessage"
-                                style="
-                                color:#334155;
-                                font-size:13px;
-                                font-weight:600;
-                                margin-top:4px;
-                                "
-                            >
-                                Start writing to analyze your content.
-                            </div>
-                        </div>
-
-
-                        <div
-                            class="seo-score-number"
-                            id="seoScore"
-                        >
-                            0%
-                        </div>
-
-                    </div>
-
-
-                    <div class="seo-progress">
-
-                        <div
-                            class="seo-progress-bar"
-                            id="seoProgress"
-                        ></div>
-
-                    </div>
-
-
-                    <div id="seoChecks">
-
-                        <div class="seo-check warning" data-check="title">
-                            <i class="fa-solid fa-circle-exclamation"></i>
-                            <span>Add a descriptive title.</span>
-                        </div>
-
-                        <div class="seo-check warning" data-check="keyword">
-                            <i class="fa-solid fa-circle-exclamation"></i>
-                            <span>Add a focus keyword.</span>
-                        </div>
-
-                        <div class="seo-check warning" data-check="description">
-                            <i class="fa-solid fa-circle-exclamation"></i>
-                            <span>Add a useful description.</span>
-                        </div>
-
-                        <div class="seo-check warning" data-check="length">
-                            <i class="fa-solid fa-circle-exclamation"></i>
-                            <span>Description should contain enough useful information.</span>
-                        </div>
-
-                        <div class="seo-check warning" data-check="keywordUse">
-                            <i class="fa-solid fa-circle-exclamation"></i>
-                            <span>Use your focus keyword naturally.</span>
-                        </div>
-
-                        <div class="seo-check warning" data-check="alt">
-                            <i class="fa-solid fa-circle-exclamation"></i>
-                            <span>Add image ALT text.</span>
-                        </div>
-
-                        <div class="seo-check warning" data-check="meta">
-                            <i class="fa-solid fa-circle-exclamation"></i>
-                            <span>Add a meta description.</span>
-                        </div>
-
-                    </div>
-
-                </div>
+                <div
+                    class="seo-checks"
+                    id="seoChecks"
+                ></div>
 
             </div>
 
-
-            <!-- SEO INFORMATION -->
-
-            <div class="news-card">
-
-                <h3 class="news-card-title">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    Search Optimization
-                </h3>
+        </section>
 
 
-                <div class="form-group">
+        <!-- =================================================
+             SEO
+        ================================================== -->
 
-                    <label class="news-label">
+        <section class="news-form-section">
+
+            <h2 class="news-section-title">
+                <span>04</span>
+                Search Engine Optimisation
+            </h2>
+
+            <div class="news-form-grid">
+
+                <div class="news-form-group">
+
+                    <label for="focusKeyword">
                         Focus Keyword
                     </label>
 
@@ -961,37 +1228,37 @@
                         type="text"
                         name="focus_keyword"
                         id="focusKeyword"
-                        class="news-input"
+                        class="news-form-input"
                         maxlength="150"
                         value="{{ news_post.focus_keyword|default:'' }}"
-                        placeholder="e.g. China to Kenya shipping"
+                        placeholder="e.g. China Kenya shipping"
                     >
 
                 </div>
 
 
-                <div class="form-group">
+                <div class="news-form-group">
 
-                    <label class="news-label">
-                        Related Keywords
+                    <label for="seoKeywords">
+                        SEO Keywords
                     </label>
 
                     <input
                         type="text"
                         name="seo_keywords"
                         id="seoKeywords"
-                        class="news-input"
+                        class="news-form-input"
                         maxlength="500"
                         value="{{ news_post.seo_keywords|default:'' }}"
-                        placeholder="cargo consolidation, China sourcing, sea freight"
+                        placeholder="shipping, logistics, China, Kenya"
                     >
 
                 </div>
 
 
-                <div class="form-group">
+                <div class="news-form-group">
 
-                    <label class="news-label">
+                    <label for="metaTitle">
                         Meta Title
                     </label>
 
@@ -999,730 +1266,1053 @@
                         type="text"
                         name="meta_title"
                         id="metaTitle"
-                        class="news-input"
+                        class="news-form-input"
                         maxlength="160"
                         value="{{ news_post.meta_title|default:'' }}"
-                        placeholder="SEO title for search engines"
+                        placeholder="SEO title"
                     >
-
-                    <div class="char-counter">
-                        <span id="metaTitleCount">0</span>/160
-                    </div>
 
                 </div>
 
 
-                <div class="form-group">
+                <div class="news-form-group">
 
-                    <label class="news-label">
+                    <label for="metaDescription">
                         Meta Description
                     </label>
 
-                    <textarea
+                    <input
+                        type="text"
                         name="meta_description"
                         id="metaDescription"
-                        class="news-textarea"
-                        style="min-height:110px;"
+                        class="news-form-input"
                         maxlength="160"
-                        placeholder="Short description that can appear in search results..."
-                    >{{ news_post.meta_description|default:'' }}</textarea>
+                        value="{{ news_post.meta_description|default:'' }}"
+                        placeholder="Short search engine description"
+                    >
 
-                    <div class="char-counter">
-                        <span id="metaDescriptionCount">0</span>/160
-                    </div>
+                </div>
+
+
+                <div class="news-form-group">
+
+                    <label for="seoScore">
+                        SEO Score
+                    </label>
+
+                    <input
+                        type="number"
+                        name="seo_score"
+                        id="seoScore"
+                        class="news-form-input"
+                        min="0"
+                        max="100"
+                        value="{{ news_post.seo_score|default:0 }}"
+                    >
 
                 </div>
 
             </div>
 
-
-            <!-- PUBLISHING -->
-
-            <div class="news-card">
-
-                <h3 class="news-card-title">
-                    <i class="fa-solid fa-sliders"></i>
-                    Publishing
-                </h3>
+        </section>
 
 
-                <div class="switch-row">
+        <!-- =================================================
+             PUBLISHING
+        ================================================== -->
 
-                    <div class="switch-text">
+        <section class="news-form-section">
 
-                        <strong>
-                            Publish Post
-                        </strong>
+            <h2 class="news-section-title">
+                <span>05</span>
+                Publishing
+            </h2>
 
-                        <small>
-                            Make this update visible to customers.
-                        </small>
+            <div class="news-options">
 
-                    </div>
+                <label class="news-checkbox">
 
-                    <label class="switch">
+                    <input
+                        type="checkbox"
+                        name="is_published"
+                        {% if news_post.is_published or not editing %}checked{% endif %}
+                    >
 
-                        <input
-                            type="checkbox"
-                            name="is_published"
-                            {% if not editing or news_post.is_published %}checked{% endif %}
-                        >
+                    Publish this news post
 
-                        <span class="slider"></span>
-
-                    </label>
-
-                </div>
+                </label>
 
 
-                <div class="switch-row">
+                <label class="news-checkbox">
 
-                    <div class="switch-text">
+                    <input
+                        type="checkbox"
+                        name="is_featured"
+                        {% if news_post.is_featured %}checked{% endif %}
+                    >
 
-                        <strong>
-                            Featured News
-                        </strong>
+                    Feature this news post
 
-                        <small>
-                            Highlight this update in the News Feed.
-                        </small>
-
-                    </div>
-
-                    <label class="switch">
-
-                        <input
-                            type="checkbox"
-                            name="is_featured"
-                            {% if news_post.is_featured %}checked{% endif %}
-                        >
-
-                        <span class="slider"></span>
-
-                    </label>
-
-                </div>
+                </label>
 
             </div>
+
+        </section>
+
+
+        <!-- =================================================
+             ACTIONS
+        ================================================== -->
+
+        <div class="news-form-actions">
+
+            <a
+                href="{% url 'news_admin_list' %}"
+                class="news-cancel-button"
+            >
+                <i class="fa-solid fa-arrow-left"></i>
+                Cancel
+            </a>
+
+
+            <button
+                type="submit"
+                class="news-save-button"
+                id="saveNewsButton"
+            >
+                <i class="fa-solid fa-check"></i>
+
+                {% if editing %}
+                    Update News Post
+                {% else %}
+                    Publish News Post
+                {% endif %}
+
+            </button>
 
         </div>
 
     </div>
 
-
-    <!-- ACTIONS -->
-
-    <div class="action-bar">
-
-        <a
-            href="{% url 'news_admin_list' %}"
-            class="btn btn-secondary"
-        >
-            <i class="fa-solid fa-arrow-left"></i>
-            Cancel
-        </a>
-
-
-        <button
-            type="submit"
-            class="btn btn-primary"
-        >
-
-            <i class="fa-solid fa-check"></i>
-
-            {% if editing %}
-                Update News
-            {% else %}
-                Publish News
-            {% endif %}
-
-        </button>
-
-    </div>
-
 </form>
+
 
 </div>
 
-
 <script>
 
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", function () {
 
-    const title = document.getElementById("newsTitle");
-    const description = document.getElementById("newsDescription");
-    const focusKeyword = document.getElementById("focusKeyword");
-    const imageAlt = document.getElementById("imageAlt");
-    const metaTitle = document.getElementById("metaTitle");
-    const metaDescription = document.getElementById("metaDescription");
+    const form = document.getElementById("newsForm");
 
-    const scoreElement = document.getElementById("seoScore");
-    const scoreInput =
-    document.getElementById("seoScoreInput");
-    const progressElement = document.getElementById("seoProgress");
-    const messageElement = document.getElementById("seoMessage");
+    const richEditor =
+        document.getElementById("richEditor");
 
-    const descriptionSection =
-        document.getElementById("descriptionSection");
+    const description =
+        document.getElementById("newsDescription");
 
-    const photoType =
-        document.getElementById("postTypePhoto");
+    const formatBlock =
+        document.getElementById("formatBlock");
 
-    const articleType =
-        document.getElementById("postTypeArticle");
+    const imageField =
+        document.getElementById("imageField");
 
-
-    /* =========================================================
-       POST TYPE
-    ========================================================= */
-
-    function updatePostType(){
-
-        if(photoType.checked){
-
-            descriptionSection.style.display = "none";
-
-        }else{
-
-            descriptionSection.style.display = "block";
-
-        }
-
-        analyzeSEO();
-    }
-
-    photoType.addEventListener("change", updatePostType);
-    articleType.addEventListener("change", updatePostType);
-
-    updatePostType();
-
-
-    /* =========================================================
-       IMAGE PREVIEW
-    ========================================================= */
+    const videoField =
+        document.getElementById("videoField");
 
     const imageInput =
         document.getElementById("newsImage");
 
+    const videoInput =
+        document.getElementById("newsVideo");
+
+    const imageRequired =
+        document.getElementById("imageRequired");
+
+    const videoRequired =
+        document.getElementById("videoRequired");
+
+    const descriptionRequired =
+        document.getElementById("descriptionRequired");
+
+    const descriptionSection =
+        document.getElementById("descriptionSection");
+
     const imagePreview =
         document.getElementById("imagePreview");
 
-    const uploadContent =
-        document.getElementById("uploadContent");
+    const imagePreviewImage =
+        document.getElementById("imagePreviewImage");
 
-    const uploadBox =
-        document.getElementById("imageUploadBox");
+    const videoPreview =
+        document.getElementById("videoPreview");
 
+    const videoPreviewPlayer =
+        document.getElementById("videoPreviewPlayer");
 
-    imageInput.addEventListener("change", function(){
+    const focusKeyword =
+        document.getElementById("focusKeyword");
 
-        const file = this.files[0];
+    const seoKeywords =
+        document.getElementById("seoKeywords");
 
-        if(!file){
-            return;
-        }
+    const seoScoreInput =
+        document.getElementById("seoScore");
 
-        if(!file.type.startsWith("image/")){
+    const seoScoreDisplay =
+        document.getElementById("seoScoreDisplay");
 
-            alert("Please select a valid image.");
+    const seoProgressBar =
+        document.getElementById("seoProgressBar");
 
-            this.value = "";
-
-            return;
-        }
-
-
-        const reader = new FileReader();
-
-        reader.onload = function(e){
-
-            imagePreview.src = e.target.result;
-
-            imagePreview.style.display = "block";
-
-            uploadContent.style.display = "none";
-
-            uploadBox.classList.add("has-image");
-
-        };
-
-        reader.readAsDataURL(file);
-
-        analyzeSEO();
-
-    });
+    const seoChecks =
+        document.getElementById("seoChecks");
 
 
-    /* =========================================================
-       SEO CHECKS
-    ========================================================= */
+    /* =====================================================
+       RICH EDITOR
+    ===================================================== */
 
-    function setCheck(name, good, message){
+    function syncEditor() {
 
-        const element =
-            document.querySelector(
-                `.seo-check[data-check="${name}"]`
-            );
-
-        if(!element){
-            return;
-        }
-
-        const icon =
-            element.querySelector("i");
-
-        const text =
-            element.querySelector("span");
-
-
-        element.classList.remove(
-            "good",
-            "warning",
-            "bad"
-        );
-
-
-        if(good){
-
-            element.classList.add("good");
-
-            icon.className =
-                "fa-solid fa-circle-check";
-
-        }else{
-
-            element.classList.add("warning");
-
-            icon.className =
-                "fa-solid fa-circle-exclamation";
-
-        }
-
-
-        text.textContent = message;
+        description.value =
+            richEditor.innerHTML.trim();
 
     }
 
 
-    function analyzeSEO(){
+    function getEditorText() {
+
+        return richEditor.innerText
+            .replace(/\u00a0/g, " ")
+            .replace(/\s+/g, " ")
+            .trim();
+
+    }
+
+
+    function focusEditor() {
+
+        richEditor.focus();
+
+    }
+
+
+    document
+        .querySelectorAll(
+            ".rich-editor-toolbar button[data-command]"
+        )
+        .forEach(function(button) {
+
+            button.addEventListener(
+                "mousedown",
+                function(event) {
+
+                    event.preventDefault();
+
+                }
+            );
+
+
+            button.addEventListener(
+                "click",
+                function() {
+
+                    focusEditor();
+
+                    document.execCommand(
+                        button.dataset.command,
+                        false,
+                        null
+                    );
+
+                    syncEditor();
+
+                    updateSeo();
+
+                }
+            );
+
+        });
+
+
+    /* =====================================================
+       FORMAT BLOCK
+    ===================================================== */
+
+    formatBlock.addEventListener(
+        "change",
+        function() {
+
+            focusEditor();
+
+            document.execCommand(
+                "formatBlock",
+                false,
+                formatBlock.value
+            );
+
+            syncEditor();
+
+            updateSeo();
+
+        }
+    );
+
+
+    /* =====================================================
+       LINK
+    ===================================================== */
+
+    const linkButton =
+        document.getElementById("linkButton");
+
+    linkButton.addEventListener(
+        "mousedown",
+        function(event) {
+
+            event.preventDefault();
+
+        }
+    );
+
+
+    linkButton.addEventListener(
+        "click",
+        function() {
+
+            focusEditor();
+
+            const url = window.prompt(
+                "Enter the full URL:",
+                "https://"
+            );
+
+            if(!url) {
+                return;
+            }
+
+            document.execCommand(
+                "createLink",
+                false,
+                url
+            );
+
+            syncEditor();
+
+            updateSeo();
+
+        }
+    );
+
+
+    /* =====================================================
+       REMOVE LINK
+    ===================================================== */
+
+    const unlinkButton =
+        document.getElementById("unlinkButton");
+
+    unlinkButton.addEventListener(
+        "mousedown",
+        function(event) {
+
+            event.preventDefault();
+
+        }
+    );
+
+
+    unlinkButton.addEventListener(
+        "click",
+        function() {
+
+            focusEditor();
+
+            document.execCommand(
+                "unlink",
+                false,
+                null
+            );
+
+            syncEditor();
+
+        }
+    );
+
+
+    /* =====================================================
+       BLOCKQUOTE
+    ===================================================== */
+
+    const blockquoteButton =
+        document.getElementById("blockquoteButton");
+
+    blockquoteButton.addEventListener(
+        "mousedown",
+        function(event) {
+
+            event.preventDefault();
+
+        }
+    );
+
+
+    blockquoteButton.addEventListener(
+        "click",
+        function() {
+
+            focusEditor();
+
+            document.execCommand(
+                "formatBlock",
+                false,
+                "blockquote"
+            );
+
+            syncEditor();
+
+            updateSeo();
+
+        }
+    );
+
+
+    /* =====================================================
+       CLEAR FORMATTING
+    ===================================================== */
+
+    const clearFormattingButton =
+        document.getElementById(
+            "clearFormattingButton"
+        );
+
+
+    clearFormattingButton.addEventListener(
+        "mousedown",
+        function(event) {
+
+            event.preventDefault();
+
+        }
+    );
+
+
+    clearFormattingButton.addEventListener(
+        "click",
+        function() {
+
+            focusEditor();
+
+            document.execCommand(
+                "removeFormat",
+                false,
+                null
+            );
+
+            syncEditor();
+
+            updateSeo();
+
+        }
+    );
+
+
+    /* =====================================================
+       LIVE EDITOR SYNC
+    ===================================================== */
+
+    richEditor.addEventListener(
+        "input",
+        function() {
+
+            syncEditor();
+            updateSeo();
+
+        }
+    );
+
+
+    /* =====================================================
+       POST TYPE HANDLING
+    ===================================================== */
+
+    const postTypeInputs =
+        document.querySelectorAll(
+            'input[name="post_type"]'
+        );
+
+
+    function getPostType() {
+
+        const selected =
+            document.querySelector(
+                'input[name="post_type"]:checked'
+            );
+
+        return selected
+            ? selected.value
+            : "article";
+
+    }
+
+
+    function updatePostTypeUI() {
+
+        const postType =
+            getPostType();
+
+
+        imageField.classList.add("active");
+        videoField.classList.remove("active");
+
+        imageRequired.style.display = "inline";
+        videoRequired.style.display = "inline";
+
+        descriptionSection.style.display =
+            "block";
+
+        descriptionRequired.style.display =
+            "inline";
+
+
+        if(postType === "photo") {
+
+            imageField.classList.add("active");
+
+            videoField.classList.remove("active");
+
+            imageRequired.style.display =
+                "inline";
+
+            descriptionRequired.style.display =
+                "none";
+
+            descriptionSection.style.display =
+                "none";
+
+            videoInput.value = "";
+
+            videoPreview.classList.remove(
+                "active"
+            );
+
+        }
+
+
+        if(postType === "article") {
+
+            imageField.classList.add("active");
+
+            videoField.classList.remove("active");
+
+            imageRequired.style.display =
+                "inline";
+
+            descriptionRequired.style.display =
+                "inline";
+
+            descriptionSection.style.display =
+                "block";
+
+            videoInput.value = "";
+
+            videoPreview.classList.remove(
+                "active"
+            );
+
+        }
+
+
+        if(postType === "video") {
+
+            imageField.classList.add("active");
+
+            videoField.classList.add("active");
+
+            imageRequired.style.display =
+                "none";
+
+            videoRequired.style.display =
+                "inline";
+
+            descriptionRequired.style.display =
+                "inline";
+
+            descriptionSection.style.display =
+                "block";
+
+        }
+
+    }
+
+
+    postTypeInputs.forEach(function(input) {
+
+        input.addEventListener(
+            "change",
+            updatePostTypeUI
+        );
+
+    });
+
+
+    updatePostTypeUI();
+
+
+    /* =====================================================
+       IMAGE PREVIEW
+    ===================================================== */
+
+    imageInput.addEventListener(
+        "change",
+        function() {
+
+            const file =
+                imageInput.files[0];
+
+            if(!file) {
+
+                imagePreview.classList.remove(
+                    "active"
+                );
+
+                return;
+
+            }
+
+
+            if(!file.type.startsWith("image/")) {
+
+                imageInput.value = "";
+
+                imagePreview.classList.remove(
+                    "active"
+                );
+
+                alert(
+                    "Please select a valid image file."
+                );
+
+                return;
+
+            }
+
+
+            const objectUrl =
+                URL.createObjectURL(file);
+
+            imagePreviewImage.src =
+                objectUrl;
+
+            imagePreview.classList.add(
+                "active"
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       VIDEO PREVIEW
+    ===================================================== */
+
+    videoInput.addEventListener(
+        "change",
+        function() {
+
+            const file =
+                videoInput.files[0];
+
+            if(!file) {
+
+                videoPreview.classList.remove(
+                    "active"
+                );
+
+                return;
+
+            }
+
+
+            if(!file.type.startsWith("video/")) {
+
+                videoInput.value = "";
+
+                videoPreview.classList.remove(
+                    "active"
+                );
+
+                alert(
+                    "Please select a valid video file."
+                );
+
+                return;
+
+            }
+
+
+            const objectUrl =
+                URL.createObjectURL(file);
+
+            videoPreviewPlayer.src =
+                objectUrl;
+
+            videoPreview.classList.add(
+                "active"
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       SEO ANALYSIS
+    ===================================================== */
+
+    function updateSeo() {
+
+        const text =
+            getEditorText();
+
+        const title =
+            document.getElementById(
+                "newsTitle"
+            ).value.trim();
+
+        const keyword =
+            focusKeyword.value.trim()
+                .toLowerCase();
+
+
+        const checks = [];
 
         let score = 0;
 
 
-        const titleValue =
-            title.value.trim();
-
-        const descriptionValue =
-            description.value.trim();
-
-        const keywordValue =
-            focusKeyword.value.trim().toLowerCase();
-
-        const altValue =
-            imageAlt.value.trim();
-
-        const metaValue =
-            metaDescription.value.trim();
-
-        const isPhotoOnly =
-            photoType.checked;
-
-
-        /* TITLE — 15 */
-
-        if(titleValue.length >= 10){
+        if(title.length >= 20) {
 
             score += 15;
 
-            setCheck(
-                "title",
-                true,
-                "Good descriptive title."
-            );
+            checks.push({
+                good: true,
+                text: "Title has useful search length."
+            });
 
-        }else{
+        } else {
 
-            setCheck(
-                "title",
-                false,
-                "Add a descriptive title of at least 10 characters."
-            );
+            checks.push({
+                good: false,
+                text: "Add a more descriptive title."
+            });
 
         }
 
 
-        /* KEYWORD — 15 */
-
-        if(keywordValue.length >= 3){
-
-            score += 15;
-
-            setCheck(
-                "keyword",
-                true,
-                "Focus keyword has been added."
-            );
-
-        }else{
-
-            setCheck(
-                "keyword",
-                false,
-                "Add a focus keyword."
-            );
-
-        }
-
-
-        /* DESCRIPTION — 20 */
-
-        if(isPhotoOnly){
+        if(text.length >= 150) {
 
             score += 20;
 
-            setCheck(
-                "description",
-                true,
-                "Photo-only post does not require a description."
-            );
+            checks.push({
+                good: true,
+                text: "Description has enough written content."
+            });
 
-        }else if(descriptionValue.length >= 80){
+        } else {
 
-            score += 20;
-
-            setCheck(
-                "description",
-                true,
-                "Useful description added."
-            );
-
-        }else{
-
-            setCheck(
-                "description",
-                false,
-                "Add a useful description of at least 80 characters."
-            );
+            checks.push({
+                good: false,
+                text: "Add more useful description content."
+            });
 
         }
 
 
-        /* DESCRIPTION LENGTH — 15 */
+        if(keyword) {
 
-        if(isPhotoOnly){
-
-            score += 15;
-
-            setCheck(
-                "length",
-                true,
-                "Length check skipped for photo-only post."
-            );
-
-        }else if(descriptionValue.length >= 250){
-
-            score += 15;
-
-            setCheck(
-                "length",
-                true,
-                "Good content length."
-            );
-
-        }else if(descriptionValue.length >= 120){
-
-            score += 8;
-
-            setCheck(
-                "length",
-                false,
-                "Add more useful detail to strengthen the content."
-            );
-
-        }else{
-
-            setCheck(
-                "length",
-                false,
-                "Description is too short."
-            );
-
-        }
+            const keywordCount =
+                (
+                    text.toLowerCase()
+                        .match(
+                            new RegExp(
+                                keyword.replace(
+                                    /[.*+?^${}()|[\]\\]/g,
+                                    "\\$&"
+                                ),
+                                "g"
+                            )
+                        ) || []
+                ).length;
 
 
-        /* KEYWORD USAGE — 15 */
+            if(keywordCount > 0) {
 
-        if(isPhotoOnly){
+                score += 20;
 
-            score += 15;
+                checks.push({
+                    good: true,
+                    text: "Focus keyword appears in the description."
+                });
 
-            setCheck(
-                "keywordUse",
-                true,
-                "Keyword usage check is optional for photo-only posts."
-            );
+            } else {
 
-        }else if(
-            keywordValue &&
-            descriptionValue.toLowerCase().includes(keywordValue)
-        ){
+                checks.push({
+                    good: false,
+                    text: "Use the focus keyword naturally in the description."
+                });
 
-            score += 15;
+            }
 
-            setCheck(
-                "keywordUse",
-                true,
-                "Focus keyword appears naturally in the description."
-            );
 
-        }else{
+            if(
+                title
+                    .toLowerCase()
+                    .includes(keyword)
+            ) {
 
-            setCheck(
-                "keywordUse",
-                false,
-                "Use the focus keyword naturally in the description."
-            );
+                score += 15;
+
+                checks.push({
+                    good: true,
+                    text: "Focus keyword appears in the title."
+                });
+
+            } else {
+
+                checks.push({
+                    good: false,
+                    text: "Consider including the focus keyword in the title."
+                });
+
+            }
+
+        } else {
+
+            checks.push({
+                good: false,
+                text: "Add a focus keyword."
+            });
 
         }
 
 
-        /* ALT — 10 */
+        const keywordList =
+            seoKeywords.value
+                .split(",")
+                .map(function(item) {
+                    return item.trim();
+                })
+                .filter(Boolean);
 
-        if(altValue.length >= 8){
+
+        if(keywordList.length >= 2) {
 
             score += 10;
 
-            setCheck(
-                "alt",
-                true,
-                "Image ALT text added."
-            );
+            checks.push({
+                good: true,
+                text: "Related SEO keywords are provided."
+            });
 
-        }else{
+        } else {
 
-            setCheck(
-                "alt",
-                false,
-                "Add descriptive image ALT text."
-            );
+            checks.push({
+                good: false,
+                text: "Add related SEO keywords."
+            });
 
         }
 
 
-        /* META DESCRIPTION — 10 */
-
-        if(metaValue.length >= 70){
+        if(
+            richEditor.querySelector(
+                "h2, h3"
+            )
+        ) {
 
             score += 10;
 
-            setCheck(
-                "meta",
-                true,
-                "Good meta description."
-            );
+            checks.push({
+                good: true,
+                text: "Content uses structured headings."
+            });
 
-        }else{
+        } else {
 
-            setCheck(
-                "meta",
-                false,
-                "Add a useful meta description of at least 70 characters."
-            );
+            checks.push({
+                good: false,
+                text: "Use H2 or H3 headings for longer articles."
+            });
 
         }
 
 
-        /* UPDATE UI */
+        if(
+            richEditor.querySelector("ul, ol")
+        ) {
 
-        score = Math.max(
-            0,
-            Math.min(100, score)
-        );
+            score += 5;
 
-
-        scoreElement.textContent =
-            score + "%";
-            scoreInput.value = score;
-
-        progressElement.style.width =
-            score + "%";
-
-
-        if(score >= 80){
-
-            scoreElement.style.color =
-                "#16a34a";
-
-            progressElement.style.background =
-                "#16a34a";
-
-            messageElement.textContent =
-                "Excellent SEO foundation.";
-
-        }else if(score >= 60){
-
-            scoreElement.style.color =
-                "#d97706";
-
-            progressElement.style.background =
-                "#d97706";
-
-            messageElement.textContent =
-                "Good start. A few improvements are recommended.";
-
-        }else{
-
-            scoreElement.style.color =
-                "#dc2626";
-
-            progressElement.style.background =
-                "#dc2626";
-
-            messageElement.textContent =
-                "More SEO improvements are needed.";
+            checks.push({
+                good: true,
+                text: "Content uses a structured list."
+            });
 
         }
+
+
+        score =
+            Math.max(
+                0,
+                Math.min(100, score)
+            );
+
+
+        seoScoreDisplay.textContent =
+            score;
+
+        seoProgressBar.style.width =
+            score + "%";
+
+        seoScoreInput.value =
+            score;
+
+
+        seoChecks.innerHTML =
+            checks.map(function(check) {
+
+                return `
+                    <div class="seo-check ${check.good ? "good" : ""}">
+                        ${check.text}
+                    </div>
+                `;
+
+            }).join("");
 
     }
 
 
-    /* =========================================================
-       LIVE ANALYSIS
-    ========================================================= */
-
-    [
-        title,
-        description,
-        focusKeyword,
-        imageAlt,
-        metaTitle,
-        metaDescription
-    ].forEach(function(element){
-
-        element.addEventListener(
+    document
+        .getElementById("newsTitle")
+        .addEventListener(
             "input",
-            analyzeSEO
+            updateSeo
         );
 
-    });
+
+    focusKeyword.addEventListener(
+        "input",
+        updateSeo
+    );
 
 
-    /* =========================================================
-       COUNTERS
-    ========================================================= */
-
-    function updateCounters(){
-
-        document.getElementById(
-            "descriptionCount"
-        ).textContent =
-            description.value.length;
+    seoKeywords.addEventListener(
+        "input",
+        updateSeo
+    );
 
 
-        document.getElementById(
-            "metaTitleCount"
-        ).textContent =
-            metaTitle.value.length;
+    /* =====================================================
+       FORM SUBMISSION
+    ===================================================== */
+
+    form.addEventListener(
+        "submit",
+        function(event) {
+
+            syncEditor();
+
+            const postType =
+                getPostType();
+
+            const text =
+                getEditorText();
 
 
-        document.getElementById(
-            "metaDescriptionCount"
-        ).textContent =
-            metaDescription.value.length;
+            if(postType === "photo") {
 
-    }
+                return;
 
-
-    [
-        description,
-        metaTitle,
-        metaDescription
-    ].forEach(function(element){
-
-        element.addEventListener(
-            "input",
-            updateCounters
-        );
-
-    });
+            }
 
 
-    updateCounters();
-    analyzeSEO();
+            if(
+                postType === "article" &&
+                !imageInput.files.length
+                &&
+                !document.querySelector(
+                    ".existing-main-image"
+                )
+            ) {
+
+                /*
+                 * The server remains the final validator.
+                 * This check is intentionally lightweight.
+                 */
+
+            }
 
 
-    /* =========================================================
-       AI UI
-    ========================================================= */
+            if(
+                (
+                    postType === "article" ||
+                    postType === "video"
+                )
+                &&
+                !text
+            ) {
 
-    const promptButton =
-        document.getElementById("promptAiButton");
+                event.preventDefault();
 
-    const photoButton =
-        document.getElementById("photoAiButton");
+                alert(
+                    "Please enter a description for this news post."
+                );
 
-    const promptBox =
-        document.getElementById("aiPromptBox");
+                richEditor.focus();
 
+                return;
 
-    promptButton.addEventListener("click", function(){
-
-        promptBox.classList.toggle("show");
-
-    });
+            }
 
 
-    photoButton.addEventListener("click", function(){
+            if(
+                postType === "video" &&
+                !videoInput.files.length
+            ) {
 
-        const imageFile =
-            imageInput.files[0];
+                const hasExistingVideo =
+                    document.querySelector(
+                        ".existing-video"
+                    );
 
-        if(!imageFile){
+                if(!hasExistingVideo) {
 
-            alert(
-                "Please upload a photo first."
-            );
+                    event.preventDefault();
 
-            return;
+                    alert(
+                        "Please upload a video for this post."
+                    );
+
+                    videoInput.focus();
+
+                    return;
+
+                }
+
+            }
 
         }
-
-        alert(
-            "Photo AI generation will be connected next."
-        );
-
-    });
+    );
 
 
-    document.getElementById(
-        "generatePromptBtn"
-    ).addEventListener("click", function(){
+    /* =====================================================
+       INITIAL SEO
+    ===================================================== */
 
-        const prompt =
-            document.getElementById(
-                "aiPrompt"
-            ).value.trim();
-
-
-        if(!prompt){
-
-            alert(
-                "Please enter an AI prompt first."
-            );
-
-            return;
-
-        }
-
-
-        alert(
-            "AI generation will be connected next."
-        );
-
-    });
+    updateSeo();
 
 });
 
 </script>
 
-{% endblock content %}
+{% endblock %}

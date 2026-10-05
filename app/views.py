@@ -49,6 +49,7 @@ from django.conf import settings
 from .models import Banner, Feedback
 
 
+from .services.google_reviews import get_sabbtco_reviews
 def index(request):
     # OPTIONAL: allow public access (recommended for homepage)
     # If you really want login required, use @login_required instead
@@ -66,13 +67,20 @@ def index(request):
         approved=True
     ).order_by("-created_at")
 
+    google_reviews = get_sabbtco_reviews()
+
     return render(
         request,
         "index.html",
         {
             "banners": banners,
             "feedbacks": feedbacks,
-            "GOOGLE_CLIENT_ID": getattr(settings, "GOOGLE_CLIENT_ID", ""),
+            "google_reviews": google_reviews,
+            "GOOGLE_CLIENT_ID": getattr(
+                settings,
+                "GOOGLE_CLIENT_ID",
+                ""
+            ),
         }
     )
 def services(request):
@@ -490,132 +498,34 @@ from .models import (
     Order,
     Shipment,
     SourcingRequest,
-    SupplierPaymentRequest
+    SupplierPaymentRequest,
+    NewsPost,
+    NewsPostImage,
 )
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .models import NewsPost
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
-# ============================================================
-# NEWS FEED
-# ============================================================
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
-
-from .models import NewsPost
-
 
 # ============================================================
-# PUBLIC NEWS FEED
-# ============================================================
-
-def news_list(request):
-    """
-    Public News Feed.
-
-    Only published posts are displayed.
-    Newest posts appear first.
-    """
-
-    news_posts = (
-        NewsPost.objects
-        .filter(is_published=True)
-        .order_by("-published_at", "-created_at")
-    )
-
-    return render(
-        request,
-        "news/news_list.html",
-        {
-            "news_posts": news_posts,
-        }
-    )
-
-
-# ============================================================
-# PUBLIC NEWS DETAIL
-# ============================================================
-
-def news_detail(request, slug):
-    """
-    Public individual News Feed post.
-    Only published posts can be viewed publicly.
-    """
-
-    news_post = get_object_or_404(
-        NewsPost,
-        slug=slug,
-        is_published=True
-    )
-
-    return render(
-        request,
-        "news/news_detail.html",
-        {
-            "news_post": news_post,
-        }
-    )
-
-
-# ============================================================
-# ADMIN NEWS LIST
-# ============================================================
-
-@login_required
-def news_admin_list(request):
-    """
-    Admin News Feed management page.
-
-    Displays all posts, including unpublished posts.
-    """
-
-    if not request.user.is_staff:
-        messages.error(
-            request,
-            "You do not have permission to access the News Feed."
-        )
-        return redirect("dashboard")
-
-    news_posts = (
-        NewsPost.objects
-        .all()
-        .order_by("-created_at")
-    )
-
-    return render(
-        request,
-        "news/admin_news_list.html",
-        {
-            "news_posts": news_posts,
-        }
-    )
-
-
-# ============================================================
-# CREATE NEWS POST
+# NEWS FEED — CREATE
 # ============================================================
 
 @login_required
 def news_create(request):
     """
-    Create a new News Feed post.
+    Create a new SABBTCo News Feed post.
 
     Supported post types:
-
-    1. photo
-       - Image only
-       - Description is optional/not required
-
-    2. article
-       - Image
-       - Description
-       - SEO information
+        photo   = Photo Only
+        article = Photo + Description
+        video   = Video + Description
     """
+
+    # ========================================================
+    # STAFF ACCESS
+    # ========================================================
 
     if not request.user.is_staff:
         messages.error(
@@ -624,11 +534,15 @@ def news_create(request):
         )
         return redirect("dashboard")
 
+    # ========================================================
+    # POST REQUEST
+    # ========================================================
+
     if request.method == "POST":
 
-        # ----------------------------------------------------
-        # Basic information
-        # ----------------------------------------------------
+        # ====================================================
+        # BASIC FIELDS
+        # ====================================================
 
         title = request.POST.get(
             "title",
@@ -638,23 +552,47 @@ def news_create(request):
         post_type = request.POST.get(
             "post_type",
             "article"
-        ).strip().lower()
+        ).strip()
 
         description = request.POST.get(
             "description",
             ""
         ).strip()
 
+        # ====================================================
+        # UPLOADED FILES
+        # ====================================================
+
         image = request.FILES.get("image")
+        video = request.FILES.get("video")
+
+        # ====================================================
+        # TEMPORARY DEBUG
+        # ====================================================
+
+        print("========================================")
+        print("       SABBTCO NEWS UPLOAD DEBUG")
+        print("========================================")
+        print("POST TYPE:", post_type)
+        print("FILES:", request.FILES)
+        print("IMAGE:", image)
+        print("VIDEO:", video)
+
+        if video:
+            print("VIDEO NAME:", video.name)
+            print("VIDEO SIZE:", video.size)
+            print("VIDEO CONTENT TYPE:", video.content_type)
+
+        print("========================================")
+
+        # ====================================================
+        # SEO / ADDITIONAL FIELDS
+        # ====================================================
 
         image_alt = request.POST.get(
             "image_alt",
             ""
         ).strip()
-
-        # ----------------------------------------------------
-        # SEO information
-        # ----------------------------------------------------
 
         focus_keyword = request.POST.get(
             "focus_keyword",
@@ -676,27 +614,54 @@ def news_create(request):
             ""
         ).strip()
 
-        # ----------------------------------------------------
-        # SEO score
-        # ----------------------------------------------------
-
         seo_score_raw = request.POST.get(
             "seo_score",
             "0"
-        ).strip()
+        )
+
+        # ====================================================
+        # VALID POST TYPES
+        # ====================================================
+
+        valid_post_types = {
+            "photo",
+            "article",
+            "video",
+        }
+
+        if post_type not in valid_post_types:
+            messages.error(
+                request,
+                "Invalid news post type selected."
+            )
+
+            return render(
+                request,
+                "news/news_form.html",
+                {
+                    "editing": False,
+                }
+            )
+
+        # ====================================================
+        # SEO SCORE
+        # ====================================================
 
         try:
-            seo_score = int(seo_score_raw)
             seo_score = max(
                 0,
-                min(100, seo_score)
+                min(
+                    100,
+                    int(seo_score_raw)
+                )
             )
+
         except (TypeError, ValueError):
             seo_score = 0
 
-        # ----------------------------------------------------
-        # Publishing options
-        # ----------------------------------------------------
+        # ====================================================
+        # PUBLISHING OPTIONS
+        # ====================================================
 
         is_published = (
             request.POST.get("is_published") == "on"
@@ -706,100 +671,152 @@ def news_create(request):
             request.POST.get("is_featured") == "on"
         )
 
-        # ----------------------------------------------------
-        # Validate post type
-        # ----------------------------------------------------
-
-        allowed_post_types = {
-            "photo",
-            "article",
-        }
-
-        if post_type not in allowed_post_types:
-            post_type = "article"
-
-        # ----------------------------------------------------
-        # Image is required
-        # ----------------------------------------------------
-
-        if not image:
-            messages.error(
-                request,
-                "Please upload an image for the news post."
-            )
-
-            return render(
-                request,
-                "news/news_form.html",
-                {
-                    "title": title,
-                    "post_type": post_type,
-                    "description": description,
-                    "image_alt": image_alt,
-                    "focus_keyword": focus_keyword,
-                    "seo_keywords": seo_keywords,
-                    "meta_title": meta_title,
-                    "meta_description": meta_description,
-                    "seo_score": seo_score,
-                    "is_published": is_published,
-                    "is_featured": is_featured,
-                }
-            )
-
-        # ----------------------------------------------------
-        # Article requires description
-        # ----------------------------------------------------
-
-        if post_type == "article" and not description:
-
-            messages.error(
-                request,
-                "Please enter a description for a Photo + Description post."
-            )
-
-            return render(
-                request,
-                "news/news_form.html",
-                {
-                    "title": title,
-                    "post_type": post_type,
-                    "description": description,
-                    "image_alt": image_alt,
-                    "focus_keyword": focus_keyword,
-                    "seo_keywords": seo_keywords,
-                    "meta_title": meta_title,
-                    "meta_description": meta_description,
-                    "seo_score": seo_score,
-                    "is_published": is_published,
-                    "is_featured": is_featured,
-                }
-            )
-
-        # ----------------------------------------------------
-        # Photo-only post should not contain description
-        # ----------------------------------------------------
+        # ====================================================
+        # PHOTO ONLY
+        # ====================================================
 
         if post_type == "photo":
+
+            # Image is mandatory.
+            if not image:
+                messages.error(
+                    request,
+                    "Please upload an image for a Photo Only post."
+                )
+
+                return render(
+                    request,
+                    "news/news_form.html",
+                    {
+                        "editing": False,
+                    }
+                )
+
+            # Photo-only posts have no description.
             description = ""
 
-        # ----------------------------------------------------
-        # Create post
-        # ----------------------------------------------------
+            # Photo-only posts have no video.
+            video = None
+
+        # ====================================================
+        # PHOTO + DESCRIPTION
+        # ====================================================
+
+        elif post_type == "article":
+
+            # Image is mandatory.
+            if not image:
+                messages.error(
+                    request,
+                    "Please upload an image for a Photo + Description post."
+                )
+
+                return render(
+                    request,
+                    "news/news_form.html",
+                    {
+                        "editing": False,
+                    }
+                )
+
+            # Description is mandatory.
+            if not description:
+                messages.error(
+                    request,
+                    "Please enter a description for a Photo + Description post."
+                )
+
+                return render(
+                    request,
+                    "news/news_form.html",
+                    {
+                        "editing": False,
+                    }
+                )
+
+            # Article posts do not use video.
+            video = None
+
+        # ====================================================
+        # VIDEO + DESCRIPTION
+        # ====================================================
+
+        elif post_type == "video":
+
+            # Video is mandatory.
+            if not video:
+                messages.error(
+                    request,
+                    "Please upload a video for a Video + Description post."
+                )
+
+                return render(
+                    request,
+                    "news/news_form.html",
+                    {
+                        "editing": False,
+                    }
+                )
+
+            # Description is mandatory.
+            if not description:
+                messages.error(
+                    request,
+                    "Please enter a description for a Video + Description post."
+                )
+
+                return render(
+                    request,
+                    "news/news_form.html",
+                    {
+                        "editing": False,
+                    }
+                )
+
+            # Main image is OPTIONAL for video posts.
+            # If supplied, it becomes the poster image.
+
+        # ====================================================
+        # CREATE NEWS POST
+        # ====================================================
 
         news_post = NewsPost.objects.create(
             title=title,
             post_type=post_type,
             image=image,
+            video=video,
             image_alt=image_alt,
             description=description,
             focus_keyword=focus_keyword,
             seo_keywords=seo_keywords,
             meta_title=meta_title,
             meta_description=meta_description,
+            seo_score=seo_score,
             is_published=is_published,
             is_featured=is_featured,
-            seo_score=seo_score,
         )
+
+        # ====================================================
+        # GALLERY IMAGES
+        # ====================================================
+
+        gallery_images = request.FILES.getlist(
+            "gallery_images"
+        )
+
+        for index, gallery_image in enumerate(
+            gallery_images
+        ):
+            NewsPostImage.objects.create(
+                news_post=news_post,
+                image=gallery_image,
+                image_alt=image_alt,
+                order=index,
+            )
+
+        # ====================================================
+        # SUCCESS
+        # ====================================================
 
         messages.success(
             request,
@@ -810,24 +827,33 @@ def news_create(request):
             "news_admin_list"
         )
 
-    # --------------------------------------------------------
-    # GET request
-    # --------------------------------------------------------
+    # ========================================================
+    # GET REQUEST
+    # ========================================================
 
     return render(
         request,
-        "news/news_form.html"
+        "news/news_form.html",
+        {
+            "editing": False,
+        }
     )
-
-
 # ============================================================
-# EDIT NEWS POST
+# NEWS FEED — EDIT
 # ============================================================
 
 @login_required
 def news_edit(request, pk):
     """
-    Edit an existing News Feed post.
+    Edit an existing SABBTCo News Feed post.
+
+    Supports:
+    - Photo Only
+    - Photo + Description
+    - Video + Description
+    - Main image replacement
+    - Video replacement
+    - Additional gallery images
     """
 
     if not request.user.is_staff:
@@ -844,27 +870,15 @@ def news_edit(request, pk):
 
     if request.method == "POST":
 
-        # ----------------------------------------------------
-        # Basic information
-        # ----------------------------------------------------
-
         news_post.title = request.POST.get(
             "title",
             ""
         ).strip()
 
-        post_type = request.POST.get(
+        news_post.post_type = request.POST.get(
             "post_type",
             "article"
-        ).strip().lower()
-
-        if post_type not in {
-            "photo",
-            "article",
-        }:
-            post_type = "article"
-
-        news_post.post_type = post_type
+        ).strip()
 
         news_post.description = request.POST.get(
             "description",
@@ -875,10 +889,6 @@ def news_edit(request, pk):
             "image_alt",
             ""
         ).strip()
-
-        # ----------------------------------------------------
-        # SEO information
-        # ----------------------------------------------------
 
         news_post.focus_keyword = request.POST.get(
             "focus_keyword",
@@ -901,24 +911,50 @@ def news_edit(request, pk):
         ).strip()
 
         # ----------------------------------------------------
+        # Validate post type
+        # ----------------------------------------------------
+
+        valid_post_types = {
+            "photo",
+            "article",
+            "video",
+        }
+
+        if news_post.post_type not in valid_post_types:
+            messages.error(
+                request,
+                "Invalid news post type selected."
+            )
+
+            return render(
+                request,
+                "news/news_form.html",
+                {
+                    "news_post": news_post,
+                    "editing": True,
+                    "gallery_images": news_post.gallery_images.all(),
+                }
+            )
+
+        # ----------------------------------------------------
         # SEO score
         # ----------------------------------------------------
 
         seo_score_raw = request.POST.get(
             "seo_score",
             "0"
-        ).strip()
+        )
 
         try:
-            seo_score = int(seo_score_raw)
-            seo_score = max(
+            news_post.seo_score = max(
                 0,
-                min(100, seo_score)
+                min(
+                    100,
+                    int(seo_score_raw)
+                )
             )
         except (TypeError, ValueError):
-            seo_score = 0
-
-        news_post.seo_score = seo_score
+            news_post.seo_score = 0
 
         # ----------------------------------------------------
         # Publishing options
@@ -933,48 +969,161 @@ def news_edit(request, pk):
         )
 
         # ----------------------------------------------------
-        # Replace image only when a new image is uploaded
+        # NEW MAIN IMAGE
         # ----------------------------------------------------
 
-        new_image = request.FILES.get("image")
+        new_image = request.FILES.get(
+            "image"
+        )
 
         if new_image:
             news_post.image = new_image
 
         # ----------------------------------------------------
-        # Photo-only post
+        # NEW VIDEO
+        # ----------------------------------------------------
+
+        new_video = request.FILES.get(
+            "video"
+        )
+
+        if new_video:
+            news_post.video = new_video
+
+        # ----------------------------------------------------
+        # PHOTO ONLY
         # ----------------------------------------------------
 
         if news_post.post_type == "photo":
+
+            if not news_post.image:
+                messages.error(
+                    request,
+                    "A Photo Only post must have an image."
+                )
+
+                return render(
+                    request,
+                    "news/news_form.html",
+                    {
+                        "news_post": news_post,
+                        "editing": True,
+                        "gallery_images": news_post.gallery_images.all(),
+                    }
+                )
+
             news_post.description = ""
 
-        # ----------------------------------------------------
-        # Article must have a description
-        # ----------------------------------------------------
-
-        if (
-            news_post.post_type == "article"
-            and not news_post.description
-        ):
-            messages.error(
-                request,
-                "Please enter a description for a Photo + Description post."
-            )
-
-            return render(
-                request,
-                "news/news_form.html",
-                {
-                    "news_post": news_post,
-                    "editing": True,
-                }
-            )
+            # Remove video when changing an existing
+            # post from Video to Photo Only.
+            news_post.video = None
 
         # ----------------------------------------------------
-        # Save changes
+        # PHOTO + DESCRIPTION
+        # ----------------------------------------------------
+
+        elif news_post.post_type == "article":
+
+            if not news_post.image:
+                messages.error(
+                    request,
+                    "A Photo + Description post must have an image."
+                )
+
+                return render(
+                    request,
+                    "news/news_form.html",
+                    {
+                        "news_post": news_post,
+                        "editing": True,
+                        "gallery_images": news_post.gallery_images.all(),
+                    }
+                )
+
+            if not news_post.description:
+                messages.error(
+                    request,
+                    "Please enter a description for a Photo + Description post."
+                )
+
+                return render(
+                    request,
+                    "news/news_form.html",
+                    {
+                        "news_post": news_post,
+                        "editing": True,
+                        "gallery_images": news_post.gallery_images.all(),
+                    }
+                )
+
+            # Remove video when changing an existing
+            # post from Video to Photo + Description.
+            news_post.video = None
+
+        # ----------------------------------------------------
+        # VIDEO + DESCRIPTION
+        # ----------------------------------------------------
+
+        elif news_post.post_type == "video":
+
+            if not news_post.video:
+                messages.error(
+                    request,
+                    "A Video + Description post must have a video."
+                )
+
+                return render(
+                    request,
+                    "news/news_form.html",
+                    {
+                        "news_post": news_post,
+                        "editing": True,
+                        "gallery_images": news_post.gallery_images.all(),
+                    }
+                )
+
+            if not news_post.description:
+                messages.error(
+                    request,
+                    "Please enter a description for a Video + Description post."
+                )
+
+                return render(
+                    request,
+                    "news/news_form.html",
+                    {
+                        "news_post": news_post,
+                        "editing": True,
+                        "gallery_images": news_post.gallery_images.all(),
+                    }
+                )
+
+        # ----------------------------------------------------
+        # SAVE
         # ----------------------------------------------------
 
         news_post.save()
+
+        # ----------------------------------------------------
+        # ADD NEW GALLERY IMAGES
+        # ----------------------------------------------------
+
+        gallery_images = request.FILES.getlist(
+            "gallery_images"
+        )
+
+        existing_count = news_post.gallery_images.count()
+
+        for index, gallery_image in enumerate(
+            gallery_images,
+            start=existing_count
+        ):
+            NewsPostImage.objects.create(
+                news_post=news_post,
+                image=gallery_image,
+                image_alt=news_post.image_alt,
+                order=index,
+            )
 
         messages.success(
             request,
@@ -986,7 +1135,7 @@ def news_edit(request, pk):
         )
 
     # --------------------------------------------------------
-    # GET request
+    # GET
     # --------------------------------------------------------
 
     return render(
@@ -995,13 +1144,10 @@ def news_edit(request, pk):
         {
             "news_post": news_post,
             "editing": True,
+            "gallery_images": news_post.gallery_images.all(),
         }
     )
 
-
-# ============================================================
-# DELETE NEWS POST
-# ============================================================
 
 @login_required
 def news_delete(request, pk):
@@ -2454,3 +2600,290 @@ def generate_invoice(request, order_id):
     doc.build(elements)
 
     return response
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+
+from .models import NewsPost, NewsPostImage
+# ============================================================
+# PUBLIC NEWS FEED
+# ============================================================
+
+def news_list(request):
+    """
+    Public News Feed.
+
+    Shows only published news posts.
+    """
+
+    news_posts = (
+        NewsPost.objects
+        .filter(is_published=True)
+        .prefetch_related("gallery_images")
+        .order_by("-published_at", "-created_at")
+    )
+
+    return render(
+        request,
+        "news/news_list.html",
+        {
+            "news_posts": news_posts,
+        }
+    )
+
+
+# ============================================================
+# PUBLIC NEWS DETAIL
+# ============================================================
+
+def news_detail(request, slug):
+    """
+    Public individual news page.
+
+    Displays:
+    - Main image
+    - Description
+    - SEO information
+    - Additional gallery images
+    """
+
+    news_post = get_object_or_404(
+        NewsPost.objects.prefetch_related("gallery_images"),
+        slug=slug,
+        is_published=True
+    )
+
+    return render(
+        request,
+        "news/news_detail.html",
+        {
+            "news_post": news_post,
+            "gallery_images": news_post.gallery_images.all(),
+        }
+    )
+
+
+# ============================================================
+# ADMIN NEWS LIST
+# ============================================================
+
+@login_required
+def news_admin_list(request):
+    """
+    Admin News Feed management page.
+    """
+
+    if not request.user.is_staff:
+        messages.error(
+            request,
+            "You do not have permission to access the News Feed."
+        )
+        return redirect("dashboard")
+
+    news_posts = (
+        NewsPost.objects
+        .prefetch_related("gallery_images")
+        .all()
+        .order_by("-created_at")
+    )
+
+    return render(
+        request,
+        "news/admin_news_list.html",
+        {
+            "news_posts": news_posts,
+        }
+    )
+
+
+# ============================================================
+# EDIT NEWS
+# ============================================================
+
+@login_required
+def news_edit(request, pk):
+    """
+    Edit an existing News Feed post.
+    """
+
+    if not request.user.is_staff:
+        messages.error(
+            request,
+            "You do not have permission to edit news posts."
+        )
+        return redirect("dashboard")
+
+    news_post = get_object_or_404(
+        NewsPost,
+        pk=pk
+    )
+
+    if request.method == "POST":
+
+        news_post.title = request.POST.get(
+            "title",
+            ""
+        ).strip()
+
+        news_post.post_type = request.POST.get(
+            "post_type",
+            "article"
+        )
+
+        news_post.description = request.POST.get(
+            "description",
+            ""
+        ).strip()
+
+        news_post.image_alt = request.POST.get(
+            "image_alt",
+            ""
+        ).strip()
+
+        news_post.focus_keyword = request.POST.get(
+            "focus_keyword",
+            ""
+        ).strip()
+
+        news_post.seo_keywords = request.POST.get(
+            "seo_keywords",
+            ""
+        ).strip()
+
+        news_post.meta_title = request.POST.get(
+            "meta_title",
+            ""
+        ).strip()
+
+        news_post.meta_description = request.POST.get(
+            "meta_description",
+            ""
+        ).strip()
+
+        seo_score_raw = request.POST.get(
+            "seo_score",
+            "0"
+        )
+
+        try:
+            news_post.seo_score = max(
+                0,
+                min(
+                    100,
+                    int(seo_score_raw)
+                )
+            )
+        except (TypeError, ValueError):
+            news_post.seo_score = 0
+
+        news_post.is_published = (
+            request.POST.get("is_published") == "on"
+        )
+
+        news_post.is_featured = (
+            request.POST.get("is_featured") == "on"
+        )
+
+        # ----------------------------------------------------
+        # REPLACE MAIN IMAGE IF NEW ONE WAS SELECTED
+        # ----------------------------------------------------
+
+        new_image = request.FILES.get("image")
+
+        if new_image:
+            news_post.image = new_image
+
+        # ----------------------------------------------------
+        # PHOTO ONLY
+        # ----------------------------------------------------
+
+        if news_post.post_type == "photo":
+            news_post.description = ""
+
+        news_post.save()
+
+        # ----------------------------------------------------
+        # ADD NEW GALLERY IMAGES
+        # ----------------------------------------------------
+
+        gallery_images = request.FILES.getlist(
+            "gallery_images"
+        )
+
+        existing_count = news_post.gallery_images.count()
+
+        for index, gallery_image in enumerate(
+            gallery_images,
+            start=existing_count
+        ):
+
+            NewsPostImage.objects.create(
+                news_post=news_post,
+                image=gallery_image,
+                image_alt=news_post.image_alt,
+                order=index
+            )
+
+        messages.success(
+            request,
+            "News post updated successfully."
+        )
+
+        return redirect(
+            "news_admin_list"
+        )
+
+    return render(
+        request,
+        "news/news_form.html",
+        {
+            "news_post": news_post,
+            "editing": True,
+            "gallery_images": news_post.gallery_images.all(),
+        }
+    )
+
+
+# ============================================================
+# DELETE NEWS
+# ============================================================
+
+@login_required
+def news_delete(request, pk):
+    """
+    Delete a News Feed post.
+    """
+
+    if not request.user.is_staff:
+        messages.error(
+            request,
+            "You do not have permission to delete news posts."
+        )
+        return redirect("dashboard")
+
+    news_post = get_object_or_404(
+        NewsPost,
+        pk=pk
+    )
+
+    if request.method == "POST":
+
+        news_post.delete()
+
+        messages.success(
+            request,
+            "News post deleted successfully."
+        )
+
+        return redirect(
+            "news_admin_list"
+        )
+
+    return render(
+        request,
+        "news/news_delete.html",
+        {
+            "news_post": news_post,
+        }
+    )

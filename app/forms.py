@@ -170,3 +170,147 @@ class AddAdminForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ["username", "email", "password"]
+
+# =========================================
+# NEWS POST FORM
+# =========================================
+
+from .models import NewsPost
+
+try:
+    from django_ckeditor_5.widgets import CKEditor5Widget
+except ImportError:
+    CKEditor5Widget = None
+
+
+class NewsPostForm(forms.ModelForm):
+
+    class Meta:
+        model = NewsPost
+
+        fields = [
+            'title',
+            'post_type',
+            'image',
+            'video',
+            'image_alt',
+            'description',
+            'focus_keyword',
+            'seo_keywords',
+            'meta_title',
+            'meta_description',
+            'is_published',
+            'is_featured',
+        ]
+
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Post title'
+            }),
+
+            'post_type': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+
+            'image': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*'
+            }),
+
+            'video': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'accept': 'video/mp4,video/webm,video/ogg'
+            }),
+
+            'image_alt': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Describe the image for accessibility and SEO'
+            }),
+
+            'focus_keyword': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g. shipping from China to Kenya'
+            }),
+
+            'seo_keywords': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'shipping Kenya, China cargo, freight forwarding'
+            }),
+
+            'meta_title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'maxlength': '160',
+                'placeholder': 'SEO title'
+            }),
+
+            'meta_description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'maxlength': '160',
+                'placeholder': 'Short description for search engines'
+            }),
+
+            'is_published': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
+
+            'is_featured': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Use CKEditor 5 for the description when available.
+        if CKEditor5Widget:
+            self.fields['description'].widget = CKEditor5Widget(
+                attrs={
+                    'class': 'django_ckeditor_5'
+                },
+                config_name='extends'
+            )
+
+        # Helpful labels
+        self.fields['description'].label = 'Description'
+        self.fields['image'].label = 'Photo'
+        self.fields['video'].label = 'Video'
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        post_type = cleaned_data.get('post_type')
+        image = cleaned_data.get('image')
+        video = cleaned_data.get('video')
+        description = cleaned_data.get('description')
+
+        # -----------------------------------------
+        # PHOTO POST
+        # -----------------------------------------
+        if post_type in ['photo', 'article']:
+
+            if not image:
+                self.add_error(
+                    'image',
+                    'Please upload a photo for this post.'
+                )
+
+        # -----------------------------------------
+        # VIDEO POST
+        # -----------------------------------------
+        if post_type == 'video':
+
+            if not video:
+                self.add_error(
+                    'video',
+                    'Please upload a video for this post.'
+                )
+
+            if not description:
+                self.add_error(
+                    'description',
+                    'Please add a description for the video.'
+                )
+
+        return cleaned_data

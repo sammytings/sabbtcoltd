@@ -11,14 +11,18 @@ News & Updates | SABBTCo.
 
 .news-page {
     background: #f8fafc;
-    padding: 60px 20px;
+    padding: 60px 20px 80px;
     min-height: 70vh;
 }
 
 .news-container {
     max-width: 1200px;
-    margin: auto;
+    margin: 0 auto;
 }
+
+/* =========================================================
+   HEADER
+   ========================================================= */
 
 .news-heading {
     text-align: center;
@@ -27,15 +31,22 @@ News & Updates | SABBTCo.
 
 .news-heading h1 {
     font-size: 38px;
+    line-height: 1.2;
     color: #111e38;
-    margin-bottom: 10px;
+    margin: 0 0 10px;
+    font-weight: 800;
 }
 
 .news-heading p {
     color: #64748b;
     max-width: 700px;
-    margin: auto;
+    margin: 0 auto;
+    line-height: 1.7;
 }
+
+/* =========================================================
+   GRID
+   ========================================================= */
 
 .news-grid {
     display: grid;
@@ -43,18 +54,38 @@ News & Updates | SABBTCo.
     gap: 25px;
 }
 
+/* =========================================================
+   CARD
+   ========================================================= */
+
 .news-card {
-    background: white;
+    background: #ffffff;
     border-radius: 16px;
-    overflow: hidden;
+    overflow: visible;
     border: 1px solid #e2e8f0;
-    box-shadow: 0 6px 25px rgba(15,23,42,.06);
-    transition: .25s ease;
+    box-shadow: 0 6px 25px rgba(15, 23, 42, .06);
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease;
+    position: relative;
 }
 
 .news-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 30px rgba(15,23,42,.12);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, .12);
+}
+
+/* =========================================================
+   MEDIA AREA
+   ========================================================= */
+
+.news-card-media {
+    position: relative;
+    width: 100%;
+    height: 230px;
+    background: #0f172a;
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;
 }
 
 .news-card-image {
@@ -63,6 +94,104 @@ News & Updates | SABBTCo.
     object-fit: cover;
     display: block;
 }
+
+/* =========================================================
+   VIDEO
+   ========================================================= */
+
+.news-card-video {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+    display: block;
+    background: #000000;
+}
+
+.news-video-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(17, 30, 56, .92);
+    color: #ffffff;
+    padding: 7px 11px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .04em;
+}
+
+/* =========================================================
+   VIDEO WITHOUT IMAGE
+   ========================================================= */
+
+.news-video-placeholder {
+    width: 100%;
+    height: 230px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #111e38;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.news-video-placeholder-inner {
+    text-align: center;
+}
+
+.news-video-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: #dc2626;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    font-size: 22px;
+}
+
+.news-video-placeholder-text {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .03em;
+}
+
+/* =========================================================
+   TYPE LABELS
+   ========================================================= */
+
+.news-type-label {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.photo-only-label {
+    background: #111e38;
+    color: #ffffff;
+}
+
+.article-label {
+    background: #e2e8f0;
+    color: #111e38;
+}
+
+.video-label {
+    background: #dc2626;
+    color: #ffffff;
+}
+
+/* =========================================================
+   CARD CONTENT
+   ========================================================= */
 
 .news-card-body {
     padding: 22px;
@@ -78,46 +207,226 @@ News & Updates | SABBTCo.
 .news-card h2 {
     color: #111e38;
     font-size: 20px;
+    line-height: 1.35;
     margin: 0 0 12px;
+    font-weight: 800;
 }
 
 .news-card-description {
     color: #64748b;
     line-height: 1.7;
     font-size: 14px;
+    margin: 0;
+}
+
+/* =========================================================
+   CARD FOOTER
+   ========================================================= */
+
+.news-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 16px;
 }
 
 .news-read-more {
-    display: inline-block;
-    margin-top: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     color: #dc2626;
-    font-weight: 700;
+    font-weight: 800;
     text-decoration: none;
+    transition: color .2s ease;
 }
 
 .news-read-more:hover {
     color: #111e38;
 }
 
-.photo-only-label {
-    display: inline-block;
+/* =========================================================
+   SHARE BUTTON
+   ========================================================= */
+
+.news-share-wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.news-share-trigger {
+    width: 38px;
+    height: 38px;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #111e38;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition:
+        background .2s ease,
+        color .2s ease,
+        border-color .2s ease,
+        transform .2s ease;
+}
+
+.news-share-trigger:hover,
+.news-share-trigger.active {
     background: #111e38;
-    color: white;
-    padding: 5px 9px;
-    border-radius: 20px;
+    border-color: #111e38;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.news-share-trigger i {
+    font-size: 14px;
+}
+
+/* =========================================================
+   SHARE MENU
+   ========================================================= */
+
+.news-share-menu {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 10px);
+    width: 190px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 7px;
+    box-shadow: 0 12px 35px rgba(15, 23, 42, .16);
+    z-index: 20;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(5px);
+    transition:
+        opacity .18s ease,
+        visibility .18s ease,
+        transform .18s ease;
+}
+
+.news-share-menu.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.news-share-menu::after {
+    content: "";
+    position: absolute;
+    right: 12px;
+    bottom: -6px;
+    width: 11px;
+    height: 11px;
+    background: #ffffff;
+    border-right: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    transform: rotate(45deg);
+}
+
+.news-share-menu-title {
+    padding: 7px 9px 8px;
+    color: #64748b;
     font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+
+.news-share-option {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 0;
+    background: transparent;
+    color: #111e38;
+    text-decoration: none;
+    padding: 9px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: left;
+}
+
+.news-share-option:hover {
+    background: #f8fafc;
+}
+
+.news-share-option i {
+    width: 18px;
+    text-align: center;
+    font-size: 15px;
+}
+
+.news-share-option.whatsapp i {
+    color: #25d366;
+}
+
+.news-share-option.facebook i {
+    color: #1877f2;
+}
+
+.news-share-option.x i {
+    color: #000000;
+}
+
+.news-share-option.linkedin i {
+    color: #0a66c2;
+}
+
+.news-share-option.copy i {
+    color: #64748b;
+}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.news-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.news-empty h2 {
+    color: #111e38;
     margin-bottom: 10px;
 }
 
-@media(max-width: 900px) {
+.news-empty p {
+    color: #64748b;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
     .news-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
 }
 
-@media(max-width: 600px) {
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
     .news-page {
-        padding: 40px 15px;
+        padding: 40px 15px 60px;
+    }
+
+    .news-heading {
+        margin-bottom: 35px;
     }
 
     .news-heading h1 {
@@ -127,105 +436,587 @@ News & Updates | SABBTCo.
     .news-grid {
         grid-template-columns: 1fr;
     }
+
+    .news-card-media,
+    .news-card-image,
+    .news-card-video,
+    .news-video-placeholder {
+        height: 240px;
+    }
+
+    .news-share-menu {
+        right: 0;
+        width: 180px;
+    }
+
 }
 
 </style>
 
 <section class="news-page">
 
-    <div class="news-container">
+<div class="news-container">
 
-        <div class="news-heading">
 
-            <h1>News & Updates</h1>
+<!-- =================================================
+     PAGE HEADER
+================================================== -->
+
+<div class="news-heading">
+
+    <h1>
+        News &amp; Updates
+    </h1>
+
+    <p>
+        Stay informed with the latest shipping, sourcing,
+        consolidation, customs and logistics updates from SABBTCo.
+    </p>
+
+</div>
+
+
+<!-- =================================================
+     NEWS GRID
+================================================== -->
+
+<div class="news-grid">
+
+    {% for post in news_posts %}
+
+    <article class="news-card">
+
+        <!-- =================================================
+             MEDIA
+        ================================================== -->
+
+        <div class="news-card-media">
+
+            <!-- VIDEO POST -->
+
+            {% if post.post_type == "video" %}
+
+                {% if post.video %}
+
+                    <video
+                        class="news-card-video"
+                        controls
+                        playsinline
+                        preload="metadata"
+                        {% if post.image %}
+                            poster="{{ post.image.url }}"
+                        {% endif %}
+                    >
+
+                        <source
+                            src="{{ post.video.url }}"
+                            type="video/mp4"
+                        >
+
+                        Your browser does not support HTML5 video.
+
+                    </video>
+
+                    <div class="news-video-badge">
+                        <i class="fa-solid fa-video"></i>
+                        VIDEO
+                    </div>
+
+                {% else %}
+
+                    <a
+                        href="{% url 'news_detail' post.slug %}"
+                        class="news-video-placeholder"
+                    >
+
+                        <div class="news-video-placeholder-inner">
+
+                            <div class="news-video-icon">
+                                <i class="fa-solid fa-play"></i>
+                            </div>
+
+                            <div class="news-video-placeholder-text">
+                                View Video Update
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                {% endif %}
+
+
+            <!-- PHOTO / ARTICLE -->
+
+            {% elif post.image %}
+
+                <a
+                    href="{% url 'news_detail' post.slug %}"
+                    aria-label="View {{ post.title|default:'SABBTCo. News Update' }}"
+                >
+
+                    <img
+                        src="{{ post.image.url }}"
+                        alt="{{ post.image_alt|default:post.title }}"
+                        class="news-card-image"
+                        loading="lazy"
+                    >
+
+                </a>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- =================================================
+             CARD BODY
+        ================================================== -->
+
+        <div class="news-card-body">
+
+            {% if post.published_at %}
+
+                <div class="news-card-date">
+                    {{ post.published_at|date:"F d, Y" }}
+                </div>
+
+            {% endif %}
+
+
+            <!-- POST TYPE -->
+
+            {% if post.post_type == "photo" %}
+
+                <span class="news-type-label photo-only-label">
+                    PHOTO UPDATE
+                </span>
+
+            {% elif post.post_type == "article" %}
+
+                <span class="news-type-label article-label">
+                    NEWS UPDATE
+                </span>
+
+            {% elif post.post_type == "video" %}
+
+                <span class="news-type-label video-label">
+                    VIDEO UPDATE
+                </span>
+
+            {% endif %}
+
+
+            <!-- TITLE -->
+
+            <h2>
+                {{ post.title|default:"SABBTCo. News Update" }}
+            </h2>
+
+
+            <!-- DESCRIPTION -->
+
+            {% if post.description %}
+
+                <p class="news-card-description">
+                    {{ post.description|striptags|truncatewords:35 }}
+                </p>
+
+            {% elif post.post_type == "photo" %}
+
+                <p class="news-card-description">
+                    SABBTCo. photo update.
+                </p>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 CARD ACTIONS
+            ================================================== -->
+
+            <div class="news-card-footer">
+
+                <a
+                    href="{% url 'news_detail' post.slug %}"
+                    class="news-read-more"
+                >
+                    {% if post.post_type == "video" %}
+                        Watch Update
+                    {% else %}
+                        Read More
+                    {% endif %}
+
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+
+
+                <!-- =================================================
+                     SHARE
+                ================================================== -->
+
+                <div class="news-share-wrapper">
+
+                    <button
+                        type="button"
+                        class="news-share-trigger"
+                        aria-label="Share {{ post.title|default:'SABBTCo. News Update' }}"
+                        aria-expanded="false"
+                    >
+                        <i class="fa-solid fa-share-nodes"></i>
+                    </button>
+
+
+                    <div class="news-share-menu">
+
+                        <div class="news-share-menu-title">
+                            Share update
+                        </div>
+
+
+                        <!-- WHATSAPP -->
+
+                        <a
+                            href="https://wa.me/?text={{ post.title|default:'SABBTCo. News Update'|add:' '|add:request.scheme|add:'://'|add:request.get_host|add:'/news/'|add:post.slug|urlencode }}"
+                            class="news-share-option whatsapp"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <i class="fa-brands fa-whatsapp"></i>
+                            WhatsApp
+                        </a>
+
+
+                        <!-- FACEBOOK -->
+
+                        <a
+                            href="https://www.facebook.com/sharer/sharer.php?u={{ request.scheme }}://{{ request.get_host }}{% url 'news_detail' post.slug %}|urlencode"
+                            class="news-share-option facebook"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <i class="fa-brands fa-facebook-f"></i>
+                            Facebook
+                        </a>
+
+
+                        <!-- X -->
+
+                        <a
+                            href="https://twitter.com/intent/tweet?text={{ post.title|default:'SABBTCo. News Update'|urlencode }}&url={{ request.scheme }}://{{ request.get_host }}{% url 'news_detail' post.slug %}|urlencode"
+                            class="news-share-option x"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <i class="fa-brands fa-x-twitter"></i>
+                            X
+                        </a>
+
+
+                        <!-- LINKEDIN -->
+
+                        <a
+                            href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.scheme }}://{{ request.get_host }}{% url 'news_detail' post.slug %}|urlencode"
+                            class="news-share-option linkedin"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <i class="fa-brands fa-linkedin-in"></i>
+                            LinkedIn
+                        </a>
+
+
+                        <!-- COPY LINK -->
+
+                        <button
+                            type="button"
+                            class="news-share-option copy"
+                            data-share-url="{{ request.scheme }}://{{ request.get_host }}{% url 'news_detail' post.slug %}"
+                        >
+                            <i class="fa-solid fa-link"></i>
+                            <span>Copy Link</span>
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </article>
+
+    {% empty %}
+
+        <div class="news-empty">
+
+            <h2>
+                No news updates yet.
+            </h2>
 
             <p>
-                Stay informed with the latest shipping, sourcing,
-                consolidation, customs and logistics updates from SABBTCo.
+                Please check back soon for the latest updates.
             </p>
 
         </div>
 
-        <div class="news-grid">
+    {% endfor %}
 
-            {% for post in news_posts %}
+</div>
 
-            <article class="news-card">
 
-                {% if post.image %}
-
-                <img
-                    src="{{ post.image.url }}"
-                    alt="{{ post.image_alt|default:post.title }}"
-                    class="news-card-image"
-                    loading="lazy"
-                >
-
-                {% endif %}
-
-                <div class="news-card-body">
-
-                    {% if post.published_at %}
-
-                    <div class="news-card-date">
-                        {{ post.published_at|date:"F d, Y" }}
-                    </div>
-
-                    {% endif %}
-
-                    {% if post.post_type == "photo" %}
-
-                    <span class="photo-only-label">
-                        PHOTO UPDATE
-                    </span>
-
-                    {% endif %}
-
-                    <h2>
-                        {{ post.title|default:"SABBTCo. News Update" }}
-                    </h2>
-
-                    {% if post.description %}
-
-                    <p class="news-card-description">
-                        {{ post.description|truncatewords:35 }}
-                    </p>
-
-                    {% endif %}
-
-                    <a
-                        href="{% url 'news_detail' post.slug %}"
-                        class="news-read-more"
-                    >
-                        Read More →
-                    </a>
-
-                </div>
-
-            </article>
-
-            {% empty %}
-
-            <div style="
-                grid-column:1/-1;
-                text-align:center;
-                padding:60px 20px;
-            ">
-
-                <h2>No news updates yet.</h2>
-
-                <p>
-                    Please check back soon for the latest updates.
-                </p>
-
-            </div>
-
-            {% endfor %}
-
-        </div>
-
-    </div>
+</div>
 
 </section>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const shareWrappers = document.querySelectorAll(
+        ".news-share-wrapper"
+    );
+
+
+    /* =========================================================
+       OPEN / CLOSE SHARE MENUS
+       ========================================================= */
+
+    shareWrappers.forEach(function (wrapper) {
+
+        const trigger = wrapper.querySelector(
+            ".news-share-trigger"
+        );
+
+        const menu = wrapper.querySelector(
+            ".news-share-menu"
+        );
+
+        if (!trigger || !menu) {
+            return;
+        }
+
+        trigger.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
+                shareWrappers.forEach(function (otherWrapper) {
+
+                    if (otherWrapper !== wrapper) {
+
+                        const otherMenu =
+                            otherWrapper.querySelector(
+                                ".news-share-menu"
+                            );
+
+                        const otherTrigger =
+                            otherWrapper.querySelector(
+                                ".news-share-trigger"
+                            );
+
+                        if (otherMenu) {
+                            otherMenu.classList.remove("open");
+                        }
+
+                        if (otherTrigger) {
+                            otherTrigger.classList.remove("active");
+                            otherTrigger.setAttribute(
+                                "aria-expanded",
+                                "false"
+                            );
+                        }
+
+                    }
+
+                });
+
+
+                const isOpen =
+                    menu.classList.toggle("open");
+
+                trigger.classList.toggle(
+                    "active",
+                    isOpen
+                );
+
+                trigger.setAttribute(
+                    "aria-expanded",
+                    isOpen ? "true" : "false"
+                );
+
+            }
+        );
+
+    });
+
+
+    /* =========================================================
+       COPY LINKS
+       ========================================================= */
+
+    document.querySelectorAll(
+        ".news-share-option.copy"
+    ).forEach(function (button) {
+
+        button.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const url =
+                    button.getAttribute(
+                        "data-share-url"
+                    );
+
+                const text =
+                    button.querySelector("span");
+
+
+                function copied() {
+
+                    if (text) {
+                        text.textContent = "Copied";
+                    }
+
+                    setTimeout(function () {
+
+                        if (text) {
+                            text.textContent = "Copy Link";
+                        }
+
+                    }, 1800);
+
+                }
+
+
+                if (
+                    navigator.clipboard &&
+                    window.isSecureContext
+                ) {
+
+                    navigator.clipboard
+                        .writeText(url)
+                        .then(copied)
+                        .catch(function () {
+
+                            fallbackCopy(
+                                url,
+                                copied
+                            );
+
+                        });
+
+                } else {
+
+                    fallbackCopy(
+                        url,
+                        copied
+                    );
+
+                }
+
+            }
+        );
+
+    });
+
+
+    function fallbackCopy(
+        text,
+        callback
+    ) {
+
+        const textarea =
+            document.createElement("textarea");
+
+        textarea.value = text;
+
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+
+        document.body.appendChild(
+            textarea
+        );
+
+        textarea.focus();
+        textarea.select();
+
+        try {
+            document.execCommand("copy");
+
+            if (callback) {
+                callback();
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Unable to copy link.",
+                error
+            );
+
+        }
+
+        document.body.removeChild(
+            textarea
+        );
+
+    }
+
+
+    /* =========================================================
+       CLOSE WHEN CLICKING OUTSIDE
+       ========================================================= */
+
+    document.addEventListener(
+        "click",
+        function () {
+
+            shareWrappers.forEach(
+                function (wrapper) {
+
+                    const menu =
+                        wrapper.querySelector(
+                            ".news-share-menu"
+                        );
+
+                    const trigger =
+                        wrapper.querySelector(
+                            ".news-share-trigger"
+                        );
+
+                    if (menu) {
+                        menu.classList.remove(
+                            "open"
+                        );
+                    }
+
+                    if (trigger) {
+
+                        trigger.classList.remove(
+                            "active"
+                        );
+
+                        trigger.setAttribute(
+                            "aria-expanded",
+                            "false"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+});
+
+</script>
 
 {% endblock %}
